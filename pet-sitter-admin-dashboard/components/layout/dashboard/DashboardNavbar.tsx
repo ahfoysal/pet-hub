@@ -1,6 +1,6 @@
 "use client";
 
-import { Bell, LogOut, Settings, ChevronRight, Menu, X, User } from "lucide-react";
+import { Bell, LogOut, Settings, ChevronRight, Menu, X } from "lucide-react";
 import { useMobileMenu } from "@/contexts/MobileMenuContext";
 import Image from "next/image";
 import Link from "next/link";
@@ -11,7 +11,6 @@ import { clearCredentials } from "@/redux/features/slice/authSlice";
 import petzyLogo from "@/public/images/logo.png";
 import { getRedirectSettingPath } from "@/lib/roleRoutes";
 import { useSelector } from "react-redux";
-import { RootState } from "@/redux/store/store";
 import { selectTotalUnreadCount } from "@/redux/features/slice/socketSlice";
 
 export function DashboardNavbar() {
@@ -64,8 +63,8 @@ export function DashboardNavbar() {
   }, []);
 
   return (
-    <nav className="absolute top-0 z-100 w-full bg-white ">
-      <div className="flex items-center justify-between px-6 lg:px-8 h-16">
+    <nav className="absolute top-0 z-100 w-full bg-white border-b border-[#d0d0d0] h-20">
+      <div className="flex items-center justify-between px-[38px] h-full">
         {/* Left - Greeting Section */}
         <div className="flex items-center gap-4 flex-1">
           {/* Mobile Hamburger Menu */}
@@ -108,9 +107,11 @@ export function DashboardNavbar() {
             >
               <div className="w-8 h-8 rounded-full flex items-center justify-center overflow-hidden hover:ring-2 hover:ring-primary/30 transition-all">
                 {userImage ? (
-                  <img
+                  <Image
                     src={userImage}
                     alt={userName}
+                    width={32}
+                    height={32}
                     className="w-full h-full object-cover rounded-full"
                   />
                 ) : (

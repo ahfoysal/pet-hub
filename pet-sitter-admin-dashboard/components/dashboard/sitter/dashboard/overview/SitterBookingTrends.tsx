@@ -1,7 +1,7 @@
 "use client";
 
 import { useGetSitterBookingTrendsQuery } from "@/redux/features/api/dashboard/sitter/dashboard/sitterDashboardApi";
-import { Card, CardBody, CardHeader, Select, SelectItem, Skeleton } from "@nextui-org/react";
+import { Select, SelectItem, Skeleton } from "@nextui-org/react";
 import { useState } from "react";
 import { useSession } from "next-auth/react";
 import {
@@ -25,11 +25,11 @@ export default function SitterBookingTrends() {
   const years = [currentYear - 2, currentYear - 1, currentYear, currentYear + 1];
 
   return (
-    <Card shadow="sm" className="w-full bg-white dark:bg-default-50 border-none">
-      <CardHeader className="flex flex-col md:flex-row justify-between items-start md:items-center px-6 pt-6">
+    <div className="w-full bg-white rounded-xl border border-[#eaecf0] shadow-sm">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center px-6 py-5 border-b border-[#eaecf0]">
         <div>
-          <h2 className="text-xl font-bold text-default-900">Booking Trends</h2>
-          <p className="text-sm text-default-500">
+          <h2 className="text-lg font-semibold text-[#101828] font-inter">Booking Trends</h2>
+          <p className="text-sm text-[#667085] font-inter">
             Monthly history of your total bookings
           </p>
         </div>
@@ -47,8 +47,8 @@ export default function SitterBookingTrends() {
             ))}
           </Select>
         </div>
-      </CardHeader>
-      <CardBody className="px-6 pb-6 pt-4">
+      </div>
+      <div className="px-6 pb-6 pt-4">
         {isLoading ? (
           <Skeleton className="w-full h-[300px] rounded-xl" />
         ) : (
@@ -57,32 +57,32 @@ export default function SitterBookingTrends() {
               <AreaChart data={data?.data?.data || []}>
                 <defs>
                   <linearGradient id="colorBookings" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3} />
-                    <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
+                    <stop offset="5%" stopColor="#ff7176" stopOpacity={0.3} />
+                    <stop offset="95%" stopColor="#ff7176" stopOpacity={0} />
                   </linearGradient>
                 </defs>
                 <XAxis
                   dataKey="month"
-                  stroke="#888888"
+                  stroke="#667085"
                   fontSize={12}
                   tickLine={false}
                   axisLine={false}
                 />
                 <YAxis
-                  stroke="#888888"
+                  stroke="#667085"
                   fontSize={12}
                   tickLine={false}
                   axisLine={false}
                   tickFormatter={(value) => `${value}`}
                 />
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f2f4f7" />
                 <Tooltip
                   content={({ active, payload }) => {
                     if (active && payload && payload.length) {
                       return (
-                        <div className="bg-white dark:bg-default-100 p-3 rounded-lg shadow-lg border border-default-200">
-                          <p className="font-medium">{payload[0].payload.month}</p>
-                          <p className="text-blue-500 font-bold">
+                        <div className="bg-white p-3 rounded-lg shadow-lg border border-[#eaecf0]">
+                          <p className="font-medium text-[#101828]">{payload[0].payload.month}</p>
+                          <p className="text-[#ff7176] font-bold">
                             {payload[0].value} Bookings
                           </p>
                         </div>
@@ -94,7 +94,7 @@ export default function SitterBookingTrends() {
                 <Area
                   type="monotone"
                   dataKey="totalBookings"
-                  stroke="#3b82f6"
+                  stroke="#ff7176"
                   strokeWidth={3}
                   fillOpacity={1}
                   fill="url(#colorBookings)"
@@ -103,7 +103,7 @@ export default function SitterBookingTrends() {
             </ResponsiveContainer>
           </div>
         )}
-      </CardBody>
-    </Card>
+      </div>
+    </div>
   );
 }

@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "KYC" ALTER COLUMN "image" DROP NOT NULL,
+ALTER COLUMN "signatureImage" DROP NOT NULL;

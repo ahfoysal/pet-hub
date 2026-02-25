@@ -1,0 +1,1943 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              String       @id @default(uuid())
+  userName        String       @unique
+  fullName        String
+  email           String       @unique
+  phone           String?      @unique
+  password        String?
+  image           String?
+  provider        AuthProvider @default(LOCAL)
+  role            ProfileType?
+  status          UserStatus   @default(ACTIVE)
+  isEmailVerified Boolean      @default(false)
+  isGoogleLogin   Boolean      @default(false)
+  hasProfile      Boolean      @default(false)
+  suspendReason   String?
+  banReason       String?
+  suspendUntil    DateTime?
+  isDeleted       Boolean      @default(false)
+  isTwoFactorEnabled Boolean   @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  pendingRequestCount Int @default(0)
+  friendsCount        Int @default(0)
+
+  kycs                 KYC[]                @relation("KycUser")
+  reviewedKycs         KYC[]                @relation("KycReviewedBy")
+  reviews              Review[]
+  vendorProfile        VendorProfile?
+  carts                Cart[]
+  orders               Order[]
+  shippingAddresses    ShippingAddress[]
+  petSitterProfiles    PetSitterProfile[]
+  petSitterBookings    PetSitterBooking[]
+  petSchoolProfiles    PetSchoolProfile[]
+  courseUsers          CourseUser[]
+  petOwnerProfiles     PetOwnerProfile[]
+  reductions           Reduction[]
+  bookings             Booking[]
+  paymentsMade         Payment[]            @relation("PaymentPayer")
+  paymentsReceived     Payment[]            @relation("PaymentReceiver")
+  posts                Post[]
+  reels                Reel[]
+  stories              Story[]
+  moments              Moment[]
+  postLikes            PostLike[]
+  reelLikes            ReelLike[]
+  comments             Comment[]
+  bookmarks            Bookmark[]
+  messages             Message[]
+  notificationReceiver Notification[]       @relation("NotificationReceiver")
+  notificationSender   Notification[]       @relation("NotificationSender")
+  communityMessages    CommunityMessage[]
+  bankInformations     BankInformation[]
+  emailVerifications   EmailVerification[]
+  passwordResetTokens  PasswordResetToken[]
+  hotelProfile         HotelProfile?
+
+  conversationsAsUser1 Conversation[]       @relation("User1Conversations")
+  conversationsAsUser2 Conversation[]       @relation("User2Conversations")
+  communityTopicUsers  CommunityTopicUser[]
+  myCreatedTopics      CommunityTopic[]
+
+  sentFriendRequests     FriendRequest[] @relation("FriendRequestSender")
+  receivedFriendRequests FriendRequest[] @relation("FriendRequestReceiver")
+  friendshipsA           Friendship[]    @relation("FriendshipUserA")
+  friendshipsB           Friendship[]    @relation("FriendshipUserB")
+  commentLikes           CommentLike[]
+  storyViews             StoryView[]
+  storyLikes             StoryLike[]
+  storyReplies           StoryReplies[]
+  reelComments           ReelComment[]
+
+  reportedBy                Report[]                   @relation("ReportReporter")
+  reportsAgainst            Report[]                   @relation("ReportReported")
+  blockedUsers              UserBlock[]                @relation("UserBlocksSent")
+  blockedByUsers            UserBlock[]                @relation("UserBlocksReceived")
+  mutesReceived             UserMute[]                 @relation("UserMutesReceived") // mutes where this user is muted
+  mutesGiven                UserMute[]                 @relation("UserMutesGiven") // mutes this user performed
+  hiddenContents            HiddenContent[]
+  serviceReviews            ServiceReview[]
+  userNotificationsSettings UserNotificationsSettings?
+  productReviews            ProductReview[]
+  cancelledBookings         PetSitterBooking[]         @relation("BookingCancelledByUser")
+  petSitterPackageReviews   PetSitterPackageReview[]
+  petSitterReviews          PetSitterReview[]
+  platformSettingsHistories PlatformSettingsHistory[]
+
+  @@index([status, suspendUntil])
+}
+
+model UserNotificationsSettings {
+  id          String  @id @default(uuid())
+  userId      String  @unique
+  enableEmail Boolean @default(true)
+  enablePush  Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+model HotelNotificationSettings {
+  id                  String  @id @default(uuid())
+  hotelProfileId      String  @unique
+  newBookings         Boolean @default(true)
+  checkInReminders    Boolean @default(true)
+  checkOutReminders   Boolean @default(true)
+  paymentUpdates      Boolean @default(true)
+  adminMessages       Boolean @default(true)
+  bookingCancellations Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  hotelProfile HotelProfile @relation(fields: [hotelProfileId], references: [id], onDelete: Cascade)
+}
+
+model PetSitterNotificationSettings {
+  id                   String  @id @default(uuid())
+  petSitterProfileId   String  @unique
+  newBookings          Boolean @default(true)
+  checkInReminders     Boolean @default(true)
+  checkOutReminders    Boolean @default(true)
+  paymentUpdates       Boolean @default(true)
+  adminMessages        Boolean @default(true)
+  bookingCancellations Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  petSitterProfile PetSitterProfile @relation(fields: [petSitterProfileId], references: [id], onDelete: Cascade)
+}
+
+model UserBlock {
+  id String @id @default(uuid())
+
+  blockerId     String
+  blockedUserId String @map("blockedId")
+
+  createdAt DateTime @default(now())
+
+  blocker User @relation("UserBlocksSent", fields: [blockerId], references: [id])
+
+  blockedUser User @relation("UserBlocksReceived", fields: [blockedUserId], references: [id])
+
+  @@unique([blockerId, blockedUserId])
+  @@index([blockerId])
+  @@index([blockedUserId])
+}
+
+model UserMute {
+  id          String   @id @default(uuid())
+  mutedUserId String
+  mutedById   String
+  createdAt   DateTime @default(now())
+
+  mutedUser User @relation("UserMutesReceived", fields: [mutedUserId], references: [id])
+  mutedBy   User @relation("UserMutesGiven", fields: [mutedById], references: [id])
+
+  @@unique([mutedUserId, mutedById]) // prevent duplicate mutes
+}
+
+model EmailVerification {
+  id        String    @id @default(uuid())
+  userId    String
+  token     String    @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model PasswordResetToken {
+  id        String   @id @default(uuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  used      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model KYC {
+  id                       String             @id @default(uuid())
+  userId                   String
+  fullName                 String
+  email                    String
+  dateOfBirth              String
+  gender                   String?
+  nationality              String?
+  image                    String?
+  identificationType       IdentificationType
+  identificationNumber     String?
+  identificationFrontImage String
+  identificationBackImage  String
+  signatureImage           String?
+  phoneNumber              String
+  presentAddress           String?
+  permanentAddress         String?
+  emergencyContactName     String?
+  emergencyContactRelation     String?
+  emergencyContactPhone    String?
+  roleType                 OrganizationType
+  
+  // Business Information
+  businessName               String?
+  businessRegistrationNumber String?
+  businessAddress            String?
+  businessRegistrationCertificate String?
+  
+  // License Information
+  licenseNumber       String?
+  licenseIssueDate    String?
+  licenseExpiryDate   String?
+  hotelLicenseImage   String?
+  hygieneCertificate  String?
+  
+  // Facility verification
+  facilityPhotos      String[]
+  
+  status                   KycStatus          @default(PENDING)
+  reviewedBy               String?
+  reviewedAt               DateTime?
+  createdAt                DateTime           @default(now())
+  updatedAt                DateTime           @updatedAt
+
+  User       User  @relation("KycUser", fields: [userId], references: [id])
+  ReviewedBy User? @relation("KycReviewedBy", fields: [reviewedBy], references: [id])
+}
+
+model Address {
+  id                 String  @id @default(uuid())
+  streetAddress      String
+  city               String
+  country            String
+  postalCode         String
+  vendorProfileId    String?
+  hotelProfileId     String?
+  petSchoolProfileId String?
+
+  vendorProfile    VendorProfile?    @relation(fields: [vendorProfileId], references: [id], onDelete: Cascade)
+  hotelProfile     HotelProfile?     @relation(fields: [hotelProfileId], references: [id], onDelete: Cascade)
+  petSchoolProfile PetSchoolProfile? @relation(fields: [petSchoolProfileId], references: [id], onDelete: Cascade)
+}
+
+// model Organization {
+//   id          String           @id @default(uuid())
+//   userId      String           @unique
+//   name        String
+//   email       String
+//   phone       String
+//   description String?
+//   images      String[]
+//   type        OrganizationType
+//   isVerified  Boolean          @default(false)
+//   analytics   Json?
+//   createdAt   DateTime         @default(now())
+//   updatedAt   DateTime         @updatedAt
+
+//   user                  User                  @relation(fields: [userId], references: [id])
+//   reviews               Review[]
+//   vendorProfile         VendorProfile?        @relation(fields: [vendorProfileId], references: [id])
+//   petSchoolProfile      PetSchoolProfile?     @relation(fields: [petSchoolProfileId], references: [id])
+//   petHotelProfile       HotelProfile?         @relation(fields: [hotelProfileId], references: [id])
+//   organizationAddresses OrganizationAddress[]
+//   vendorProfileId       String?
+//   petSchoolProfileId    String?
+//   hotelProfileId        String?
+// }
+
+model Employee {
+  id             String   @id @default(uuid())
+  petSchoolId    String
+  name           String
+  email          String
+  phone          String
+  image          String
+  specialization String[]
+  avgRating      Float    @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  courses        Course[]
+
+  petSchoolProfile PetSchoolProfile @relation(fields: [petSchoolId], references: [id])
+  reviews          EmployeeReview[]
+}
+
+model EmployeeReview {
+  id         String   @id @default(uuid())
+  employeeId String
+  rating     Float
+  comment    String
+  createdAt  DateTime @default(now())
+
+  employee Employee @relation(fields: [employeeId], references: [id])
+}
+
+// As example
+model BankInformation {
+  id                String            @id @default(uuid())
+  userId            String
+  profileType       ProfileType
+  accountHolderName String
+  bankName          String
+  branchName        String
+  accountNumber     String
+  routingNumber     String
+  swiftCode         String
+  country           String
+  isPrimary         Boolean
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+  petOwnerProfiles  PetOwnerProfile[]
+
+  User User @relation(fields: [userId], references: [id])
+}
+
+model HotelProfile {
+  id                String        @id @default(uuid())
+  userId            String        @unique // Owner of this profile
+  name              String // Hotel name
+  email             String
+  phone             String
+  description       String?
+  images            String[]
+  dayStartingTime   String
+  dayEndingTime     String
+  nightStartingTime String
+  nightEndingTime   String
+  status            ProfileStatus @default(PENDING)
+  isVerified        Boolean       @default(false)
+  rating            Float         @default(0)
+  reviewCount       Int           @default(0)
+  analytics         Json?
+  businessRegistrationNumber String?
+  businessLicense            String?
+  insuranceCertificate       String?
+  yearsOfExperience         Int?          @default(0)
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  notificationSettings HotelNotificationSettings?
+  addresses  Address[] // Multiple addresses per hotel
+  rooms      Room[]
+  foods      Food[]
+  facilities Facility[]
+  bookings   Booking[]
+}
+
+model Room {
+  id             String     @id @default(uuid())
+  hotelProfileId String
+  roomName       String?
+  roomNumber     String
+  images         String[]
+  description    String
+  roomAmenities  String[]
+  roomType       RoomType
+  status         RoomStatus @default(AVAILABLE)
+  petCapacity    Int
+  humanCapacity  Int?
+  price          Int
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+
+  hotelProfile       HotelProfile       @relation(fields: [hotelProfileId], references: [id])
+  bookings           Booking[]
+  roomAvailabilities RoomAvailability[]
+}
+
+model RoomAvailability {
+  id     String @id @default(uuid())
+  roomId String
+  room   Room   @relation(fields: [roomId], references: [id], onDelete: Cascade)
+
+  date          DateTime
+  isAvailable   Boolean  @default(true)
+  priceOverride Int?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([roomId, date])
+}
+
+model Food {
+  id              String       @id @default(uuid())
+  hotelProfileId  String
+  foodType        FoodType // eg. vegan, non-vegan etc
+  foodFor         ConsumerType
+  name            String
+  images          String[]
+  ingredients     String[]
+  description     String
+  price           Int
+  numberOfServing Int
+  gramPerServing  Int
+  petCategory     String
+  petBreed        String
+  calories        Int
+  protein         Float
+  fat             Float
+  minAge          Int?
+  maxAge          Int?
+  isAvailable     Boolean      @default(true)
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+
+  hotelProfile HotelProfile @relation(fields: [hotelProfileId], references: [id])
+}
+
+model Facility {
+  id             String       @id @default(uuid())
+  hotelProfileId String
+  name           String
+  facilityFor    ConsumerType
+  description    String
+  price          Int
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  hotelProfile   HotelProfile @relation(fields: [hotelProfileId], references: [id])
+}
+
+model Booking {
+  id             String          @id @default(uuid())
+  hotelProfileId String
+  userId         String
+  roomId         String
+  price          Int
+  platformFee    Int
+  grandTotal     Int
+  checkInTime    DateTime
+  checkOutTime   DateTime
+  petIds         String[]
+  assignedStuff  String
+  status         BookingStatus
+  cancelledBy    CancelledByEnum
+  discount       String
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+
+  user         User         @relation(fields: [userId], references: [id])
+  room         Room         @relation(fields: [roomId], references: [id])
+  hotelProfile HotelProfile @relation(fields: [hotelProfileId], references: [id])
+  payments     Payment[]
+}
+
+//* Vendor
+model VendorProfile {
+  id          String        @id @default(uuid())
+  userId      String        @unique
+  name        String
+  email       String
+  phone       String
+  description String?
+  images      String[]
+  status      ProfileStatus @default(PENDING)
+  isVerified  Boolean       @default(false)
+  isDeleted   Boolean       @default(false)
+  rating      Float         @default(0)
+  reviewCount Int           @default(0)
+  analytics   Json?
+  businessRegistrationNumber String?
+  businessLicense            String?
+  insuranceCertificate       String?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  products  Product[]
+  orders    Order[]
+  addresses Address[]
+  notificationSettings VendorNotificationSettings?
+}
+
+model VendorNotificationSettings {
+  id                      String        @id @default(uuid())
+  vendorProfileId         String        @unique
+  orderConfirmationEmail  Boolean       @default(true)
+  orderCancellationEmail  Boolean       @default(true)
+  marketingEmail          Boolean       @default(false)
+  pushNotifications       Boolean       @default(true)
+  createdAt               DateTime      @default(now())
+  updatedAt               DateTime      @updatedAt
+
+  vendorProfile VendorProfile @relation(fields: [vendorProfileId], references: [id], onDelete: Cascade)
+}
+
+model Product {
+  id              String   @id @default(uuid())
+  vendorId        String
+  name            String
+  images          String[]
+  description     String
+  productCategory String
+  petCategory     String
+  tags            String[]
+  features        String[]
+  inStock         Boolean  @default(true)
+  isPublish       Boolean  @default(true)
+  // isBestSelling   Boolean  @default(false)
+  avgRating       Float    @default(0)
+  seoTitle        String?
+  seoDescription  String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  vendor         VendorProfile   @relation(fields: [vendorId], references: [id])
+  reviews        Review[]
+  variants       Variant[]
+  orderItems     OrderItem[]
+  cartItems      CartItem[]
+  productReviews ProductReview[]
+}
+
+model ProductReview {
+  id        String   @id @default(uuid())
+  productId String
+  userId    String
+  rating    Int
+  review    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([productId, userId])
+  @@index([productId])
+  @@index([userId])
+}
+
+model Variant {
+  id            String   @id @default(uuid())
+  productId     String
+  originalPrice Float
+  sellingPrice  Float
+  images        String[]
+  attributes    Json
+  stock         Int
+  sku           String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  product        Product            @relation(fields: [productId], references: [id], onDelete: Cascade)
+  orderItems     OrderItem[]
+  cartItems      CartItem[]
+  attributeIndex VariantAttribute[]
+}
+
+enum AttributeType {
+  STRING
+  NUMBER
+  BOOLEAN
+  ENUM
+}
+
+model Attribute {
+  id        String        @id @default(uuid())
+  name      String
+  slug      String        @unique
+  type      AttributeType
+  createdAt DateTime      @default(now())
+
+  values AttributeValue[]
+}
+
+model AttributeValue {
+  id          String @id @default(uuid())
+  attributeId String
+  value       String
+
+  attribute Attribute @relation(fields: [attributeId], references: [id], onDelete: Cascade)
+
+  @@unique([attributeId, value])
+}
+
+model VariantAttribute {
+  id        String @id @default(uuid())
+  variantId String
+  key       String
+  value     String
+
+  variant Variant @relation(fields: [variantId], references: [id], onDelete: Cascade)
+
+  @@index([key, value])
+  @@index([variantId])
+}
+
+model Cart {
+  id        String   @id @default(uuid())
+  userId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user   User       @relation(fields: [userId], references: [id])
+  items  CartItem[]
+  orders Order[]
+}
+
+model CartItem {
+  id         String   @id @default(uuid())
+  cartId     String
+  productId  String
+  variantId  String
+  quantity   Int
+  unitPrice  Int
+  totalPrice Int
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  cart    Cart    @relation(fields: [cartId], references: [id])
+  product Product @relation(fields: [productId], references: [id])
+  variant Variant @relation(fields: [variantId], references: [id])
+}
+
+model Order {
+  id                String        @id @default(uuid())
+  userId            String
+  vendorId          String
+  cartId            String
+  subTotal          Float
+  platformFee       Float
+  discount          Float?
+  grandTotal        Float
+  paymentId         String?
+  status            OrderStatus
+  paymentStatus     PaymentStatus
+  shippingAddressId String
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+
+  user            User            @relation(fields: [userId], references: [id])
+  vendor          VendorProfile   @relation(fields: [vendorId], references: [id])
+  cart            Cart            @relation(fields: [cartId], references: [id])
+  shippingAddress ShippingAddress @relation(fields: [shippingAddressId], references: [id])
+  orderItems      OrderItem[]
+  reductions      Reduction[]
+  payments        Payment[]
+}
+
+model OrderItem {
+  id         String   @id @default(uuid())
+  orderId    String
+  productId  String
+  variantId  String
+  quantity   Int
+  price      Int
+  totalPrice Int
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  order   Order   @relation(fields: [orderId], references: [id])
+  product Product @relation(fields: [productId], references: [id])
+  variant Variant @relation(fields: [variantId], references: [id])
+}
+
+model ShippingAddress {
+  id         String    @id @default(uuid())
+  userId     String
+  fullName   String
+  phone      String
+  city       String
+  street     String
+  postalCode String
+  country    String
+  isDefault  Boolean   @default(false)
+  deletedAt  DateTime?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  user   User    @relation(fields: [userId], references: [id])
+  orders Order[]
+
+  @@index([userId])
+}
+
+//* ------ Pet Sitter -------
+model PetSitterProfile {
+  id                String          @id @default(uuid())
+  userId            String          @unique
+  bio               String
+  profileStatus     ProfileStatus   @default(PENDING)
+  status            PetSitterStatus @default(OFF_SERVICE)
+  analytics         String
+  yearsOfExperience Int             @default(0)
+  designations      String
+  languages         String[]
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+  isVerified        Boolean         @default(false)
+  
+  businessRegistrationNumber String?
+  businessLicense            String?
+  insuranceCertificate       String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  services Service[]
+
+  addOns             AddOn[]
+  petSitterBookings  PetSitterBooking[]
+  petSitterAddresses PetSitterAddress[]
+  savedPetSitters    SavedPetSitter[]
+  packages           Package[]
+  petSitterReviews   PetSitterReview[]
+  notificationSettings PetSitterNotificationSettings?
+
+  @@index([userId])
+}
+
+model SavedPetSitter {
+  id String @id @default(uuid())
+
+  petSitterId String
+  petOwnerId  String
+
+  petSitter PetSitterProfile @relation(fields: [petSitterId], references: [id], onDelete: Cascade)
+  petOwner  PetOwnerProfile  @relation(fields: [petOwnerId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@unique([petSitterId, petOwnerId])
+  @@index([petOwnerId])
+  @@index([petSitterId])
+}
+
+model Service {
+  id                String   @id @default(uuid())
+  name              String
+  description       String
+  whatsIncluded     String[]
+  thumbnailImage    String
+  durationInMinutes Int
+  isDeleted         Boolean  @default(false)
+  isAvailable       Boolean  @default(true)
+  serviceId         String   @unique
+
+  price          Decimal
+  isDiscountable Boolean  @default(false)
+  discount       Int?
+  tags           String[]
+
+  petSitterId String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  petSitterProfile PetSitterProfile @relation(fields: [petSitterId], references: [id], onDelete: Cascade)
+
+  serviceReviews                     ServiceReview[]
+  packageServices                    PackageService[]
+  petSitterBookings                  PetSitterBooking[]
+  petSitterBookingAdditionalServices PetSitterBookingAdditionalService[]
+
+  @@index([petSitterId])
+  @@index([name])
+}
+
+model ServiceReview {
+  id        String   @id @default(uuid())
+  serviceId String
+  userId    String
+  rating    Int
+  comment   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  isDeleted Boolean  @default(false)
+
+  service Service @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([serviceId])
+  @@index([userId])
+}
+
+model Package {
+  id                String  @id @default(uuid())
+  name              String
+  description       String
+  image             String
+  isDeleted         Boolean @default(false)
+  durationInMinutes Int
+  packageId         String  @unique
+
+  petSitterId String
+  petSitter   PetSitterProfile @relation(fields: [petSitterId], references: [id], onDelete: Cascade)
+  isAvailable Boolean          @default(true)
+
+  // PRICES
+  calculatedPrice Decimal @default(0) // sum of service + addon prices
+  offeredPrice    Decimal // petSitter-defined, usually <= calculatedPrice
+
+  createdAt               DateTime                 @default(now())
+  updatedAt               DateTime                 @updatedAt
+  packageServices         PackageService[]
+  petSitterBookings       PetSitterBooking[]
+  petSitterPackageReviews PetSitterPackageReview[]
+}
+
+model PackageService {
+  packageId String
+  serviceId String
+
+  package Package @relation(fields: [packageId], references: [id], onDelete: Cascade)
+  service Service @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+
+  @@unique([packageId, serviceId])
+}
+
+model AddOnPackage {
+  AddOnId   String
+  PackageId String
+
+  addOn AddOn @relation(fields: [AddOnId], references: [id], onDelete: Cascade)
+  // package Package @relation(fields: [PackageId], references: [id], onDelete: Cascade)
+
+  @@unique([AddOnId, PackageId])
+}
+
+model AddOn {
+  id                 String @id @default(uuid())
+  petSitterProfileId String
+  name               String
+  description        String
+  price              Int
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  petSitterProfile PetSitterProfile @relation(fields: [petSitterProfileId], references: [id])
+  addOnPackages    AddOnPackage[]
+}
+
+model PetSitterPackageReview {
+  id        String   @id @default(uuid())
+  packageId String
+  userId    String
+  rating    Int
+  comment   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  isDeleted Boolean  @default(false)
+
+  package Package @relation(fields: [packageId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([packageId])
+  @@index([userId])
+}
+
+model PetSitterReview {
+  id        String   @id @default(uuid())
+  userId    String
+  rating    Int
+  comment   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  isDeleted Boolean  @default(false)
+
+  petSitterId String
+
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  petSitter PetSitterProfile @relation(fields: [petSitterId], references: [id], onDelete: Cascade)
+
+  @@index([petSitterId])
+  @@index([userId])
+}
+
+model PetSitterBooking {
+  id          String @id @default(uuid())
+  bookingId   String @unique
+  price       Int
+  platformFee Int
+  grandTotal  Int
+
+  packageId String?
+  serviceId String?
+
+  additionalServicesIds String[]
+  specialInstructions   String?
+
+  durationInMinutes Int?
+
+  bookingType   BookingType
+  startingTime  DateTime
+  finishingTime DateTime?
+
+  isOwnHome Boolean @default(false)
+  location  String  @default("")
+
+  status PetSitterBookingStatus @default(PENDING)
+
+  completionProof    String[]
+  completionNote     String?
+  completedAt        DateTime?
+  requestCompletedAt DateTime?
+
+  isLate      Boolean @default(false)
+  minutesLate Int?    @default(0)
+
+  paymentId String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  clientId           String
+  petSitterProfileId String
+
+  cancelledByUserId String?
+  cancelledByRole   ProfileType?
+  cancelledAt       DateTime?
+
+  cancelledByUser User? @relation("BookingCancelledByUser", fields: [cancelledByUserId], references: [id])
+
+  // Relations
+  package   Package?         @relation(fields: [packageId], references: [id], onDelete: Cascade)
+  service   Service?         @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  user      User             @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  petSitter PetSitterProfile @relation(fields: [petSitterProfileId], references: [id], onDelete: Cascade)
+
+  payments                           Payment[]
+  pets                               PetSitterBookingPet[]
+  petSitterBookingAdditionalServices PetSitterBookingAdditionalService[]
+}
+
+model PetSitterBookingAdditionalService {
+  petSitterBookingId  String
+  additionalServiceId String
+
+  petSitterBooking  PetSitterBooking @relation(fields: [petSitterBookingId], references: [id], onDelete: Cascade)
+  additionalService Service          @relation(fields: [additionalServiceId], references: [id], onDelete: Cascade)
+
+  @@unique([petSitterBookingId, additionalServiceId])
+}
+
+model PetSitterBookingPet {
+  petSitterBookingId String
+  petId              String
+
+  petSitterBooking PetSitterBooking @relation(fields: [petSitterBookingId], references: [id], onDelete: Cascade)
+  pet              PetProfile       @relation(fields: [petId], references: [id], onDelete: Cascade)
+
+  @@unique([petSitterBookingId, petId])
+}
+
+enum BookingType {
+  PACKAGE
+  SERVICE
+}
+
+enum PetSitterBookingStatus {
+  PENDING
+  CONFIRMED
+  IN_PROGRESS
+  REQUEST_TO_COMPLETE
+  COMPLETED
+  CANCELLED
+  EXPIRED
+  LATE
+}
+
+//* ----- Pet School ----- 
+model PetSchoolProfile {
+  id            String        @id @default(uuid())
+  userId        String        @unique
+  name          String
+  email         String
+  phone         String
+  description   String?
+  images        String[]
+  status        ProfileStatus @default(PENDING)
+  isVerified    Boolean       @default(false)
+  rating        Float         @default(0)
+  reviewCount   Int           @default(0)
+  analytics     Json?
+  reductionList String[]      @default([])
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  addresses Address[]
+  courses   Course[]
+  employees Employee[]
+}
+
+model Course {
+  id              String           @id @default(uuid())
+  schoolId        String
+  trainerId       String
+  name            String
+  details         String
+  courseObjective String
+  thumbnailImg    String
+  startDate       DateTime
+  endDate         DateTime
+  price           Int
+  discount        Int?
+  discountType    DiscountType?
+  duration        Int // in Weeks
+  classPerWeek    Int
+  location        String
+  courseFor       String
+  outcomes        String[]
+  courseLevel     CourseLevel
+  schedules       CourseSchedule[]
+  enrollments     CourseUser[]
+  avgRating       Float            @default(0)
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+
+  school  PetSchoolProfile @relation(fields: [schoolId], references: [id])
+  trainer Employee         @relation(fields: [trainerId], references: [id])
+}
+
+model CourseSchedule {
+  id             String   @id @default(uuid())
+  courseId       String
+  days           String[] // "Mon-Fri" or "Sat-Sun"
+  time           String // "9:00 AM", "10:00 AM"
+  availableSeats Int
+  totalSeats     Int
+  createdAt      DateTime @default(now())
+
+  course      Course       @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  courseUsers CourseUser[]
+}
+
+model CourseUser {
+  id           String                 @id @default(uuid())
+  userId       String
+  petProfileId String
+  courseId     String
+  scheduleId   String
+  status       CourseEnrollmentStatus @default(PENDING)
+  enrolledAt   DateTime?
+  completedAt  DateTime?
+  cancelledAt  DateTime?
+  paymentId    String?
+  createdAt    DateTime               @default(now())
+  updatedAt    DateTime               @updatedAt
+
+  user       User           @relation(fields: [userId], references: [id])
+  petProfile PetProfile     @relation(fields: [petProfileId], references: [id])
+  course     Course         @relation(fields: [courseId], references: [id])
+  schedule   CourseSchedule @relation(fields: [scheduleId], references: [id])
+  payment    Payment?       @relation(fields: [paymentId], references: [id])
+
+  @@unique([petProfileId, scheduleId])
+}
+
+// ----- Pet Owner ----- 
+model PetOwnerProfile {
+  id          String   @id @default(uuid())
+  userId      String   @unique
+  bankingInfo String?
+  qrCode      String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user              User              @relation(fields: [userId], references: [id])
+  bankInfos         BankInformation?  @relation(fields: [bankingInfo], references: [id])
+  petProfiles       PetProfile[]
+  petOwnerAddresses PetOwnerAddress[]
+  savedPetSitters   SavedPetSitter[]
+}
+
+model PetProfile {
+  id String @id @default(uuid())
+
+  petName String
+  petType String
+  breed   String
+  gender  Gender
+  age     String
+
+  dateOfBirth DateTime @default(now()) // ✅ default
+
+  weight      String
+  color       String  @default("Unknown") // ✅ default
+  microChipId String?
+
+  profileImg String
+
+  rabiesStatus     VaccineStatus @default(DUE)
+  dhppStatus       VaccineStatus @default(DUE)
+  bordetellaStatus VaccineStatus @default(DUE)
+
+  allergies String?
+
+  vetDoctorName  String @default("Not Assigned") // ✅ default
+  vetDoctorPhone String @default("N/A") // ✅ default
+
+  temperament String @default("Unknown") // ✅ default
+
+  isGoodWithKids      Boolean @default(false) // ✅ default
+  isGoodWithOtherPets Boolean @default(false) // ✅ default
+
+  feedingInstructions String  @default("No instructions") // ✅ default
+  specialNotes        String?
+
+  recentImages String[] @default([]) // ✅ default array
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  isDeleted Boolean  @default(false)
+
+  petOwnerId           String
+  petOwner             PetOwnerProfile       @relation(fields: [petOwnerId], references: [id])
+  petSitterBookingPets PetSitterBookingPet[]
+  courseUsers          CourseUser[]
+}
+
+enum VaccineStatus {
+  UPDATED
+  NOT_UPDATED
+  DUE
+}
+
+enum Gender {
+  MALE
+  FEMALE
+}
+
+enum VaccinationStatus {
+  NOT_VACCINATED
+  PARTIALLY_VACCINATED
+  FULLY_VACCINATED
+  BOOSTER_RECEIVED
+}
+
+// Payment
+model Payment {
+  id                  String        @id @default(uuid())
+  payerUserId         String
+  payerProfileType    ProfileType
+  receiverUserId      String
+  receiverProfileType ProfileType
+  bookingId           String?
+  orderId             String?
+  petSitterBookingId  String?
+  amount              Int
+  platformFee         Int
+  payableAmount       Int
+  currency            String
+  method              String
+  status              PaymentStatus
+  transactionId       String
+  paymentMeta         Json
+  createdAt           DateTime      @default(now())
+  updatedAt           DateTime      @updatedAt
+
+  booking          Booking?          @relation(fields: [bookingId], references: [id])
+  order            Order?            @relation(fields: [orderId], references: [id])
+  petSitterBooking PetSitterBooking? @relation(fields: [petSitterBookingId], references: [id])
+  payerUser        User              @relation("PaymentPayer", fields: [payerUserId], references: [id])
+  receiverUser     User?             @relation("PaymentReceiver", fields: [receiverUserId], references: [id])
+  courseUsers      CourseUser[]
+
+  @@index([payerUserId])
+  @@index([receiverUserId])
+}
+
+model Reduction {
+  id          String      @id @default(uuid())
+  userId      String
+  profileId   String
+  profileType ProfileType
+  orderId     String
+  amount      Float
+
+  user  User  @relation(fields: [userId], references: [id])
+  order Order @relation(fields: [orderId], references: [id])
+}
+
+model PetOwnerAddress {
+  id            String   @id @default(uuid())
+  petOwnerId    String
+  streetAddress String
+  city          String
+  country       String
+  postalCode    String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  petOwner PetOwnerProfile @relation(fields: [petOwnerId], references: [id], onDelete: Cascade)
+}
+
+model PetSitterAddress {
+  id            String   @id @default(uuid())
+  petSitterId   String   @unique
+  streetAddress String
+  city          String
+  country       String
+  postalCode    String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  petSitter PetSitterProfile @relation(fields: [petSitterId], references: [id], onDelete: Cascade)
+}
+
+model Review {
+  id          String           @id @default(uuid())
+  reviewerId  String
+  rating      Int
+  comment     String
+  productId   String?
+  profileType ReviewTargetType
+  profileId   String
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  reviewer User     @relation(fields: [reviewerId], references: [id])
+  product  Product? @relation(fields: [productId], references: [id])
+
+  @@unique([reviewerId, profileId])
+}
+
+// Community
+
+model Story {
+  id            String     @id @default(uuid())
+  userId        String
+  media         String
+  location      String?
+  viewCount     Int        @default(0)
+  isPublished   Boolean    @default(true)
+  visibility    Visibility
+  isDeleted     Boolean    @default(false)
+  trendingScore Float      @default(0)
+
+  likeCount Int @default(0)
+
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+
+  user         User           @relation(fields: [userId], references: [id])
+  moment       Moment?
+  storyViews   StoryView[]
+  storyLikes   StoryLike[]
+  storyReplies StoryReplies[]
+
+  // 1️⃣ Expiration + visibility
+  @@index([isPublished, isDeleted, expiresAt])
+  // 2️⃣ Feed ordering (CRITICAL)
+  @@index([trendingScore, createdAt, id], name: "story_feed_order")
+  // 3️⃣ Ownership checks (cheap & necessary)
+  @@index([userId, visibility])
+}
+
+model StoryView {
+  id        String   @id @default(uuid())
+  storyId   String
+  userId    String
+  createdAt DateTime @default(now())
+
+  story Story @relation(fields: [storyId], references: [id], onDelete: Cascade)
+  user  User  @relation(fields: [userId], references: [id])
+
+  @@unique([storyId, userId]) // ensures user can only view once
+}
+
+model StoryLike {
+  id        String   @id @default(uuid())
+  storyId   String
+  userId    String
+  createdAt DateTime @default(now())
+
+  story Story @relation(fields: [storyId], references: [id])
+  user  User  @relation(fields: [userId], references: [id])
+
+  @@unique([storyId, userId]) // ensures one like per user per story
+}
+
+model StoryReplies {
+  id        String   @id @default(uuid())
+  storyId   String
+  userId    String
+  comment   String
+  createdAt DateTime @default(now())
+
+  isDeleted Boolean @default(false)
+
+  story Story @relation(fields: [storyId], references: [id], onDelete: Cascade)
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([storyId])
+}
+
+model Moment {
+  id        String  @id @default(uuid())
+  storyId   String  @unique
+  isDeleted Boolean @default(false)
+  isHidden  Boolean @default(false)
+
+  createdAt DateTime @default(now())
+
+  story  Story   @relation(fields: [storyId], references: [id])
+  user   User?   @relation(fields: [userId], references: [id])
+  userId String?
+}
+
+model Reel {
+  id            String  @id @default(uuid())
+  userId        String
+  caption       String?
+  video         String
+  duration      Int
+  trendingScore Float   @default(0)
+  isDeleted     Boolean @default(false)
+  isHidden      Boolean @default(false)
+
+  visibility Visibility
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user         User          @relation(fields: [userId], references: [id])
+  likes        ReelLike[]
+  bookmarks    Bookmark[]
+  reelComments ReelComment[]
+  reports      Report[]
+
+  @@index([userId])
+  @@index([trendingScore, createdAt])
+  @@index([isDeleted, isHidden])
+}
+
+model ReelLike {
+  id        String   @id @default(uuid())
+  reelId    String
+  userId    String
+  createdAt DateTime @default(now())
+
+  reel Reel @relation(fields: [reelId], references: [id])
+  user User @relation(fields: [userId], references: [id])
+
+  @@unique([reelId, userId])
+  @@index([reelId, createdAt])
+}
+
+model ReelComment {
+  id String @id @default(uuid())
+
+  reelId    String
+  userId    String
+  comment   String
+  isDeleted Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  reel Reel @relation(fields: [reelId], references: [id])
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([reelId])
+  @@index([reelId, createdAt])
+}
+
+model Post {
+  id     String @id @default(uuid())
+  userId String
+
+  caption          String?
+  location         String?
+  media            String[]
+  visibility       PostVisibilityType
+  trendingScore    Float              @default(0)
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+  isCommentAllowed Boolean            @default(true)
+  isHidden         Boolean            @default(false)
+  isDeleted        Boolean            @default(false)
+
+  user User @relation(fields: [userId], references: [id])
+
+  likes     PostLike[]
+  comments  Comment[]
+  bookmarks Bookmark[]
+  reports   Report[]
+
+  @@index([userId])
+  @@index([isDeleted, isHidden])
+  @@index([createdAt])
+  @@index([trendingScore, createdAt])
+}
+
+model PostLike {
+  id        String   @id @default(uuid())
+  postId    String
+  userId    String
+  createdAt DateTime @default(now())
+
+  post Post @relation(fields: [postId], references: [id])
+  user User @relation(fields: [userId], references: [id])
+
+  @@unique([postId, userId])
+  @@index([postId, createdAt])
+}
+
+model Comment {
+  id              String  @id @default(uuid())
+  postId          String
+  userId          String
+  parentCommentId String?
+  content         String
+  isDeleted       Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  post   Post     @relation(fields: [postId], references: [id])
+  user   User     @relation(fields: [userId], references: [id])
+  parent Comment? @relation("CommentReplies", fields: [parentCommentId], references: [id])
+
+  replies      Comment[]     @relation("CommentReplies")
+  commentLikes CommentLike[]
+
+  @@unique([postId, userId, parentCommentId])
+  @@index([postId])
+  @@index([parentCommentId])
+  @@index([postId, createdAt])
+}
+
+model CommentLike {
+  id        String   @id @default(uuid())
+  commentId String
+  userId    String
+  createdAt DateTime @default(now())
+
+  comment Comment @relation(fields: [commentId], references: [id])
+  user    User    @relation(fields: [userId], references: [id])
+
+  @@unique([commentId, userId])
+  @@index([commentId])
+  @@index([userId])
+}
+
+model Bookmark {
+  id           String       @id @default(uuid())
+  userId       String
+  postId       String?
+  reelId       String?
+  bookMarkType BookmarkType
+
+  isDeleted Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User  @relation(fields: [userId], references: [id])
+  post Post? @relation(fields: [postId], references: [id])
+  reel Reel? @relation(fields: [reelId], references: [id])
+
+  @@unique([userId, reelId, bookMarkType])
+  @@unique([userId, postId, bookMarkType])
+  @@index([userId])
+  @@index([userId, bookMarkType, createdAt])
+  @@index([postId, createdAt])
+  @@index([reelId, createdAt])
+}
+
+model FriendRequest {
+  id String @id @default(uuid())
+
+  senderId   String
+  receiverId String
+
+  sender   User @relation("FriendRequestSender", fields: [senderId], references: [id])
+  receiver User @relation("FriendRequestReceiver", fields: [receiverId], references: [id])
+
+  status FriendRequestStatus @default(PENDING)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([senderId, receiverId])
+  @@unique([createdAt, id])
+  @@index([receiverId, status])
+}
+
+model Friendship {
+  id String @id @default(uuid())
+
+  userAId String
+  userBId String
+
+  status FriendshipStatus @default(ACTIVE)
+
+  unfriendedAt DateTime?
+
+  userA User @relation("FriendshipUserA", fields: [userAId], references: [id])
+  userB User @relation("FriendshipUserB", fields: [userBId], references: [id])
+
+  createdAt DateTime @default(now())
+
+  @@unique([userAId, userBId])
+  @@index([userAId])
+  @@index([userBId])
+}
+
+model Notification {
+  id       String           @id @default(uuid())
+  userId   String // receiver
+  senderId String
+  type     NotificationType
+  entityId String
+  isRead   Boolean          @default(false)
+
+  createdAt DateTime @default(now())
+
+  user   User @relation("NotificationReceiver", fields: [userId], references: [id])
+  sender User @relation("NotificationSender", fields: [senderId], references: [id])
+
+  @@index([userId])
+}
+
+model Conversation {
+  id        String   @id @default(uuid())
+  user1Id   String
+  user2Id   String
+  userKey   String   @unique
+  createdAt DateTime @default(now())
+
+  lastMessageId String?   @unique
+  lastMessageAt DateTime?
+
+  // 🔹 Explicit relation name
+  lastMessage Message? @relation("ConversationLastMessage", fields: [lastMessageId], references: [id])
+
+  user1 User @relation("User1Conversations", fields: [user1Id], references: [id])
+  user2 User @relation("User2Conversations", fields: [user2Id], references: [id])
+
+  // 🔹 Explicit relation name
+  messages Message[] @relation("ConversationMessages")
+
+  @@index([user1Id, lastMessageAt])
+  @@index([user2Id, lastMessageAt])
+}
+
+// model ConversationParticipant {
+//   id             String   @id @default(uuid())
+//   conversationId String
+//   userId         String
+//   joinedAt       DateTime @default(now())
+
+//   conversation Conversation @relation(fields: [conversationId], references: [id])
+//   user         User         @relation(fields: [userId], references: [id])
+
+//   @@unique([conversationId, userId])
+// }
+
+model Message {
+  id             String   @id @default(uuid())
+  conversationId String
+  senderId       String
+  content        String?
+  media          String?
+  mediaType      String?
+  sentAt         DateTime @default(now())
+
+  // 🔹 Main message relation
+  conversation Conversation @relation("ConversationMessages", fields: [conversationId], references: [id])
+
+  sender User @relation(fields: [senderId], references: [id])
+
+  // 🔹 Back-relation for last message
+  lastMessageOf Conversation? @relation("ConversationLastMessage")
+
+  @@index([conversationId, sentAt])
+}
+
+model CommunityTopic {
+  id            String    @id @default(uuid())
+  name          String
+  description   String?
+  image         String?
+  creatorId     String
+  lastMessageId String?   @unique
+  lastMessageAt DateTime?
+
+  // Relation for last message
+  lastMessage CommunityMessage? @relation("LastMessageRelation", fields: [lastMessageId], references: [id])
+
+  creator User @relation(fields: [creatorId], references: [id])
+
+  isDeleted Boolean @default(false)
+
+  createdAt DateTime @default(now())
+
+  // Relation for all messages
+  messages CommunityMessage[] @relation("TopicMessages")
+
+  communityTopicUsers CommunityTopicUser[]
+
+  @@index([lastMessageAt]) // Sort topics by recent activity
+  @@index([creatorId]) // Filter by creator
+  @@index([isDeleted, lastMessageAt]) // Active topics sorted by recent activity
+}
+
+model CommunityTopicUser {
+  userId           String
+  communityTopicId String
+
+  user           User           @relation(fields: [userId], references: [id])
+  communityTopic CommunityTopic @relation(fields: [communityTopicId], references: [id])
+
+  @@id([userId, communityTopicId])
+}
+
+model CommunityMessage {
+  id          String               @id @default(uuid())
+  topicId     String
+  senderId    String
+  message     String?
+  media       String?
+  mediaType   String?
+  messageType CommunityMessageType @default(USER_MESSAGE)
+  sentAt      DateTime             @default(now())
+  createdAt   DateTime             @default(now())
+
+  // Relation back to topic
+  topic CommunityTopic @relation("TopicMessages", fields: [topicId], references: [id])
+
+  sender User @relation(fields: [senderId], references: [id])
+
+  // Optional: relation for last message
+  lastMessageOfTopic CommunityTopic? @relation("LastMessageRelation")
+
+  @@index([topicId, sentAt])
+}
+
+model Report {
+  id         String       @id @default(uuid())
+  reason     String
+  status     ReportStatus @default(PENDING)
+  reportType ReportType
+  note       String?
+  isDeleted  Boolean      @default(false)
+
+  reporterId     String
+  reportedUserId String
+
+  postId String?
+  reelId String?
+
+  reporter     User @relation("ReportReporter", fields: [reporterId], references: [id])
+  reportedUser User @relation("ReportReported", fields: [reportedUserId], references: [id])
+
+  post Post? @relation(fields: [postId], references: [id])
+  reel Reel? @relation(fields: [reelId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([reporterId, postId])
+  @@unique([reporterId, reelId])
+}
+
+model HiddenContent {
+  id          String      @id @default(uuid())
+  userId      String
+  contentId   String
+  contentType ContentType
+  createdAt   DateTime    @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@unique([userId, contentId, contentType])
+  @@index([userId, contentType])
+}
+
+// Admin
+
+// Prisma models
+model PlatformSettings {
+  id             String  @id @default("PLATFORM_SETTINGS")
+  platformFee    Decimal @default(10.0)
+  commissionRate Decimal @default(10.0)
+  version        Int     @default(1)
+
+  // Metadata / audit
+  createdAt                 DateTime                  @default(now())
+  updatedAt                 DateTime                  @updatedAt
+  platformSettingsHistories PlatformSettingsHistory[]
+}
+
+model PlatformSettingsHistory {
+  id String @id @default(uuid())
+
+  // Old values
+  platformFeeOld    Decimal?
+  commissionRateOld Decimal?
+
+  // New values
+  platformFeeNew    Decimal?
+  commissionRateNew Decimal?
+
+  version     Int
+  updatedAt   DateTime @default(now())
+  updatedById String?
+
+  // Optional relation to User
+  updatedBy User? @relation(fields: [updatedById], references: [id])
+
+  // Relation back to main settings
+  platformSettingsId String
+  platformSettings   PlatformSettings @relation(fields: [platformSettingsId], references: [id])
+}
+
+enum ContentType {
+  POST
+  REEL
+}
+
+enum ReportType {
+  USER
+  POST
+  REEL
+}
+
+enum CommunityMessageType {
+  USER_MESSAGE
+  ACTION_MESSAGE
+}
+
+enum ProfileType {
+  PET_OWNER
+  PET_SITTER
+  PET_SCHOOL
+  PET_HOTEL
+  VENDOR
+  ADMIN
+}
+
+enum IdentificationType {
+  NID
+  PASSPORT
+  DRIVING_LICENSE
+}
+
+enum OrganizationType {
+  SCHOOL
+  HOTEL
+  VENDOR
+  PET_SITTER
+}
+
+enum ProfileStatus {
+  ACTIVE
+  SUSPENDED
+  PENDING
+  BLOCKED
+}
+
+enum KycStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum EmployeeStatus {
+  ON_DUTY
+  OFF_SERVICE
+}
+
+enum EmployeeShift {
+  DAY
+  NIGHT
+}
+
+enum RoomType {
+  PET_ONLY
+  PET_WITH_ACCO
+}
+
+enum RoomStatus {
+  BOOKED
+  AVAILABLE
+  MAINTENANCE
+}
+
+enum ConsumerType {
+  HUMAN
+  PET
+  BOTH
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CHECKED_IN
+  CHECKED_OUT
+  CANCELLED
+}
+
+enum CancelledByEnum {
+  NOT_APPLICABLE
+  HOTEL_OWNER
+  PET_OWNER
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  PACKING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+  // RETURNED
+}
+
+enum PaymentStatus {
+  PENDING
+  SUCCESS
+  FAILED
+  CANCELLED
+  // REFUNDED
+}
+
+enum PetSitterStatus {
+  ON_SERVICE
+  ON_VACATION
+  OFF_SERVICE
+}
+
+enum FeeType {
+  NUMBER
+  PERCENTAGE
+}
+
+enum CourseLevel {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCE
+}
+
+enum MediaType {
+  IMAGE
+  VIDEO
+}
+
+enum Visibility {
+  PUBLIC
+  PRIVATE
+  FRIENDS
+}
+
+enum PostVisibilityType {
+  PUBLIC
+  PRIVATE
+  FRIENDS
+}
+
+enum NotificationType {
+  FOLLOW
+  LIKE
+  COMMENT
+  REPLY
+  MENTION
+  NEW_MESSAGE
+  STORY_VIEW
+}
+
+enum ReportStatus {
+  PENDING
+  UNDER_REVIEW
+  ACTION_TAKEN
+  DISMISSED
+  APPEALED
+  REOPENED
+}
+
+enum UserStatus {
+  PENDING
+  ACTIVE
+  BLOCKED
+  SUSPENDED
+}
+
+enum ReviewTargetType {
+  VENDOR
+  HOTEL
+  PETSCHOOL
+  PETSITTER
+}
+
+enum BookmarkType {
+  POST
+  REEL
+}
+
+enum FriendshipStatus {
+  ACTIVE
+  UNFRIENDED
+  BLOCKED
+}
+
+enum FriendRequestStatus {
+  ACCEPTED
+  PENDING
+  DECLINED
+}
+
+enum FoodType {
+  VEGAN
+  NON_VEGAN
+  RAW
+  DRY
+  WET
+}
+
+enum AuthProvider {
+  GOOGLE
+  LOCAL
+}
+
+enum CourseEnrollmentStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  CANCELLED
+  COMPLETED
+}
+
+enum DiscountType {
+  PERCENTAGE
+  FLAT
+}

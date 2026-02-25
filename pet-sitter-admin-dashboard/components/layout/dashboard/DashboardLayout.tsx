@@ -9,7 +9,7 @@ import KycGate from "./KycGate";
 function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
     <MobileMenuProvider>
-      <div className="flex h-screen bg-gray-50 relative">
+      <div className="flex h-screen bg-[#f2f4f8] relative">
         {/* Sidebar */}
         <DashboardSidebar />
 
@@ -20,7 +20,7 @@ function DashboardLayout({ children }: { children: React.ReactNode }) {
           </header>
 
           {/* The main area */}
-          <main className="relative mt-16 p-6 lg:p-8  bg-gray-100 overflow-auto h-screen ">
+          <main className="relative mt-16 p-6 lg:p-8  bg-[#f2f4f8] overflow-auto h-screen ">
             <KycGate>{children}</KycGate>
           </main>
         </div>

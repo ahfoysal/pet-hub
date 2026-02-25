@@ -85,10 +85,10 @@ export default function DashboardSidebar() {
                   key={item.href}
                   href={item.href}
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className={`flex items-center gap-3 px-3 py-3 rounded-lg text-sm font-medium transition-colors ${
+                  className={`flex items-center gap-3 px-3 py-3 rounded-lg text-sm font-medium transition-colors font-montserrat ${
                     isActive(item.href)
-                      ? "bg-[#FF7176] text-white"
-                      : "text-gray-700 hover:bg-gray-100"
+                      ? "bg-[#ff7176] text-white"
+                      : "text-[#282828] hover:bg-gray-100"
                   }`}
                 >
                   <span className="shrink-0">{renderIcon(item)}</span>

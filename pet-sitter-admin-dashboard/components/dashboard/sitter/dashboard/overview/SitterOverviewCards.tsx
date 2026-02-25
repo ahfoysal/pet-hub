@@ -57,25 +57,25 @@ export default function SitterOverviewCards() {
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
       {summary.map((stat, index) => {
         const Icon = stat.icon;
         return (
           <div
             key={index}
-            className="p-6 bg-white dark:bg-default-50 rounded-2xl border border-default-100 flex items-center gap-4 transition-all hover:shadow-md"
+            className="p-5 bg-white rounded-xl border border-[#e9eaeb] flex items-start gap-5 transition-all"
           >
-            <div className={`p-4 rounded-xl ${stat.bgColor} ${stat.color}`}>
-              <Icon className="w-8 h-8" />
+            <div className="p-2 rounded-full bg-[#f5f5f5] flex items-center justify-center size-[54px] shrink-0">
+              <Icon className="w-6 h-6 text-[#101828]" />
             </div>
-            <div>
-              <p className="text-default-500 text-sm font-medium">{stat.title}</p>
-              <h3 className="text-2xl font-bold text-default-900">
-                {stat.value}
-              </h3>
-              {stat.subValue && (
-                <p className="text-xs text-default-400 mt-1">{stat.subValue}</p>
-              )}
+            <div className="flex flex-col gap-1.5 flex-1">
+              <div className="flex flex-col gap-1">
+                <p className="text-[#101828] text-sm font-medium font-inter">{stat.title}</p>
+                <h3 className="text-[22px] font-semibold text-[#101828] font-nunito tracking-[-0.44px]">
+                  {stat.value.toLocaleString()}
+                </h3>
+              </div>
+              <p className="text-[#667085] text-sm font-normal font-inter">This Month</p>
             </div>
           </div>
         );

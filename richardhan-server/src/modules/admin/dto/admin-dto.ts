@@ -1,0 +1,49 @@
+import { IsEnum, IsNotEmpty, IsString } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
+import { SuspendDurationEnum } from '../admin.constant';
+
+export class BanUserDto {
+  @ApiProperty({
+    description: 'The unique ID of the user to be banned',
+    example: '123e4567-e89b-12d3-a456-426614174000',
+  })
+  @IsString()
+  @IsNotEmpty()
+  userId: string;
+
+  @ApiProperty({
+    description: 'Reason for banning the user',
+    example: 'Violation of community guidelines',
+  })
+  @IsString()
+  @IsNotEmpty()
+  reason: string;
+}
+
+export class SuspendUserDto {
+  @ApiProperty({
+    description: 'The unique ID of the user to be suspended',
+    example: '123e4567-e89b-12d3-a456-426614174000',
+  })
+  @IsString()
+  @IsNotEmpty()
+  userId: string;
+
+  @ApiProperty({
+    description: 'Reason for suspending the user',
+    example: 'Violation of community guidelines',
+  })
+  @IsString()
+  @IsNotEmpty()
+  reason: string;
+
+  @ApiProperty({
+    description: 'Suspension duration. Required when suspending a user.',
+    enum: SuspendDurationEnum,
+    example: SuspendDurationEnum.ONE_WEEK,
+    required: true,
+  })
+  @IsEnum(SuspendDurationEnum)
+  @IsNotEmpty()
+  suspendDuration: SuspendDurationEnum;
+}

@@ -1,7 +1,7 @@
 "use client";
 
 import { useGetSitterBookingRatioQuery } from "@/redux/features/api/dashboard/sitter/dashboard/sitterDashboardApi";
-import { Card, CardBody, CardHeader, Skeleton } from "@nextui-org/react";
+import { Skeleton } from "@nextui-org/react";
 import { useSession } from "next-auth/react";
 import {
   Cell,
@@ -22,12 +22,12 @@ export default function SitterBookingRatio() {
   const COLORS = ["#8b5cf6", "#10b981"];
 
   return (
-    <Card shadow="sm" className="w-full bg-white dark:bg-default-50 border-none h-full">
-      <CardHeader className="flex flex-col items-start px-6 pt-6">
-        <h2 className="text-xl font-bold text-default-900">Booking Ratio</h2>
-        <p className="text-sm text-default-500">Packages vs Services breakdown</p>
-      </CardHeader>
-      <CardBody className="px-6 pb-6 pt-0 flex justify-center items-center">
+    <div className="w-full bg-white rounded-xl border border-[#eaecf0] shadow-sm h-full flex flex-col">
+      <div className="flex flex-col items-start px-6 py-5 border-b border-[#eaecf0]">
+        <h2 className="text-lg font-semibold text-[#101828] font-inter">Booking Ratio</h2>
+        <p className="text-sm text-[#667085] font-inter">Packages vs Services breakdown</p>
+      </div>
+      <div className="px-6 pb-6 flex-1 flex flex-col justify-center items-center">
         {isLoading ? (
           <Skeleton className="w-[200px] h-[200px] rounded-full mt-8" />
         ) : (
@@ -64,7 +64,7 @@ export default function SitterBookingRatio() {
             </ResponsiveContainer>
           </div>
         )}
-      </CardBody>
-    </Card>
+      </div>
+    </div>
   );
 }

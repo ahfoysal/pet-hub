@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Post" ADD COLUMN     "isCommentAllowed" BOOLEAN NOT NULL DEFAULT true,
+ADD COLUMN     "trendingScore" DOUBLE PRECISION NOT NULL DEFAULT 0;

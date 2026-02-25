@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "KYC" ALTER COLUMN "reviewedAt" DROP NOT NULL;

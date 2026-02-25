@@ -7,9 +7,6 @@ import {
   useGetSitterLowServicesQuery,
 } from "@/redux/features/api/dashboard/sitter/dashboard/sitterDashboardApi";
 import {
-  Card,
-  CardBody,
-  CardHeader,
   Tab,
   Tabs,
   Table,
@@ -64,12 +61,12 @@ export default function SitterPerformanceTables() {
   };
 
   return (
-    <Card shadow="sm" className="w-full h-full bg-white dark:bg-default-50 border-none">
-      <CardHeader className="flex flex-col items-start px-6 pt-6">
-        <h2 className="text-xl font-bold text-default-900">Performance Metrics</h2>
-        <p className="text-sm text-default-500">Analyze your best and worst performing offerings</p>
-      </CardHeader>
-      <CardBody className="px-6 pb-6 pt-0">
+    <div className="w-full bg-white rounded-xl border border-[#eaecf0] shadow-sm">
+      <div className="flex flex-col items-start px-6 py-5 border-b border-[#eaecf0]">
+        <h2 className="text-lg font-semibold text-[#101828] font-inter">Performance Metrics</h2>
+        <p className="text-sm text-[#667085] font-inter">Analyze your best and worst performing offerings</p>
+      </div>
+      <div className="px-6 pb-6">
         <Tabs aria-label="Performance Options" color="primary" variant="underlined" className="mt-4">
           <Tab key="top-packages" title="Top Packages">
             {renderTable(topPackages?.data || [], "top", false, isTopPkgLoad)}
@@ -84,7 +81,7 @@ export default function SitterPerformanceTables() {
              {renderTable(lowServices?.data || [], "low", true, isLowSvcLoad)}
           </Tab>
         </Tabs>
-      </CardBody>
-    </Card>
+      </div>
+    </div>
   );
 }

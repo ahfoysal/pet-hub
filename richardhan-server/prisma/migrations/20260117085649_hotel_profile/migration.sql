@@ -1,0 +1,5 @@
+-- AlterTable
+ALTER TABLE "HotelProfile" ALTER COLUMN "dayStartingTime" SET DATA TYPE TEXT,
+ALTER COLUMN "dayEndingTime" SET DATA TYPE TEXT,
+ALTER COLUMN "nightStartingTime" SET DATA TYPE TEXT,
+ALTER COLUMN "nightEndingTime" SET DATA TYPE TEXT;

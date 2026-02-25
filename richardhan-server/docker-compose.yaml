@@ -1,0 +1,40 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: richardhan-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: richarhanDB
+    profiles:
+      - dev
+      - prod
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - richardhan-network
+
+  app:
+    image: softvence/richardhan-server:latest
+    env_file:
+      - .env.production
+    container_name: richardhan-app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - 5002:5000
+    profiles:
+      - prod
+    depends_on:
+      - postgres
+    networks:
+      - richardhan-network
+
+volumes:
+  postgres_data:
+networks:
+  richardhan-network:
+    driver: bridge
