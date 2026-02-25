@@ -1,241 +1,174 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { useState } from "react";
-import Button from "@/components/ui/Button";
-import { Plus } from "lucide-react";
-import { useToast } from "@/contexts/ToastContext";
-import {
-  useGetSchoolCoursesQuery,
-  useCreateCourseMutation,
-  useUpdateCourseMutation,
-  useDeleteCourseMutation,
-} from "@/redux/features/api/dashboard/school/courses/SchoolCoursesApi";
-import { SchoolCourse } from "@/types/dashboard/school/SchoolCoursesTypes";
-import { useSession } from "next-auth/react";
-import CreateCourseModal from "@/components/dashboard/school/courses/CreateCourseModal";
-import UpdateCourseModal from "@/components/dashboard/school/courses/UpdateCourseModal";
-import DeleteCourseModal from "@/components/dashboard/school/courses/DeleteCourseModal";
-import ViewSchoolCourseModal from "@/components/dashboard/school/courses/ViewSchoolCourseModal";
-import CourseCard from "@/components/dashboard/school/courses/CourseCard"; // ← new import
-import LoadingSpinner from "@/components/ui/LoadingSpinner";
+import DashboardHeading from "@/components/dashboard/common/DashboardHeading";
+import { Plus, Edit3, Trash2, Tag, Clock, Users, DollarSign, Eye } from "lucide-react";
+import React, { useState } from "react";
+import AddNewCourseModal from "@/components/dashboard/school/courses/AddNewCourseModal";
+import ViewCourseModal from "@/components/dashboard/school/courses/ViewCourseModal";
 
-export default function SchoolCoursesPage() {
-  const { status } = useSession();
-  const { showToast } = useToast();
+export default function CoursesPage() {
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [viewModalCourse, setViewModalCourse] = useState<any>(null);
 
-  const {
-    data: coursesData,
-    isLoading,
-    error,
-    refetch,
-  } = useGetSchoolCoursesQuery(undefined, {
-    skip: status === "loading",
-  });
-
-  const [createCourse] = useCreateCourseMutation();
-  const [updateCourse] = useUpdateCourseMutation();
-  const [deleteCourse] = useDeleteCourseMutation();
-
-  const [isCreating, setIsCreating] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
-  const [editingCourseId, setEditingCourseId] = useState<string | null>(null);
-  const [selectedCourse, setSelectedCourse] = useState<SchoolCourse | null>(
-    null,
-  );
-  const [courseToDelete, setCourseToDelete] = useState<{
-    id: string;
-    name: string;
-  } | null>(null);
-  const [courseToView, setCourseToView] = useState<SchoolCourse | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const handleCreateCourse = async (formData: FormData) => {
-    setIsSubmitting(true);
-    try {
-      await createCourse(formData).unwrap();
-      showToast("Course created successfully!", "success");
-      setIsCreating(false);
-      refetch();
-    } catch (err: any) {
-      console.error("Failed to create course:", err);
-      showToast(err?.data?.message || "Failed to create course.", "error");
-    } finally {
-      setIsSubmitting(false);
+  const courses = [
+    {
+      id: 1,
+      status: "ACTIVE",
+      title: "Basic Obedience Training",
+      description: "Fundamental commands and behavior training for all breeds",
+      category: "Obedience",
+      duration: "8 weeks • 2 classes per week",
+      enrolled: 12,
+      capacity: 15,
+      price: "$299",
+      enrollmentPercentage: 80,
+    },
+    {
+      id: 2,
+      status: "ACTIVE",
+      title: "Toilet Training for Puppies",
+      description: "Effective house training techniques for young dogs",
+      category: "Hygiene",
+      duration: "4 weeks • 3 classes per week",
+      enrolled: 8,
+      capacity: 10,
+      price: "$199",
+      enrollmentPercentage: 80,
+    },
+    {
+      id: 3,
+      status: "ACTIVE",
+      title: "Advanced Social Skills",
+      description: "Interaction training with other pets and humans",
+      category: "Social Skills",
+      duration: "6 weeks • 2 classes per week",
+      enrolled: 10,
+      capacity: 12,
+      price: "$349",
+      enrollmentPercentage: 83,
+    },
+    {
+      id: 4,
+      status: "ACTIVE",
+      title: "Behavior Correction Program",
+      description: "Addressing aggressive or anxious behavior patterns",
+      category: "Behavior",
+      duration: "10 weeks • 2 classes per week",
+      enrolled: 6,
+      capacity: 8,
+      price: "$499",
+      enrollmentPercentage: 75,
+    },
+    {
+      id: 5,
+      status: "DRAFT",
+      title: "Agility Training Fundamentals",
+      description: "Introduction to agility courses and obstacles",
+      category: "Agility",
+      duration: "6 weeks • 1 class per week",
+      enrolled: 0,
+      capacity: 10,
+      price: "$249",
+      enrollmentPercentage: 0,
     }
-  };
-
-  const handleUpdateCourse = async (formData: FormData) => {
-    if (!editingCourseId) return;
-    setIsSubmitting(true);
-    try {
-      await updateCourse({
-        courseId: editingCourseId,
-        data: formData,
-      }).unwrap();
-      showToast("Course updated successfully!", "success");
-      setIsEditing(false);
-      setEditingCourseId(null);
-      setSelectedCourse(null);
-      refetch();
-    } catch (err: any) {
-      console.error("Failed to update course:", err);
-      showToast(err?.data?.message || "Failed to update course.", "error");
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  const handleDeleteCourse = async () => {
-    if (!courseToDelete) return;
-    setIsSubmitting(true);
-    try {
-      await deleteCourse(courseToDelete.id).unwrap();
-      showToast("Course deleted successfully!", "success");
-      setCourseToDelete(null);
-      refetch();
-    } catch (err: any) {
-      console.error("Failed to delete course:", err);
-      showToast(err?.data?.message || "Failed to delete course.", "error");
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  const startEditing = (course: SchoolCourse) => {
-    setEditingCourseId(course.id);
-    setSelectedCourse(course);
-    setIsEditing(true);
-  };
-
-  const startViewing = (course: SchoolCourse) => {
-    setCourseToView(course);
-  };
-
-  const handleDeleteClick = (course: SchoolCourse) => {
-    setCourseToDelete({ id: course.id, name: course.name });
-  };
-
-  const cancelModals = () => {
-    setIsCreating(false);
-    setIsEditing(false);
-    setEditingCourseId(null);
-    setSelectedCourse(null);
-    setCourseToView(null);
-    setCourseToDelete(null);
-  };
-
-  if (isLoading) return <LoadingSpinner />;
-
-  if (error) {
-    return (
-      <div className="bg-red-50 border border-red-200 rounded-xl p-6 text-center">
-        <h2 className="text-red-800 font-semibold text-lg">
-          Error loading courses
-        </h2>
-        <p className="text-red-600 mt-2">
-          {error instanceof Error
-            ? error.message
-            : "An error occurred while loading your courses."}
-        </p>
-      </div>
-    );
-  }
-
-  const courses = coursesData?.data.data || [];
+  ];
 
   return (
     <div className="space-y-6 pb-10">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h1 className="text-2xl sm:text-3xl font-bold">Course Management</h1>
-          <p className="text-gray-500">
-            Create and manage your training courses
-          </p>
-        </div>
-
-        <Button
-          text="Add New Course"
-          onClick={() => {
-            setIsCreating(true);
-            setIsEditing(false);
-            setSelectedCourse(null);
-          }}
-          icon={<Plus size={18} />}
-          iconPosition="left"
-          className="bg-rose-600 hover:bg-rose-700 text-white px-5 py-2.5 rounded-lg font-medium shadow-sm"
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <DashboardHeading
+          title="Course Management"
+          description="Create and manage your training courses"
         />
+        <button 
+          onClick={() => setIsAddModalOpen(true)}
+          className="bg-[#ff7176] h-[48px] px-4 rounded-[10px] flex items-center justify-center gap-2 hover:bg-[#ff5c62] transition-colors shrink-0"
+        >
+          <Plus className="w-5 h-5 text-white" />
+          <span className="text-white text-[16px] font-['Arial:Regular']">Add New Course</span>
+        </button>
       </div>
 
-      {/* Modals */}
-      <CreateCourseModal
-        isOpen={isCreating}
-        onClose={cancelModals}
-        onSubmit={handleCreateCourse}
-        isSubmitting={isSubmitting}
-      />
-
-      <UpdateCourseModal
-        isOpen={isEditing}
-        onClose={cancelModals}
-        onSubmit={handleUpdateCourse}
-        course={selectedCourse}
-        isSubmitting={isSubmitting}
-      />
-
-      <ViewSchoolCourseModal
-        isOpen={!!courseToView}
-        onClose={cancelModals}
-        course={courseToView}
-      />
-
-      <DeleteCourseModal
-        isOpen={!!courseToDelete}
-        onClose={() => setCourseToDelete(null)}
-        onConfirm={handleDeleteCourse}
-        courseName={courseToDelete?.name}
-        isSubmitting={isSubmitting}
-      />
-
       {/* Courses Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 mt-6">
         {courses.map((course) => (
-          <CourseCard
-            key={course.id}
-            course={course}
-            onEdit={startEditing}
-            onDelete={handleDeleteClick}
-            onView={startViewing}
-          />
+          <div key={course.id} className="bg-white border border-[#f3f4f6] rounded-[14px] p-6 shadow-[0px_1px_3px_0px_rgba(0,0,0,0.1)] flex flex-col gap-4">
+            
+            {/* Header: Status and Actions */}
+            <div className="flex items-center justify-between w-full h-8">
+              <div className={`px-3 py-1 rounded-full text-[12px] font-['Arial:Regular'] ${
+                course.status === 'ACTIVE' ? 'bg-[#dcfce7] text-[#008236]' : 'bg-[#f3f4f6] text-[#364153]'
+              }`}>
+                {course.status}
+              </div>
+              <div className="flex items-center gap-2">
+                <button className="w-8 h-8 flex items-center justify-center rounded-[10px] hover:bg-gray-100 transition-colors">
+                  <Edit3 className="w-[16px] h-[16px] text-[#4a5565]" />
+                </button>
+                <button className="w-8 h-8 flex items-center justify-center rounded-[10px] hover:bg-red-50 transition-colors">
+                  <Trash2 className="w-[16px] h-[16px] text-red-500" />
+                </button>
+              </div>
+            </div>
+
+            {/* Title & Description */}
+            <div className="flex flex-col gap-1">
+              <h3 className="text-[#101828] text-[16px] font-['Arial:Bold']">
+                {course.title}
+              </h3>
+              <p className="text-[#4a5565] text-[14px] font-['Arial:Regular']">
+                {course.description}
+              </p>
+            </div>
+
+            {/* Meta tags */}
+            <div className="flex flex-col gap-2">
+              <div className="flex items-center gap-2 h-5">
+                <Tag className="w-4 h-4 text-[#4a5565]" />
+                <span className="text-[#4a5565] text-[14px] font-['Arial:Regular']">{course.category}</span>
+              </div>
+              <div className="flex items-center gap-2 h-5">
+                <Clock className="w-4 h-4 text-[#4a5565]" />
+                <span className="text-[#4a5565] text-[14px] font-['Arial:Regular']">{course.duration}</span>
+              </div>
+              <div className="flex items-center gap-2 h-5">
+                <Users className="w-4 h-4 text-[#4a5565]" />
+                <span className="text-[#4a5565] text-[14px] font-['Arial:Regular']">{course.enrolled} / {course.capacity} enrolled</span>
+              </div>
+              <div className="flex items-center gap-2 h-5">
+                <DollarSign className="w-4 h-4 text-[#101828]" />
+                <span className="text-[#101828] text-[14px] font-['Arial:Bold']">{course.price}</span>
+              </div>
+            </div>
+
+            {/* Enrollment Progress */}
+            <div className="flex flex-col gap-1 mt-2">
+              <div className="flex items-center justify-between">
+                <span className="text-[#4a5565] text-[12px] font-['Arial:Regular']">Enrollment</span>
+                <span className="text-[#4a5565] text-[12px] font-['Arial:Regular']">{course.enrollmentPercentage}%</span>
+              </div>
+              <div className="h-2 w-full bg-[#e5e7eb] rounded-full overflow-hidden">
+                <div 
+                  className="h-full bg-[#ff7176] rounded-full" 
+                  style={{ width: `${course.enrollmentPercentage}%` }}
+                />
+              </div>
+            </div>
+
+            {/* Action Button */}
+            <button className="mt-2 w-full h-[36px] bg-[#f9fafb] rounded-[10px] flex items-center justify-center gap-2.5 hover:bg-gray-100 transition-colors">
+              <Eye className="w-4 h-4 text-[#364153]" />
+              <span className="text-[#364153] text-[16px] font-['Arial:Regular']">View Details</span>
+            </button>
+
+          </div>
         ))}
       </div>
 
-      {courses.length === 0 && (
-        <div className="text-center py-16 text-gray-500">
-          <div className="inline-block p-5 bg-gray-100 rounded-full mb-4">
-            <svg
-              className="w-12 h-12 text-gray-400"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
-              />
-            </svg>
-          </div>
-          <h3 className="text-xl font-medium text-gray-700 mb-2">
-            No courses yet
-          </h3>
-          <p className="text-gray-500 mb-6">
-            Create your first training course to get started
-          </p>
-        </div>
-      )}
+      <AddNewCourseModal 
+        isOpen={isAddModalOpen} 
+        onClose={() => setIsAddModalOpen(false)} 
+      />
     </div>
   );
 }

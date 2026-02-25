@@ -1,7 +1,8 @@
 "use client";
 
-import { X, Clock, DollarSign, Tag, CheckCircle } from "lucide-react";
+import { X, Clock, Check } from "lucide-react";
 import { SitterService } from "@/types/profile/sitter/services/sitterServiceType";
+import { useEffect } from "react";
 
 interface ServiceDetailsModalProps {
   isOpen: boolean;
@@ -9,173 +10,115 @@ interface ServiceDetailsModalProps {
   service: SitterService | null;
 }
 
-const cleanArrayData = (arr: string[]): string[] => {
-  if (!arr || arr.length === 0) return [];
-  const result: string[] = [];
-  arr.forEach((item) => {
-    if (!item) return;
-    if (
-      typeof item === "string" &&
-      item.startsWith("[") &&
-      item.endsWith("]")
-    ) {
-      try {
-        const parsed = JSON.parse(item);
-        if (Array.isArray(parsed)) {
-          parsed.forEach((p) => {
-            if (p && typeof p === "string" && !result.includes(p.trim()))
-              result.push(p.trim());
-          });
-          return;
-        }
-      } catch {
-        /* ignore */
-      }
-    }
-    if (typeof item === "string" && item.includes(",")) {
-      item.split(",").forEach((s) => {
-        const trimmed = s.trim();
-        if (trimmed && !result.includes(trimmed)) result.push(trimmed);
-      });
-      return;
-    }
-    const trimmed = typeof item === "string" ? item.trim() : String(item);
-    if (trimmed && !result.includes(trimmed)) result.push(trimmed);
-  });
-  return result;
-};
-
-const formatPrice = (price: number | string) => {
-  const numPrice = typeof price === "string" ? parseFloat(price) : price;
-  return `$${(numPrice / 100).toFixed(2)}`;
-};
-
 export default function SitterServiceDetailsModal({
   isOpen,
   onClose,
   service,
 }: ServiceDetailsModalProps) {
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [isOpen]);
+
   if (!isOpen || !service) return null;
 
-  const cleanedTags = cleanArrayData(service.tags || []);
-  const cleanedWhatsIncluded = cleanArrayData(service.whatsIncluded || []);
+  const formatPrice = (price: number) => {
+    return `$ ${(price / 100).toFixed(0)}`;
+  };
+
+  const formatDuration = (minutes: number) => {
+    const hours = Math.floor(minutes / 60);
+    const mins = minutes % 60;
+    if (hours > 0 && mins > 0) return `${hours} hours ${mins} mins`;
+    if (hours > 0) return `${hours} hour${hours > 1 ? "s" : ""}`;
+    return `${mins} mins`;
+  };
 
   return (
-    <div className="fixed inset-0 z-[200] overflow-y-auto">
-      <div
-        className="fixed inset-0 bg-black/50 backdrop-blur-sm"
+    <div className="fixed inset-0 z-[1000] flex items-center justify-center font-arimo">
+      {/* Backdrop */}
+      <div 
+        className="absolute inset-0 bg-[#c4c4c4]/80 backdrop-blur-[2px]" 
         onClick={onClose}
       />
-      <div className="flex min-h-full items-center justify-center px-4 pt-20 pb-10 sm:py-8">
-        <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[85vh] overflow-hidden flex flex-col">
-          <div className="bg-white px-6 py-4 flex items-center justify-between">
-            <h2 className="text-xl font-bold text-gray-900">Service Details</h2>
-            <button
-              onClick={onClose}
-              className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg"
-            >
-              <X size={20} />
-            </button>
+
+      {/* Modal Container */}
+      <div className="relative bg-white w-[660px] rounded-[34px] p-8 shadow-[0px_0px_12px_0px_rgba(0,0,0,0.1)] flex flex-col gap-6 border border-[#f4f4f4] z-10 animate-in fade-in zoom-in duration-200">
+        
+        {/* Close Icon */}
+        <button 
+          onClick={onClose}
+          className="absolute top-8 right-8 p-1 text-[#667085] hover:text-[#ff7176] transition-colors z-20"
+        >
+          <X size={24} />
+        </button>
+
+        {/* Thumbnail Image Container */}
+        <div className="h-[326.6px] w-full rounded-[24px] overflow-hidden relative shrink-0">
+          <div className="absolute inset-0 bg-gradient-to-br from-[#f3e8ff] to-[#e9d4ff]" />
+          <img 
+            src={service.thumbnailImage || "/placeholder-service.jpg"} 
+            alt={service.name}
+            className="absolute inset-0 w-full h-full object-cover rounded-[24px]"
+          />
+        </div>
+
+        {/* Header Info */}
+        <div className="flex flex-col gap-[10px] w-full">
+          <div className="flex items-start justify-between w-full">
+            <h2 className="text-[28px] font-bold text-[#101828] leading-tight">
+              {service.name}
+            </h2>
+            <div className="flex items-center gap-3 shrink-0">
+              <span className="text-[16px] font-normal text-[#00a63e]">Price</span>
+              <span className="text-[20px] font-bold text-[#ff7176]">
+                {formatPrice(service.price)}
+              </span>
+            </div>
           </div>
 
-          <div className="px-6 pb-6 space-y-6 flex-1 overflow-y-auto">
-            {service.thumbnailImage && (
-              <div className="w-full h-56 rounded-2xl overflow-hidden">
-                <img
-                  src={service.thumbnailImage}
-                  alt={service.name}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-            )}
+          <div className="flex items-center gap-2">
+            <Clock size={20} className="text-[#364153]" />
+            <span className="text-[16px] font-normal text-[#364153]">
+              Duration: {formatDuration(service.durationInMinutes)}
+            </span>
+          </div>
+        </div>
 
-            <div>
-              <h3 className="text-2xl font-bold text-gray-900">
-                {service.name}
-              </h3>
-              {service.description && (
-                <p className="text-gray-600 mt-2 leading-relaxed">
-                  {service.description}
-                </p>
+        {/* Content Section */}
+        <div className="flex gap-[65px] items-start w-full">
+          {/* Description */}
+          <div className="flex-1 flex flex-col gap-3">
+            <h3 className="text-[20px] font-normal text-[#101828]">Description</h3>
+            <p className="text-[16px] font-normal text-[#4a5565] leading-[26px]">
+              {service.description || "No description available."}
+            </p>
+          </div>
+
+          {/* What's Included */}
+          <div className="flex-1 flex flex-col gap-3">
+            <h3 className="text-[16px] font-normal text-[#101828]">What's Included</h3>
+            <div className="flex flex-col gap-2">
+              {service.whatsIncluded?.map((item, index) => (
+                <div key={index} className="flex items-start gap-2">
+                  <div className="mt-1 shrink-0 bg-[#00a63e]/10 p-0.5 rounded-full">
+                    <Check size={14} className="text-[#00a63e] stroke-[3]" />
+                  </div>
+                  <span className="text-[16px] font-normal text-[#364153]">
+                    {item}
+                  </span>
+                </div>
+              ))}
+              {(!service.whatsIncluded || service.whatsIncluded.length === 0) && (
+                <span className="text-[14px] italic text-[#667085]">Nothing listed.</span>
               )}
             </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="p-4 bg-primary/5 rounded-2xl">
-                <div className="flex items-center gap-2 text-primary mb-1">
-                  <DollarSign size={18} />
-                  <span className="text-sm font-semibold uppercase tracking-wide">
-                    Price
-                  </span>
-                </div>
-                <p className="text-2xl font-bold text-gray-900">
-                  {formatPrice(service.price)}
-                </p>
-              </div>
-              <div className="p-4 bg-blue-50 rounded-2xl">
-                <div className="flex items-center gap-2 text-blue-600 mb-1">
-                  <Clock size={18} />
-                  <span className="text-sm font-semibold uppercase tracking-wide">
-                    Duration
-                  </span>
-                </div>
-                <p className="text-2xl font-bold text-gray-900">
-                  {service.durationInMinutes} min
-                </p>
-              </div>
-            </div>
-
-            {cleanedWhatsIncluded.length > 0 && (
-              <div>
-                <div className="flex items-center gap-2 text-gray-700 mb-3">
-                  <CheckCircle size={18} />
-                  <span className="text-sm font-semibold uppercase tracking-wide">
-                    What's Included
-                  </span>
-                </div>
-                <div className="space-y-2">
-                  {cleanedWhatsIncluded.map((item, index) => (
-                    <div
-                      key={index}
-                      className="flex items-center gap-2 text-gray-700"
-                    >
-                      <div className="w-1.5 h-1.5 rounded-full bg-primary" />
-                      <span className="text-sm">{item}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {cleanedTags.length > 0 && (
-              <div>
-                <div className="flex items-center gap-2 text-gray-700 mb-3">
-                  <Tag size={18} />
-                  <span className="text-sm font-semibold uppercase tracking-wide">
-                    Tags
-                  </span>
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  {cleanedTags.map((tag, index) => (
-                    <span
-                      key={index}
-                      className="px-3 py-1.5 bg-gray-100 text-gray-700 rounded-full text-sm font-medium"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-
-          <div className="px-6 pt-4 pb-6 bg-white flex-shrink-0">
-            <button
-              onClick={onClose}
-              className="w-full px-4 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-xl"
-            >
-              Close
-            </button>
           </div>
         </div>
       </div>

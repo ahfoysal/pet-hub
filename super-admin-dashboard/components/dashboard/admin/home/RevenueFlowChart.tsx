@@ -44,9 +44,9 @@ export const RevenueFlowChart = () => {
               tick={{ fill: "#64748b", fontSize: 12 }} 
             />
             <Tooltip />
-            <Bar dataKey="revenue" radius={[4, 4, 0, 0]}>
+            <Bar dataKey="revenue" fill="#00c875" radius={[4, 4, 0, 0]}>
               {data.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill="#ff7176" />
+                <Cell key={`cell-${index}`} fill="#00c875" />
               ))}
             </Bar>
           </BarChart>

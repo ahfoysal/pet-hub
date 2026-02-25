@@ -1,8 +1,7 @@
 "use client";
 
-import { X, CheckCircle, XCircle, Clock, Download } from "lucide-react";
+import { X, CheckCircle, XCircle, FileText, Eye } from "lucide-react";
 import { KYCData } from "@/types/dashboard/admin/kyc/adminKycType";
-import { useState } from "react";
 import {
   useApproveKycMutation,
   useRejectKycMutation,
@@ -20,9 +19,6 @@ export default function KycDetailsModal({
   onClose,
   kycData,
 }: KycDetailsModalProps) {
-  const [activeTab, setActiveTab] = useState<"details" | "documents">(
-    "details",
-  );
   const [approveKyc, { isLoading: isApproving }] = useApproveKycMutation();
   const [rejectKyc, { isLoading: isRejecting }] = useRejectKycMutation();
   const { showToast } = useToast();
@@ -34,8 +30,9 @@ export default function KycDetailsModal({
       const result = await approveKyc(kycData.id).unwrap();
       showToast(result.message || "KYC approved successfully!", "success");
       onClose();
-    } catch (error: any) {
-      showToast(error?.data?.message || "Failed to approve KYC", "error");
+    } catch (error) {
+      const err = error as { data?: { message?: string } };
+      showToast(err?.data?.message || "Failed to approve KYC", "error");
     }
   };
 
@@ -44,8 +41,9 @@ export default function KycDetailsModal({
       const result = await rejectKyc(kycData.id).unwrap();
       showToast(result.message || "KYC rejected successfully!", "success");
       onClose();
-    } catch (error: any) {
-      showToast(error?.data?.message || "Failed to reject KYC", "error");
+    } catch (error) {
+      const err = error as { data?: { message?: string } };
+      showToast(err?.data?.message || "Failed to reject KYC", "error");
     }
   };
 
@@ -53,23 +51,20 @@ export default function KycDetailsModal({
     switch (kycData.status) {
       case "APPROVED":
         return (
-          <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-green-100 text-green-800 text-sm font-medium">
-            <CheckCircle className="h-4 w-4" />
+          <span className="inline-flex items-center px-3 py-1 rounded-full bg-[#dcfce7] text-[#008236] text-[12px] font-['Nunito',sans-serif] font-bold">
             Approved
           </span>
         );
       case "REJECTED":
         return (
-          <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-red-100 text-red-800 text-sm font-medium">
-            <XCircle className="h-4 w-4" />
+          <span className="inline-flex items-center px-3 py-1 rounded-full bg-[#ffe4e6] text-[#e11d48] text-[12px] font-['Nunito',sans-serif] font-bold">
             Rejected
           </span>
         );
       case "PENDING":
         return (
-          <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-yellow-100 text-yellow-800 text-sm font-medium">
-            <Clock className="h-4 w-4" />
-            Pending Review
+          <span className="inline-flex items-center px-3 py-1 rounded-full bg-[#fef3c6] text-[#bb4d00] text-[12px] font-['Nunito',sans-serif] font-bold">
+            Pending
           </span>
         );
       default:
@@ -77,265 +72,172 @@ export default function KycDetailsModal({
     }
   };
 
+  const formattedDate = new Date(kycData.createdAt).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).split('/').reverse().join('-');
+
   return (
-    <div className="fixed inset-0 z-100 overflow-y-auto top-20">
-      {/* Backdrop with blur */}
+    <div className="fixed inset-0 z-1000 overflow-y-auto">
+      {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity"
+        className="fixed inset-0 bg-[#0f172b]/60 backdrop-blur-sm transition-opacity"
         onClick={onClose}
       />
 
-      {/* Modal */}
-      <div className="flex min-h-full items-center justify-center p-2 sm:p-4">
-        <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden">
-          {/* Header */}
-          <div className="sticky top-0 bg-white border-b border-gray-100 px-4 sm:px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 z-10">
-            <div className="flex items-center gap-3 sm:gap-4 min-w-0">
-              <img
-                src={kycData.image}
-                alt={kycData.fullName}
-                className="h-10 w-10 sm:h-12 sm:w-12 rounded-full object-cover flex-shrink-0"
-              />
-              <div className="min-w-0 flex-1">
-                <h2 className="text-lg sm:text-xl font-bold text-gray-900 truncate">
+      {/* Modal Container */}
+      <div className="flex min-h-screen items-center justify-center p-4">
+        <div className="relative bg-white rounded-2xl shadow-xl w-full max-w-165 flex flex-col max-h-[90vh] overflow-hidden">
+          
+          {/* Header Area */}
+          <div className="bg-[#ff6f75] px-6 py-6 relative shrink-0">
+            <button
+              onClick={onClose}
+              className="absolute top-4 right-4 p-2 text-white/80 hover:text-white hover:bg-white/10 rounded-full transition-colors z-10"
+            >
+              <X className="h-5 w-5" />
+            </button>
+            <div className="flex justify-between items-start pr-8">
+              <div>
+                <h2 className="text-[22px] font-bold text-white font-['Nunito',sans-serif] leading-tight">
                   {kycData.fullName}
                 </h2>
-                <p className="text-xs sm:text-sm text-gray-500 truncate">
-                  {kycData.email}
+                <p className="text-white/90 text-[14px] mt-1 font-['Arimo',sans-serif]">
+                  {kycData.roleType === "SCHOOL" ? "Pet School" : "Pet Sitter"} Application
                 </p>
               </div>
-            </div>
-            <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
-              {getStatusBadge()}
-              <button
-                onClick={onClose}
-                className="p-2 hover:bg-gray-100 rounded-lg transition-colors flex-shrink-0"
-              >
-                <X className="h-5 w-5 text-gray-500" />
-              </button>
-            </div>
-          </div>
-
-          {/* Tabs */}
-          <div className="border-b border-gray-100 px-4 sm:px-6">
-            <div className="flex gap-4 sm:gap-6 overflow-x-auto scrollbar-hide">
-              <button
-                onClick={() => setActiveTab("details")}
-                className={`py-3 px-1 border-b-2 font-medium text-sm whitespace-nowrap transition-colors ${
-                  activeTab === "details"
-                    ? "border-primary text-primary"
-                    : "border-transparent text-gray-500 hover:text-gray-700"
-                }`}
-              >
-                Personal Details
-              </button>
-              <button
-                onClick={() => setActiveTab("documents")}
-                className={`py-3 px-1 border-b-2 font-medium text-sm whitespace-nowrap transition-colors ${
-                  activeTab === "documents"
-                    ? "border-primary text-primary"
-                    : "border-transparent text-gray-500 hover:text-gray-700"
-                }`}
-              >
-                Documents
-              </button>
-            </div>
-          </div>
-
-          {/* Content */}
-          <div className="overflow-y-auto max-h-[calc(90vh-200px)] p-4 sm:p-6">
-            {activeTab === "details" ? (
-              <div className="space-y-4 sm:space-y-6">
-                {/* Basic Information */}
-                <div className="bg-gray-50 rounded-xl p-4 sm:p-5">
-                  <h3 className="text-sm font-semibold text-gray-900 mb-3 sm:mb-4 flex items-center gap-2">
-                    <span className="text-blue-600">📋</span>
-                    Basic Information
-                  </h3>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-                    <InfoItem label="Full Name" value={kycData.fullName} />
-                    <InfoItem label="Email" value={kycData.email} />
-                    <InfoItem
-                      label="Phone Number"
-                      value={kycData.phoneNumber}
-                    />
-                    <InfoItem
-                      label="Date of Birth"
-                      value={kycData.dateOfBirth}
-                    />
-                    <InfoItem label="Gender" value={kycData.gender} />
-                    <InfoItem label="Nationality" value={kycData.nationality} />
-                  </div>
-                </div>
-
-                {/* Identification */}
-                <div className="bg-gray-50 rounded-xl p-4 sm:p-5">
-                  <h3 className="text-sm font-semibold text-gray-900 mb-3 sm:mb-4 flex items-center gap-2">
-                    <span className="text-purple-600">🪪</span>
-                    Identification
-                  </h3>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-                    <InfoItem
-                      label="ID Type"
-                      value={kycData.identificationType}
-                    />
-                    <InfoItem
-                      label="ID Number"
-                      value={kycData.identificationNumber}
-                    />
-                  </div>
-                </div>
-
-                {/* Address Information */}
-                <div className="bg-gray-50 rounded-xl p-4 sm:p-5">
-                  <h3 className="text-sm font-semibold text-gray-900 mb-3 sm:mb-4 flex items-center gap-2">
-                    <span className="text-green-600">🏠</span>
-                    Address Information
-                  </h3>
-                  <div className="grid grid-cols-1 gap-3 sm:gap-4">
-                    <InfoItem
-                      label="Present Address"
-                      value={kycData.presentAddress}
-                    />
-                    <InfoItem
-                      label="Permanent Address"
-                      value={kycData.permanentAddress}
-                    />
-                  </div>
-                </div>
-
-                {/* Emergency Contact */}
-                <div className="bg-gray-50 rounded-xl p-4 sm:p-5">
-                  <h3 className="text-sm font-semibold text-gray-900 mb-3 sm:mb-4 flex items-center gap-2">
-                    <span className="text-red-600">🚨</span>
-                    Emergency Contact
-                  </h3>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-                    <InfoItem
-                      label="Contact Name"
-                      value={kycData.emergencyContactName}
-                    />
-                    <InfoItem
-                      label="Relationship"
-                      value={kycData.emergencyContactRelation}
-                    />
-                    <InfoItem
-                      label="Contact Phone"
-                      value={kycData.emergencyContactPhone}
-                    />
-                  </div>
-                </div>
-
-                {/* Additional Info */}
-                <div className="bg-gray-50 rounded-xl p-4 sm:p-5">
-                  <h3 className="text-sm font-semibold text-gray-900 mb-3 sm:mb-4 flex items-center gap-2">
-                    <span className="text-orange-600">ℹ️</span>
-                    Additional Information
-                  </h3>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-                    <InfoItem label="Role Type" value={kycData.roleType} />
-                    <InfoItem
-                      label="Submitted On"
-                      value={new Date(kycData.createdAt).toLocaleDateString(
-                        "en-US",
-                        {
-                          month: "long",
-                          day: "numeric",
-                          year: "numeric",
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        },
-                      )}
-                    />
-                  </div>
-                </div>
+              <div className="shrink-0 mt-1 shadow-sm">
+                {getStatusBadge()}
               </div>
-            ) : (
-              <div className="space-y-4 sm:space-y-6">
-                {/* Profile Photo */}
-                <DocumentItem
-                  title="Profile Photo"
-                  imageUrl={kycData.image}
-                  alt="Profile"
-                />
+            </div>
+          </div>
 
-                {/* ID Front */}
-                <DocumentItem
-                  title="ID Document - Front"
-                  imageUrl={kycData.identificationFrontImage}
-                  alt="ID Front"
-                />
+          {/* Scrollable Content */}
+          <div className="p-6 overflow-y-auto space-y-8 flex-1 custom-scrollbar">
+            
+            {/* Provider Information Section - Matching Figma verbatim */}
+            <div>
+              <h3 className="text-[#0f172b] text-[16px] font-bold font-['Nunito',sans-serif] mb-4">
+                Provider Information
+              </h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-5 gap-x-8">
+                <InfoItem label="Provider ID" value={kycData.id.slice(0, 8).toUpperCase()} />
+                <div className="wrap-break-word">
+                  <p className="text-[#62748e] text-[13px] font-normal font-['Arimo',sans-serif] mb-1">
+                    Category
+                  </p>
+                  <span className="inline-flex px-3 py-1 bg-[#e0f2fe] text-[#0284c7] text-[12px] font-medium rounded-full">
+                    {kycData.roleType}
+                  </span>
+                </div>
+                <InfoItem label="Owner Name" value={kycData.fullName} />
+                <InfoItem label="Submitted Date" value={formattedDate} />
+              </div>
+            </div>
 
-                {/* ID Back */}
-                <DocumentItem
-                  title="ID Document - Back"
-                  imageUrl={kycData.identificationBackImage}
-                  alt="ID Back"
-                />
+            {/* Additional Details from auth-and-kyc */}
+            <div>
+              <h3 className="text-[#0f172b] text-[16px] font-bold font-['Nunito',sans-serif] mb-4 border-t border-gray-100 pt-6">
+                Personal Information
+              </h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-5 gap-x-8">
+                <InfoItem label="Email Address" value={kycData.email} />
+                <InfoItem label="Phone Number" value={kycData.phoneNumber} />
+                <InfoItem label="Date of Birth" value={kycData.dateOfBirth} />
+                <InfoItem label="Gender" value={kycData.gender} />
+                <InfoItem label="Nationality" value={kycData.nationality} />
+              </div>
+            </div>
 
-                {/* Signature */}
-                <DocumentItem
-                  title="Signature"
-                  imageUrl={kycData.signatureImage}
-                  alt="Signature"
+            <div>
+              <h3 className="text-[#0f172b] text-[16px] font-bold font-['Nunito',sans-serif] mb-4 border-t border-gray-100 pt-6">
+                Identification Details
+              </h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-5 gap-x-8">
+                <InfoItem label="Document Type" value={kycData.identificationType} />
+                <InfoItem label="Document Number" value={kycData.identificationNumber} />
+              </div>
+            </div>
+
+            <div>
+              <h3 className="text-[#0f172b] text-[16px] font-bold font-['Nunito',sans-serif] mb-4 border-t border-gray-100 pt-6">
+                Address & Contact
+              </h3>
+              <div className="grid grid-cols-1 gap-y-5 gap-x-8">
+                <InfoItem label="Present Address" value={kycData.presentAddress} />
+                <InfoItem label="Permanent Address" value={kycData.permanentAddress} />
+              </div>
+            </div>
+
+            <div>
+              <h3 className="text-[#0f172b] text-[16px] font-bold font-['Nunito',sans-serif] mb-4 border-t border-gray-100 pt-6">
+                Emergency Contact
+              </h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-5 gap-x-8">
+                <InfoItem label="Contact Name" value={kycData.emergencyContactName} />
+                <InfoItem label="Relationship" value={kycData.emergencyContactRelation} />
+                <InfoItem label="Contact Phone" value={kycData.emergencyContactPhone} />
+              </div>
+            </div>
+
+            {/* Submitted Documents Section */}
+            <div>
+              <h3 className="text-[#0f172b] text-[16px] font-bold font-['Nunito',sans-serif] mb-4 border-t border-gray-100 pt-6">
+                Submitted Documents
+              </h3>
+              <div className="space-y-3">
+                <DocumentItem 
+                  title="Profile Photo" 
+                  fileName="profile_photo.jpg" 
+                  url={kycData.image} 
+                  iconColor="text-blue-500" 
+                />
+                <DocumentItem 
+                  title={`${kycData.identificationType} - Front`} 
+                  fileName="id_document_front.pdf" 
+                  url={kycData.identificationFrontImage} 
+                  iconColor="text-[#ff6f75]" 
+                />
+                <DocumentItem 
+                  title={`${kycData.identificationType} - Back`} 
+                  fileName="id_document_back.pdf" 
+                  url={kycData.identificationBackImage} 
+                  iconColor="text-indigo-500" 
+                />
+                <DocumentItem 
+                  title="Official Signature" 
+                  fileName="signature.png" 
+                  url={kycData.signatureImage} 
+                  iconColor="text-emerald-500" 
                 />
               </div>
-            )}
+            </div>
           </div>
 
-          {/* Footer Actions */}
-          <div className="sticky bottom-0 bg-white border-t border-gray-100 px-4 sm:px-6 py-4">
-            {kycData.status === "PENDING" ? (
-              <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-end gap-3">
-                <button
-                  onClick={handleReject}
-                  disabled={isRejecting}
-                  className="px-6 py-2.5 bg-red-50 text-red-600 rounded-lg font-medium hover:bg-red-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-                >
-                  <XCircle className="h-5 w-5" />
-                  {isRejecting ? "Rejecting..." : "Reject"}
-                </button>
+          {/* Action Buttons Footer */}
+          {kycData.status === "PENDING" && (
+            <div className="p-6 border-t border-[#e2e8f0] bg-white shrink-0">
+              <div className="flex items-center gap-4">
                 <button
                   onClick={handleApprove}
-                  disabled={isApproving}
-                  className="px-6 py-2.5 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  disabled={isApproving || isRejecting}
+                  className="flex-1 px-6 py-3.5 bg-[#00c950] text-white rounded-[10px] font-['Nunito',sans-serif] font-bold text-[15px] hover:bg-[#00b046] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 >
                   <CheckCircle className="h-5 w-5" />
-                  {isApproving ? "Approving..." : "Approve"}
+                  {isApproving ? "Approving..." : "Approve KYC"}
+                </button>
+                <button
+                  onClick={handleReject}
+                  disabled={isApproving || isRejecting}
+                  className="flex-1 px-6 py-3.5 bg-[#ff6f75] text-white rounded-[10px] font-['Nunito',sans-serif] font-bold text-[15px] hover:bg-[#e66469] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                >
+                  <XCircle className="h-5 w-5" />
+                  {isRejecting ? "Rejecting..." : "Reject with Reason"}
                 </button>
               </div>
-            ) : (
-              <div className="text-center py-2">
-                <p className="text-sm text-gray-500">
-                  This KYC has already been{" "}
-                  <span
-                    className={`font-semibold ${
-                      kycData.status === "APPROVED"
-                        ? "text-green-600"
-                        : "text-red-600"
-                    }`}
-                  >
-                    {kycData.status}
-                  </span>
-                  {kycData.reviewedAt && (
-                    <span className="block mt-1 text-xs">
-                      on{" "}
-                      {new Date(kycData.reviewedAt).toLocaleDateString(
-                        "en-US",
-                        {
-                          month: "long",
-                          day: "numeric",
-                          year: "numeric",
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        },
-                      )}
-                    </span>
-                  )}
-                </p>
-              </div>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
@@ -344,43 +246,52 @@ export default function KycDetailsModal({
 
 function InfoItem({ label, value }: { label: string; value: string }) {
   return (
-    <div className="break-words">
-      <p className="text-xs font-medium text-gray-500 mb-1">{label}</p>
-      <p className="text-sm text-gray-900 break-all">{value}</p>
+    <div className="wrap-break-word">
+      <p className="text-[#62748e] text-[13px] font-normal font-['Arimo',sans-serif] mb-1">
+        {label}
+      </p>
+      <p className="text-[#0f172b] text-[15px] font-medium font-['Nunito',sans-serif]">
+        {value || "N/A"}
+      </p>
     </div>
   );
 }
 
-function DocumentItem({
-  title,
-  imageUrl,
-  alt,
-}: {
-  title: string;
-  imageUrl: string;
-  alt: string;
+function DocumentItem({ 
+  title, 
+  fileName, 
+  url, 
+  iconColor 
+}: { 
+  title: string; 
+  fileName: string; 
+  url: string; 
+  iconColor: string;
 }) {
   return (
-    <div className="bg-gray-50 rounded-xl p-4 sm:p-5">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
-        <h4 className="text-sm font-semibold text-gray-900">{title}</h4>
-        <a
-          href={imageUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-1 text-sm text-primary hover:text-primary/80 transition-colors self-start"
-        >
-          <Download className="h-4 w-4" />
-          <span className="whitespace-nowrap">Download</span>
-        </a>
+    <div className="flex items-center justify-between p-4 bg-[#f8fafc] border border-[#e2e8f0] rounded-[10px] hover:border-[#cbd5e1] transition-colors">
+      <div className="flex items-center gap-3">
+        <div className="shrink-0 p-2 bg-white rounded-lg border border-gray-100 shadow-sm">
+          <FileText className={`h-5 w-5 ${iconColor}`} />
+        </div>
+        <div>
+          <p className="text-[#0f172b] text-[14px] font-bold font-['Nunito',sans-serif]">
+            {title}
+          </p>
+          <p className="text-[#62748e] text-[12px] font-normal mt-0.5">
+            {fileName}
+          </p>
+        </div>
       </div>
-      <div className="bg-white rounded-lg overflow-hidden border border-gray-100">
-        <img
-          src={imageUrl}
-          alt={alt}
-          className="w-full h-auto object-contain max-h-[500px]"
-        />
-      </div>
+      <a
+        href={url}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="p-2 text-[#62748e] hover:text-[#00c950] bg-white rounded-lg border border-[#e2e8f0] hover:border-[#00c950]/30 transition-all flex items-center justify-center shadow-sm"
+        title="View Document"
+      >
+        <Eye className="h-4 w-4" />
+      </a>
     </div>
   );
 }

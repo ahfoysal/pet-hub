@@ -249,10 +249,9 @@
 
 import DashboardHeading from "@/components/dashboard/common/DashboardHeading";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
-import CourseWiseEnrollmentChart from "@/components/dashboard/school/dashboard/CourseWiseEnrollmentChart";
 import { useGetSchoolDashboardResponseQuery } from "@/redux/features/api/dashboard/school/dashboard/SchoolDashboardApi";
-import { Users, BookOpen, Calendar } from "lucide-react";
 import { useSession } from "next-auth/react";
+import Image from "next/image";
 
 export default function PetSchoolDashboard() {
   const { status } = useSession();
@@ -280,122 +279,133 @@ export default function PetSchoolDashboard() {
 
   const {
     stats,
-    enrollmentTrend,
-    courseWiseEnrollments,
-    trainerPerformance,
-    enrollmentStatusDistribution,
   } = dashboardResponse.data;
 
   return (
     <div className="space-y-6 pb-10">
       {/* Header */}
       <DashboardHeading
-        title="Pet School Dashboard"
-        description="Overview of enrollments and courses"
+        title="Dashboard"
+        description="Overview of your school's activities and performance"
       />
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white rounded-xl border p-5 shadow-sm">
-          <div className="flex items-center justify-between mb-3">
-            <div className="p-3 bg-pink-100 rounded-lg">
-              <Users className="h-6 w-6 text-pink-600" />
-            </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
+        {/* Total Students */}
+        <div className="bg-white rounded-xl border border-[#d0d0d0] p-6 flex items-center justify-between">
+          <div className="flex flex-col gap-3">
+             <div className="flex bg-[#EBF5FF] p-2 rounded w-max">
+               <Image src="/assets/c5ab3523f66c0eabe93bf5591bfe28c7c943fc36.svg" alt="Students icon" width={24} height={24} />
+             </div>
+             <p className="text-[14px] text-[#4f4f4f] font-['Arial:Regular'] mt-1">Total Students</p>
+             <h3 className="text-[28px] font-bold text-[#282828] font-['Montserrat:Bold'] -mt-1.5">{stats?.totalPetsEnrolled || 0}</h3>
           </div>
-          <h3 className="text-3xl font-bold">{stats.totalPetsEnrolled}</h3>
-          <p className="text-sm text-gray-500">Total Enrolled Pets</p>
+          <div className="flex items-center gap-1.25 text-[#00b69b] font-['Montserrat:Medium'] text-[14px]">
+            <Image src="/assets/e8f7d903f5ad6f4c8430768b72e5a6fc63529342.svg" alt="Up arrow" width={16} height={16} />
+            <span>8.5%</span>
+          </div>
         </div>
 
-        <div className="bg-white rounded-xl border p-5 shadow-sm">
-          <div className="flex items-center justify-between mb-3">
-            <div className="p-3 bg-blue-100 rounded-lg">
-              <BookOpen className="h-6 w-6 text-blue-600" />
-            </div>
+        {/* Active Courses */}
+        <div className="bg-white rounded-xl border border-[#d0d0d0] p-6 flex items-center justify-between">
+           <div className="flex flex-col gap-3">
+             <div className="flex bg-[#fff1d6] p-2 rounded w-max">
+               <Image src="/assets/952d79cd17bb58097b69766cd5333f20bd5e8cf7.svg" alt="Courses icon" width={24} height={24} />
+             </div>
+             <p className="text-[14px] text-[#4f4f4f] font-['Arial:Regular'] mt-1">Active Courses</p>
+             <h3 className="text-[28px] font-bold text-[#282828] font-['Montserrat:Bold'] -mt-1.5">{stats?.activeCourses || 0}</h3>
           </div>
-          <h3 className="text-3xl font-bold">{stats.activeCourses}</h3>
-          <p className="text-sm text-gray-500">Active Courses</p>
+          <div className="flex items-center gap-1.25 text-[#00b69b] font-['Montserrat:Medium'] text-[14px]">
+            <Image src="/assets/e8f7d903f5ad6f4c8430768b72e5a6fc63529342.svg" alt="Up arrow" width={16} height={16} />
+            <span>1.3%</span>
+          </div>
         </div>
 
-        <div className="bg-white rounded-xl border p-5 shadow-sm">
-          <div className="flex items-center justify-between mb-3">
-            <div className="p-3 bg-green-100 rounded-lg">
-              <Calendar className="h-6 w-6 text-green-600" />
-            </div>
+        {/* Ongoing Enrollments */}
+        <div className="bg-white rounded-xl border border-[#d0d0d0] p-6 flex items-center justify-between">
+           <div className="flex flex-col gap-3">
+             <div className="flex bg-[#e2fbd7] p-2 rounded w-max">
+               <Image src="/assets/cfd8f5aa57224213da94a11f20d6abeb8b9c2ca2.svg" alt="Enrollments icon" width={24} height={24} />
+             </div>
+             <p className="text-[14px] text-[#4f4f4f] font-['Arial:Regular'] mt-1">Ongoing Enrollments</p>
+             <h3 className="text-[28px] font-bold text-[#282828] font-['Montserrat:Bold'] -mt-1.5">{stats?.ongoingEnrollments || 0}</h3>
           </div>
-          <h3 className="text-3xl font-bold">{stats.ongoingEnrollments}</h3>
-          <p className="text-sm text-gray-500">Ongoing Enrollments</p>
+          <div className="flex items-center gap-1.25 text-[#f93c65] font-['Montserrat:Medium'] text-[14px]">
+            <Image src="/assets/66ec57173e49e083c7499ca092cf4de2fe9d5926.svg" alt="Down arrow" width={16} height={16} />
+            <span>4.3%</span>
+          </div>
         </div>
 
-        <div className="bg-white rounded-xl border p-5 shadow-sm">
-          <div className="flex items-center justify-between mb-3">
-            <div className="p-3 bg-orange-100 rounded-lg">
-              <Calendar className="h-6 w-6 text-orange-600" />
-            </div>
+        {/* Total Revenue */}
+        <div className="bg-white rounded-xl border border-[#d0d0d0] p-6 flex items-center justify-between">
+           <div className="flex flex-col gap-3">
+             <div className="flex bg-[#ffebee] p-2 rounded w-max">
+               <Image src="/assets/2edfcb8935c1ba1619a9eb2bc7cf4ab83c07fcde.svg" alt="Revenue icon" width={24} height={24} />
+             </div>
+             <p className="text-[14px] text-[#4f4f4f] font-['Arial:Regular'] mt-1">Total Revenue</p>
+             <h3 className="text-[28px] font-bold text-[#282828] font-['Montserrat:Bold'] -mt-1.5">$0.00</h3>
           </div>
-          <h3 className="text-3xl font-bold">{stats.availableSeatsToday}</h3>
-          <p className="text-sm text-gray-500">Available Seats Today</p>
+          <div className="flex items-center gap-1.25 text-[#00b69b] font-['Montserrat:Medium'] text-[14px]">
+            <Image src="/assets/e8f7d903f5ad6f4c8430768b72e5a6fc63529342.svg" alt="Up arrow" width={16} height={16} />
+            <span>1.8%</span>
+          </div>
         </div>
       </div>
 
-      {/* Charts */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-        {/* Enrollment Trend */}
-        <div className="bg-white rounded-xl border p-5 shadow-sm">
-          <h3 className="text-lg font-semibold mb-4">Enrollment Trend</h3>
+      {/* Main Content Area */}
+      <div className="mt-8 flex flex-col gap-3.75 bg-white border border-[#d0d0d0] rounded-xl p-8 overflow-hidden">
+        <div className="flex justify-between items-center mb-4">
+           <h2 className="text-[#282828] font-['Montserrat:Bold'] font-bold text-[24px]">Recent Admissions</h2>
+        </div>
 
-          <div className="h-64 flex items-center justify-center text-gray-500">
-            {enrollmentTrend.length === 0
-              ? "No trend data"
-              : `${enrollmentTrend[0].date} : ${enrollmentTrend[0].count} enrollment`}
+        {/* Table Header */}
+        <div className="flex items-center text-[#4f4f4f] font-['Arial:Regular'] text-[16px] border-b border-[#e5e5e5] pb-4">
+          <div className="w-45">Pet Name</div>
+          <div className="w-40">Owner</div>
+          <div className="w-50">Course</div>
+          <div className="w-30">Admitted</div>
+          <div className="w-30">Status</div>
+          <div className="w-30">Amount</div>
+        </div>
+
+        {/* Dummy Admission Let */}
+        <div className="flex items-center text-[#4f4f4f] font-['Arial:Regular'] text-[16px] py-4 border-b border-[#e5e5e5] last:border-b-0">
+          <div className="w-45 text-[#282828]">Bella</div>
+          <div className="w-40">John Doe</div>
+          <div className="w-50">Obedience Training</div>
+          <div className="w-30">12 Sep, 2024</div>
+          <div className="w-30">
+            <span className="bg-[#00B69B]/20 text-[#00B69B] px-3 py-1 rounded-full text-xs font-semibold">Accepted</span>
           </div>
+          <div className="w-30 font-['Montserrat:Medium']">$200.00</div>
         </div>
 
-        {/* Course-wise Distribution */}
-        <div className="bg-white rounded-xl border p-5 shadow-sm">
-          <h3 className="text-lg font-semibold mb-4">
-            Course-wise Enrollments
-          </h3>
-
-          <CourseWiseEnrollmentChart data={courseWiseEnrollments} />
+        <div className="flex items-center text-[#4f4f4f] font-['Arial:Regular'] text-[16px] py-4 border-b border-[#e5e5e5] last:border-b-0">
+          <div className="w-45 text-[#282828]">Max</div>
+          <div className="w-40">Jane Smith</div>
+          <div className="w-50">Agility Training</div>
+          <div className="w-30">10 Sep, 2024</div>
+          <div className="w-30">
+            <span className="bg-[#FCBE2D]/20 text-[#FCBE2D] px-3 py-1 rounded-full text-xs font-semibold">Pending</span>
+          </div>
+          <div className="w-30 font-['Montserrat:Medium']">$150.00</div>
         </div>
-      </div>
-
-      {/* Trainer Performance */}
-      <div className="bg-white rounded-xl border p-5 shadow-sm">
-        <h3 className="text-lg font-semibold mb-4">Trainer Performance</h3>
-
-        <div className="space-y-3">
-          {trainerPerformance.map((trainer) => (
-            <div
-              key={trainer.trainerName}
-              className="flex justify-between items-center border rounded-lg p-3"
-            >
-              <span className="font-medium">{trainer.trainerName}</span>
-              <span className="text-sm text-gray-600">
-                {trainer.students} students
-              </span>
-            </div>
-          ))}
+        
+        <div className="flex items-center text-[#4f4f4f] font-['Arial:Regular'] text-[16px] py-4 border-b border-[#e5e5e5] last:border-b-0">
+          <div className="w-45 text-[#282828]">Charlie</div>
+          <div className="w-40">Alice Johnson</div>
+          <div className="w-50">Puppy Basics</div>
+          <div className="w-30">08 Sep, 2024</div>
+          <div className="w-30">
+             <span className="bg-[#00B69B]/20 text-[#00B69B] px-3 py-1 rounded-full text-xs font-semibold">Accepted</span>
+          </div>
+          <div className="w-30 font-['Montserrat:Medium']">$120.00</div>
         </div>
-      </div>
 
-      {/* Enrollment Status */}
-      <div className="bg-white rounded-xl border p-5 shadow-sm">
-        <h3 className="text-lg font-semibold mb-4">
-          Enrollment Status Distribution
-        </h3>
-
-        <div className="space-y-3">
-          {enrollmentStatusDistribution.map((item) => (
-            <div
-              key={item.status}
-              className="flex justify-between items-center border rounded-lg p-3"
-            >
-              <span className="font-medium">{item.status}</span>
-              <span className="text-sm text-gray-600">{item.count}</span>
-            </div>
-          ))}
-        </div>
+        {/* Empty State placeholder (hidden when items exist) */}
+        {/* <div className="text-center py-12 text-[#4f4f4f] font-['Arial:Regular']">
+            No recent admissions found.
+        </div> */}
       </div>
     </div>
   );

@@ -1,6 +1,6 @@
 "use client";
 
-import { Bell, LogOut, Settings, ChevronRight, Menu, X, User } from "lucide-react";
+import { Bell, Mail, LogOut, Settings, ChevronRight, Menu, X, User } from "lucide-react";
 import { useMobileMenu } from "@/contexts/MobileMenuContext";
 import Image from "next/image";
 import Link from "next/link";
@@ -64,8 +64,8 @@ export function DashboardNavbar() {
   }, []);
 
   return (
-    <nav className="absolute top-0 z-100 w-full bg-white ">
-      <div className="flex items-center justify-between px-6 lg:px-8 h-16">
+    <nav className="absolute top-0 z-100 w-full bg-white border-b border-[#d0d0d0]">
+      <div className="flex items-center justify-between px-[38px] h-[80px]">
         {/* Left - Greeting Section */}
         <div className="flex items-center gap-4 flex-1">
           {/* Mobile Hamburger Menu */}
@@ -89,12 +89,20 @@ export function DashboardNavbar() {
         </div>
 
         {/* Right - Icons */}
-        <div className="flex items-center gap-8">
+        <div className="flex items-center gap-[12px]">
+          {/* Mail */}
+          <button className="relative p-2 hover:bg-gray-100 rounded-lg transition-colors cursor-pointer">
+            <Mail size={22.5} className="text-[#282828]" strokeWidth={1.5} />
+            <span className="absolute top-1.5 right-1 min-w-[15px] h-[15px] px-1 bg-[#FF7176] text-white text-[10px] font-bold rounded-full flex items-center justify-center border-2 border-white leading-none">
+              2
+            </span>
+          </button>
+
           {/* Notifications */}
-          <button className="relative p-3 hover:bg-gray-100 rounded-lg transition-colors cursor-pointer">
-            <Bell size={24} className="text-foreground" strokeWidth={1.5} />
+          <button className="relative p-2 hover:bg-gray-100 rounded-lg transition-colors cursor-pointer mr-2">
+            <Bell size={22.5} className="text-[#282828]" strokeWidth={1.5} />
             {totalUnreadCount > 0 && (
-              <span className="absolute top-2 right-2 min-w-[18px] h-[18px] px-1 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center border-2 border-white">
+              <span className="absolute top-1 right-1 min-w-[15px] h-[15px] px-1 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center border-2 border-white leading-none">
                 {totalUnreadCount > 99 ? "99+" : totalUnreadCount}
               </span>
             )}
@@ -106,7 +114,7 @@ export function DashboardNavbar() {
               onClick={() => setShowProfileMenu(!showProfileMenu)}
               className="flex items-center justify-center cursor-pointer"
             >
-              <div className="w-8 h-8 rounded-full flex items-center justify-center overflow-hidden hover:ring-2 hover:ring-primary/30 transition-all">
+              <div className="w-[32.4px] h-[32.4px] rounded-full flex items-center justify-center overflow-hidden hover:ring-2 hover:ring-primary/30 transition-all">
                 {userImage ? (
                   <img
                     src={userImage}

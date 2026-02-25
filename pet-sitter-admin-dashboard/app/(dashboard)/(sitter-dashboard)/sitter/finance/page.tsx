@@ -1,9 +1,9 @@
-import SitterFinanceClient from "@/components/dashboard/sitter/finance/SitterFinanceClient";
+import HotelFinanceClient from "@/components/dashboard/hotel/finance/HotelFinanceClient";
 
-export default function SitterFinancePage() {
+export default function HotelFinancePage() {
   return (
     <div className="p-6">
-      <SitterFinanceClient />
+      <HotelFinanceClient />
     </div>
   );
 }

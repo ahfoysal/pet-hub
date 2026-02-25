@@ -1,10 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useGetAllKycSubmissionsQuery } from "@/redux/features/api/dashboard/admin/kyc/adminKycApi";
-import { Eye, Search, Filter, CheckCircle, XCircle, FileCheck, Clock, UserCheck } from "lucide-react";
-import KycDetailsModal from "@/components/dashboard/admin/kyc/KycDetailsModal";
-import { KYCData } from "@/types/dashboard/admin/kyc/adminKycType";
+import { Eye, CheckCircle, XCircle, FileText } from "lucide-react";
 import {
   useApproveKycMutation,
   useRejectKycMutation,
@@ -13,38 +11,36 @@ import { useToast } from "@/contexts/ToastContext";
 import { useSession } from "next-auth/react";
 
 export default function AdminKycPage() {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [statusFilter, setStatusFilter] = useState<string>("ALL");
-  const [selectedKyc, setSelectedKyc] = useState<KYCData | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [statusFilter, setStatusFilter] = useState<"PENDING" | "APPROVED" | "REJECTED">("PENDING");
+  const [selectedKycId, setSelectedKycId] = useState<string | null>(null);
   const { status } = useSession();
 
   const { data, isLoading, isError, refetch } = useGetAllKycSubmissionsQuery(undefined, {
     skip: status === "loading",
   });
+  
   const [approveKyc, { isLoading: isApproving }] = useApproveKycMutation();
   const [rejectKyc, { isLoading: isRejecting }] = useRejectKycMutation();
   const { showToast } = useToast();
 
-  // Filter data based on search and status
-  const filteredData = data?.data?.filter((kyc) => {
-    const matchesSearch =
-      kyc.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      kyc.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      kyc.phoneNumber.includes(searchTerm);
+  const filteredData = useMemo(() => {
+    return data?.data?.filter((kyc) => kyc.status === statusFilter) || [];
+  }, [data, statusFilter]);
 
-    const matchesStatus = statusFilter === "ALL" || kyc.status === statusFilter;
+  // Derive the active item (auto-select first if none selected or not in current tab)
+  const activeKycId = useMemo(() => {
+    if (filteredData.length === 0) return null;
+    if (!selectedKycId || !filteredData.find((k) => k.id === selectedKycId)) {
+      return filteredData[0].id;
+    }
+    return selectedKycId;
+  }, [filteredData, selectedKycId]);
 
-    return matchesSearch && matchesStatus;
-  });
+  const selectedKyc = useMemo(() => {
+    return filteredData.find((k) => k.id === activeKycId) || null;
+  }, [filteredData, activeKycId]);
 
-  const handleViewDetails = (kyc: KYCData) => {
-    setSelectedKyc(kyc);
-    setIsModalOpen(true);
-  };
-
-  const handleApprove = async (id: string, e: React.MouseEvent) => {
-    e.stopPropagation();
+  const handleApprove = async (id: string) => {
     try {
       const result = await approveKyc(id).unwrap();
       showToast(result.message || "KYC approved successfully!", "success");
@@ -53,8 +49,7 @@ export default function AdminKycPage() {
     }
   };
 
-  const handleReject = async (id: string, e: React.MouseEvent) => {
-    e.stopPropagation();
+  const handleReject = async (id: string) => {
     try {
       const result = await rejectKyc(id).unwrap();
       showToast(result.message || "KYC rejected successfully!", "success");
@@ -63,387 +58,301 @@ export default function AdminKycPage() {
     }
   };
 
-  const getStatusBadge = (status: string) => {
-    switch (status) {
-      case "APPROVED":
-        return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium rounded-full bg-emerald-50 text-emerald-700">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-            Approved
-          </span>
-        );
-      case "REJECTED":
-        return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium rounded-full bg-red-50 text-red-700">
-            <span className="w-1.5 h-1.5 rounded-full bg-red-500"></span>
-            Rejected
-          </span>
-        );
-      case "PENDING":
-        return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium rounded-full bg-amber-50 text-amber-700">
-            <span className="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
-            Pending
-          </span>
-        );
-      default:
-        return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium rounded-full bg-gray-50 text-gray-600">
-            <span className="w-1.5 h-1.5 rounded-full bg-gray-400"></span>
-            {status}
-          </span>
-        );
-    }
-  };
-
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+      <div className="flex items-center justify-center min-h-[calc(100vh-80px)]">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#ff7176]"></div>
       </div>
     );
   }
 
   if (isError) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-center bg-white p-8 rounded-2xl shadow-sm max-w-md">
-          <div className="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-4">
-            <FileCheck className="w-8 h-8 text-red-500" />
-          </div>
-          <h2 className="text-xl font-bold text-gray-900 mb-2">Failed to load KYC submissions</h2>
-          <p className="text-gray-500 mb-5">Something went wrong. Please try again.</p>
+      <div className="flex items-center justify-center min-h-[calc(100vh-80px)] bg-[#f2f4f8]">
+        <div className="text-center bg-white p-8 rounded-[14px] shadow-sm max-w-md w-full">
+          <h2 className="text-xl font-bold text-gray-900 mb-2 font-['Nunito',sans-serif]">Failed to load KYC</h2>
+          <p className="text-gray-500 mb-5 font-['Arimo',sans-serif]">Please try again or contact support.</p>
           <button 
             onClick={() => refetch()}
-            className="px-5 py-2.5 bg-primary text-white rounded-xl font-medium hover:bg-primary/90 transition-colors"
+            className="px-6 py-3 bg-[#ff7176] text-white rounded-[10px] font-['Nunito',sans-serif] font-bold hover:bg-[#ff5a60] transition-colors"
           >
-            Try Again
+            Retry
           </button>
         </div>
       </div>
     );
   }
 
+  const pendingCount = data?.data?.filter((k) => k.status === "PENDING").length || 0;
+  const approvedCount = data?.data?.filter((k) => k.status === "APPROVED").length || 0;
+  const rejectedCount = data?.data?.filter((k) => k.status === "REJECTED").length || 0;
+
   return (
-    <div className="space-y-5 sm:space-y-6">
-      {/* Header */}
-      <div>
-        <h1 className="text-2xl sm:text-3xl text-gray-900 font-bold">
-          KYC Verification
-        </h1>
-        <p className="text-gray-500 mt-1 text-sm sm:text-base">
-          Review and manage user verification requests
-        </p>
-      </div>
-
-      {/* Search and Filter Bar */}
-      <div className="bg-white rounded-2xl shadow-sm p-4">
-        <div className="flex flex-col md:flex-row gap-3 sm:gap-4">
-          {/* Search */}
-          <div className="flex-1 relative">
-            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-            <input
-              type="text"
-              placeholder="Search by name, email, or phone..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-12 pr-4 py-3 text-sm bg-gray-50 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:bg-white transition-all border-0"
-            />
+    <div className="size-full bg-[#f2f4f8] -m-6 p-6 min-h-[calc(100vh-80px)]" data-name="KYC Verification">
+      <div className="flex flex-col gap-[25px] w-[1090px] mx-auto mt-[26px]">
+        {/* Header Text */}
+        <div className="flex flex-col gap-[8px] h-[68px] w-full">
+          <div className="h-[36px] w-full">
+            <h1 className="font-['Nunito',sans-serif] font-medium leading-[36px] text-[#0a0a0a] text-[30px] m-0">
+               KYC Verification
+            </h1>
           </div>
-
-          {/* Status Filter */}
-          <div className="flex items-center gap-2">
-            <Filter className="text-gray-400 h-5 w-5 flex-shrink-0" />
-            <select
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-              className="w-full md:w-auto px-4 py-3 text-sm bg-gray-50 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:bg-white transition-all border-0 cursor-pointer"
-            >
-              <option value="ALL">All Status</option>
-              <option value="PENDING">Pending</option>
-              <option value="APPROVED">Approved</option>
-              <option value="REJECTED">Rejected</option>
-            </select>
-          </div>
-        </div>
-      </div>
-
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="bg-white rounded-2xl shadow-sm p-5 hover:shadow-md transition-all duration-300 group">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-500 font-medium">Total Submissions</p>
-              <p className="text-2xl font-bold text-gray-900 mt-2">
-                {data?.data?.length || 0}
-              </p>
-            </div>
-            <div className="p-3.5 bg-blue-50 rounded-xl transition-transform duration-300 group-hover:scale-110">
-              <FileCheck className="h-6 w-6 text-blue-500" />
-            </div>
+          <div className="h-[24px] w-full">
+            <p className="font-['Arimo',sans-serif] font-normal leading-[24px] text-[#4a5565] text-[16px] m-0">
+               Review and approve provider verification documents
+            </p>
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-sm p-5 hover:shadow-md transition-all duration-300 group">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-500 font-medium">Pending Review</p>
-              <p className="text-2xl font-bold text-amber-500 mt-2">
-                {data?.data?.filter((k) => k.status === "PENDING").length || 0}
-              </p>
-            </div>
-            <div className="p-3.5 bg-amber-50 rounded-xl transition-transform duration-300 group-hover:scale-110">
-              <Clock className="h-6 w-6 text-amber-500" />
-            </div>
-          </div>
+        {/* Analytics Cards */}
+        <div className="flex gap-[12px] items-center w-[1090px] h-[119px]">
+           <div className="bg-white border border-[rgba(197,197,197,0.2)] flex flex-col justify-between p-[20px] rounded-[7.7px] flex-1 h-full">
+               <span className="font-['Arimo',sans-serif] font-bold text-[#0f172b] text-[16px]">Pending Requests</span>
+               <span className="font-['Nunito',sans-serif] font-semibold text-[#f59e0b] text-[24px]">{pendingCount}</span>
+           </div>
+           <div className="bg-white border border-[rgba(197,197,197,0.2)] flex flex-col justify-between p-[20px] rounded-[7.7px] flex-1 h-full">
+               <span className="font-['Arimo',sans-serif] font-bold text-[#0f172b] text-[16px]">Approved</span>
+               <span className="font-['Nunito',sans-serif] font-semibold text-[#00a63e] text-[24px]">{approvedCount}</span>
+           </div>
+           <div className="bg-white border border-[rgba(197,197,197,0.2)] flex flex-col justify-between p-[20px] rounded-[7.7px] flex-1 h-full">
+               <span className="font-['Arimo',sans-serif] font-bold text-[#0f172b] text-[16px]">Rejected</span>
+               <span className="font-['Nunito',sans-serif] font-semibold text-[#e11d48] text-[24px]">{rejectedCount}</span>
+           </div>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-sm p-5 hover:shadow-md transition-all duration-300 group">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-500 font-medium">Approved</p>
-              <p className="text-2xl font-bold text-emerald-600 mt-2">
-                {data?.data?.filter((k) => k.status === "APPROVED").length || 0}
-              </p>
-            </div>
-            <div className="p-3.5 bg-emerald-50 rounded-xl transition-transform duration-300 group-hover:scale-110">
-              <UserCheck className="h-6 w-6 text-emerald-500" />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* KYC Table */}
-      <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
-        <div className="p-5 sm:p-6">
-          <h2 className="text-lg font-semibold text-gray-900">
-            All KYC Submissions
-            <span className="ml-2 text-sm font-normal text-gray-500">
-              {filteredData?.length || 0} submissions
-            </span>
-          </h2>
+        {/* Status Tabs */}
+        <div className="bg-white border border-[#e2e8f0] flex h-[76px] items-center px-[20px] rounded-[14px] w-full gap-[8px]">
+           {[
+             { id: "PENDING", label: "Pending Requests" },
+             { id: "APPROVED", label: "Approved" },
+             { id: "REJECTED", label: "Rejected" },
+           ].map((tab) => (
+             <button
+               key={tab.id}
+               onClick={() => setStatusFilter(tab.id as "PENDING" | "APPROVED" | "REJECTED")}
+               className={`px-[16px] py-[8px] rounded-[10px] text-[14px] font-['Inter',sans-serif] font-medium leading-[20px] transition-colors ${
+                 statusFilter === tab.id
+                   ? tab.id === "REJECTED" ? "bg-[#ff6f75] text-white" : "bg-[#f1f5f9] text-[#475569]"
+                   : "bg-[#f1f5f9] text-[#475569] hover:bg-[#e2e8f0]"
+               }`}
+               style={statusFilter === tab.id && tab.id !== "REJECTED" ? { backgroundColor: tab.id === "PENDING" ? "#f1f5f9" : "#e0e7ff", color: "#475569" } : {}}
+             >
+               {tab.label}
+             </button>
+           ))}
         </div>
 
-        {/* Mobile Card View */}
-        <div className="block lg:hidden">
-          {filteredData && filteredData.length > 0 ? (
-            filteredData.map((kyc, index) => (
-              <div
-                key={kyc.id}
-                className={`p-4 hover:bg-gray-50 transition-colors ${
-                  index !== 0 ? "border-t border-gray-50" : ""
-                }`}
-              >
-                <div className="flex items-start gap-3 mb-3">
-                  <img
-                    src={kyc.image}
-                    alt={kyc.fullName}
-                    className="h-12 w-12 rounded-full object-cover flex-shrink-0"
-                  />
-                  <div className="flex-1 min-w-0">
-                    <h3 className="text-sm font-semibold text-gray-900 truncate">
-                      {kyc.fullName}
-                    </h3>
-                    <p className="text-xs text-gray-500 truncate">
-                      {kyc.email}
-                    </p>
-                    <p className="text-xs text-gray-400">{kyc.phoneNumber}</p>
+        {/* Split View Content */}
+        <div className="flex gap-[20px] w-full h-[600px] items-start">
+          
+          {/* Left Side: KYC List */}
+          <div className="bg-white border border-[#e2e8f0] rounded-[14px] w-[350px] h-full flex flex-col overflow-hidden shrink-0">
+             <div className="px-[20px] py-[16px] border-b border-[#e2e8f0]">
+                <h3 className="font-['Arimo',sans-serif] font-bold text-[16px] text-[#0f172b]">
+                   {statusFilter === "PENDING" ? "Pending KYC Requests" : statusFilter === "APPROVED" ? "Approved KYC Requests" : "Rejected KYC Requests"}
+                </h3>
+             </div>
+             <div className="flex-1 overflow-y-auto custom-scrollbar p-[12px] flex flex-col gap-[8px]">
+                {filteredData.length === 0 ? (
+                  <div className="p-8 text-center text-gray-500 font-['Arimo',sans-serif]">
+                     No {statusFilter.toLowerCase()} requests
                   </div>
-                  {getStatusBadge(kyc.status)}
-                </div>
-                <div className="flex flex-col gap-2">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <span className="px-2 py-1 text-xs font-medium rounded-full bg-violet-50 text-violet-700">
-                        {kyc.roleType}
-                      </span>
-                      <span className="text-xs text-gray-400">
-                        {new Date(kyc.createdAt).toLocaleDateString("en-US", {
-                          month: "short",
-                          day: "numeric",
-                        })}
-                      </span>
-                    </div>
-                    <button
-                      onClick={() => handleViewDetails(kyc)}
-                      className="inline-flex items-center gap-1 text-primary hover:text-primary/80 transition-colors cursor-pointer"
+                ) : (
+                  filteredData.map(request => (
+                    <div 
+                      key={request.id} 
+                      onClick={() => setSelectedKycId(request.id)}
+                      className={`p-[16px] rounded-[10px] cursor-pointer border transition-colors ${activeKycId === request.id ? 'border-[#ff7176] bg-[#fff5f5]' : 'border-transparent hover:bg-gray-50'}`}
                     >
-                      <Eye className="h-5 w-5" />
-                      <span className="text-sm font-medium">View</span>
-                    </button>
-                  </div>
-                  {kyc.status === "PENDING" && (
-                    <div className="flex items-center gap-2 pt-3 border-t border-gray-50">
-                      <button
-                        onClick={(e) => handleReject(kyc.id, e)}
-                        disabled={isRejecting}
-                        className="flex-1 px-3 py-2.5 bg-red-50 text-red-600 cursor-pointer rounded-xl font-medium hover:bg-red-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm"
-                      >
-                        <XCircle className="h-4 w-4" />
-                        Reject
-                      </button>
-                      <button
-                        onClick={(e) => handleApprove(kyc.id, e)}
-                        disabled={isApproving}
-                        className="flex-1 px-3 py-2.5 cursor-pointer bg-emerald-600 text-white rounded-xl font-medium hover:bg-emerald-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm"
-                      >
-                        <CheckCircle className="h-4 w-4" />
-                        Approve
-                      </button>
+                       <div className="flex justify-between items-start mb-[8px]">
+                          <span className="font-['Arimo',sans-serif] font-bold text-[16px] text-[#0f172b] truncate w-[180px]">{request.fullName}</span>
+                          <span className={`px-[8px] py-[2px] rounded-[20px] text-[10px] font-['Nunito',sans-serif] font-bold ${
+                             statusFilter === "PENDING" ? "bg-[#fef3c7] text-[#d97706]" : 
+                             statusFilter === "APPROVED" ? "bg-[#dcfce7] text-[#008236]" : 
+                             "bg-[#fee2e2] text-[#ef4444]"
+                          }`}>
+                            {statusFilter === "PENDING" ? "Pending" : statusFilter === "APPROVED" ? "Approved" : "Rejected"}
+                          </span>
+                       </div>
+                       <div className="flex items-center mb-[8px]">
+                          <span className="inline-flex items-center px-[8px] py-[2px] rounded-full bg-[#f8e8f8] text-[#9333ea] text-[10px] font-medium font-['Nunito',sans-serif]">
+                            {request.roleType}
+                          </span>
+                       </div>
+                       <div className="text-[12px] text-[#62748e] font-['Arimo',sans-serif]">
+                          Submitted: {new Date(request.createdAt).toISOString().split('T')[0]}
+                       </div>
                     </div>
-                  )}
-                </div>
-              </div>
-            ))
+                  ))
+                )}
+             </div>
+          </div>
+
+          {/* Right Side: KYC Details */}
+          {selectedKyc ? (
+            <div className="bg-white border border-[#e2e8f0] rounded-[14px] w-[720px] h-full flex flex-col overflow-hidden relative">
+               {/* Red Header (for Pending/Rejected) or Green (for Approved) */}
+               <div className={`px-[30px] py-[24px] ${statusFilter === 'APPROVED' ? 'bg-[#00c950]' : 'bg-[#ff6f75]'} shrink-0`}>
+                  <div className="flex justify-between items-start">
+                     <div className="flex flex-col">
+                        <h2 className="text-[24px] font-bold text-white font-['Nunito',sans-serif] leading-tight">
+                          {selectedKyc.fullName}
+                        </h2>
+                        <p className="text-white/90 text-[14px] mt-1 font-['Arimo',sans-serif]">
+                          {selectedKyc.roleType === "SCHOOL" ? "Pet School" : selectedKyc.roleType === "HOTEL" ? "Pet Hotel" : selectedKyc.roleType === "VENDOR" ? "Vendor" : "Pet Sitter"} Application
+                        </p>
+                     </div>
+                     <span className={`px-[12px] py-[4px] rounded-[20px] text-[12px] font-['Nunito',sans-serif] font-bold ${
+                        statusFilter === "PENDING" ? "bg-[#fef3c7] text-[#d97706]" : 
+                        statusFilter === "APPROVED" ? "bg-white text-[#008236]" : 
+                        "bg-[#fee2e2] text-[#ef4444]"
+                     }`}>
+                       {statusFilter === "PENDING" ? "Pending" : statusFilter === "APPROVED" ? "Approved" : "Rejected"}
+                     </span>
+                  </div>
+               </div>
+
+               {/* Scrollable Details */}
+               <div className="flex-1 overflow-y-auto custom-scrollbar p-[30px] flex flex-col gap-[30px]">
+                  
+                  {/* Provider Information */}
+                  <div>
+                     <h3 className="text-[#0f172b] text-[18px] font-bold font-['Nunito',sans-serif] mb-4">
+                       Provider Information
+                     </h3>
+                     <div className="grid grid-cols-2 gap-y-[20px] gap-x-[40px]">
+                        <div>
+                           <p className="text-[#62748e] text-[13px] font-normal font-['Arimo',sans-serif] mb-1">Provider ID</p>
+                           <p className="text-[#0a0a0a] text-[15px] font-semibold font-['Nunito',sans-serif]">{selectedKyc.id.slice(0, 8).toUpperCase()}</p>
+                        </div>
+                        <div>
+                           <p className="text-[#62748e] text-[13px] font-normal font-['Arimo',sans-serif] mb-1">Category</p>
+                           <span className="inline-flex px-[10px] py-[2px] bg-[#e0f2fe] text-[#0284c7] text-[12px] font-bold rounded-full font-['Nunito',sans-serif]">
+                             {selectedKyc.roleType}
+                           </span>
+                        </div>
+                        <div>
+                           <p className="text-[#62748e] text-[13px] font-normal font-['Arimo',sans-serif] mb-1">Owner Name</p>
+                           <p className="text-[#0a0a0a] text-[15px] font-semibold font-['Nunito',sans-serif]">{selectedKyc.fullName}</p>
+                        </div>
+                        <div>
+                           <p className="text-[#62748e] text-[13px] font-normal font-['Arimo',sans-serif] mb-1">Submitted Date</p>
+                           <p className="text-[#0a0a0a] text-[15px] font-semibold font-['Nunito',sans-serif]">{new Date(selectedKyc.createdAt).toISOString().split('T')[0]}</p>
+                        </div>
+                     </div>
+                  </div>
+
+                  {/* Other Details - Mapped from auth-and-kyc submission */}
+                  <div className="border-t border-[#e2e8f0] pt-[30px]">
+                     <h3 className="text-[#0f172b] text-[18px] font-bold font-['Nunito',sans-serif] mb-4">
+                       Personal Information
+                     </h3>
+                     <div className="grid grid-cols-2 gap-y-[20px] gap-x-[40px]">
+                        <div>
+                           <p className="text-[#62748e] text-[13px] font-normal font-['Arimo',sans-serif] mb-1">Email Address</p>
+                           <p className="text-[#0a0a0a] text-[15px] font-semibold font-['Nunito',sans-serif]">{selectedKyc.email}</p>
+                        </div>
+                        <div>
+                           <p className="text-[#62748e] text-[13px] font-normal font-['Arimo',sans-serif] mb-1">Phone Number</p>
+                           <p className="text-[#0a0a0a] text-[15px] font-semibold font-['Nunito',sans-serif]">{selectedKyc.phoneNumber}</p>
+                        </div>
+                        <div>
+                           <p className="text-[#62748e] text-[13px] font-normal font-['Arimo',sans-serif] mb-1">Nationality</p>
+                           <p className="text-[#0a0a0a] text-[15px] font-semibold font-['Nunito',sans-serif]">{selectedKyc.nationality || "US Resident"}</p>
+                        </div>
+                        <div>
+                           <p className="text-[#62748e] text-[13px] font-normal font-['Arimo',sans-serif] mb-1">Present Address</p>
+                           <p className="text-[#0a0a0a] text-[15px] font-semibold font-['Nunito',sans-serif] break-words">{selectedKyc.presentAddress || "N/A"}</p>
+                        </div>
+                     </div>
+                  </div>
+
+                  {/* Submitted Documents */}
+                  <div className="border-t border-[#e2e8f0] pt-[30px] pb-[30px]">
+                     <h3 className="text-[#0f172b] text-[18px] font-bold font-['Nunito',sans-serif] mb-4">
+                       Submitted Documents
+                     </h3>
+                     <div className="flex flex-col gap-[12px]">
+                        <DocumentRow 
+                          title="ID / Driver License Front" 
+                          iconColor="text-[#ff6f75]" 
+                          bgColor="bg-[#fff1f2]" 
+                          fileName="driver_license_front.pdf" 
+                          url={selectedKyc.identificationFrontImage} 
+                        />
+                        <DocumentRow 
+                          title="ID / Driver License Back" 
+                          iconColor="text-[#3b82f6]" 
+                          bgColor="bg-[#eff6ff]" 
+                          fileName="driver_license_back.pdf" 
+                          url={selectedKyc.identificationBackImage} 
+                        />
+                        <DocumentRow 
+                          title="Business / Vendor Certificate" 
+                          iconColor="text-[#00c950]" 
+                          bgColor="bg-[#f0fdf4]" 
+                          fileName="business_certificate.pdf" 
+                          url={selectedKyc.signatureImage} 
+                        />
+                     </div>
+                  </div>
+               </div>
+
+               {/* Action Footer for PENDING only */}
+               {statusFilter === "PENDING" && (
+                 <div className="px-[30px] py-[20px] border-t border-[#e2e8f0] bg-white shrink-0 flex gap-[16px]">
+                    <button 
+                      onClick={() => handleApprove(selectedKyc.id)}
+                      disabled={isApproving || isRejecting}
+                      className="flex-1 bg-[#00c950] hover:bg-[#00b046] text-white flex justify-center items-center gap-[8px] h-[48px] rounded-[10px] font-['Nunito',sans-serif] font-bold text-[16px] transition-colors disabled:opacity-50"
+                    >
+                       <CheckCircle className="w-[20px] h-[20px]" />
+                       {isApproving ? "Approving..." : "Approve KYC"}
+                    </button>
+                    <button 
+                      onClick={() => handleReject(selectedKyc.id)}
+                      disabled={isApproving || isRejecting}
+                      className="flex-1 bg-[#ff6f75] hover:bg-[#ff5a60] text-white flex justify-center items-center gap-[8px] h-[48px] rounded-[10px] font-['Nunito',sans-serif] font-bold text-[16px] transition-colors disabled:opacity-50"
+                    >
+                       <XCircle className="w-[20px] h-[20px]" />
+                       {isRejecting ? "Rejecting..." : "Reject with Reason"}
+                    </button>
+                 </div>
+               )}
+            </div>
           ) : (
-            <div className="p-8 text-center">
-              <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-3">
-                <Search className="h-8 w-8 text-gray-300" />
-              </div>
-              <p className="text-base font-medium text-gray-600">No KYC submissions found</p>
-              <p className="text-sm text-gray-400 mt-1">Try adjusting your search or filters</p>
+            <div className="bg-white border border-[#e2e8f0] rounded-[14px] w-[720px] h-full flex items-center justify-center">
+               <p className="text-[#62748e] font-['Arimo',sans-serif]">Select a KYC request to view details</p>
             </div>
           )}
-        </div>
 
-        {/* Desktop Table View */}
-        <div className="hidden lg:block overflow-x-auto">
-          <table className="w-full border-collapse">
-            <thead>
-              <tr className="bg-gray-50/80">
-                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                  Applicant
-                </th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                  Contact
-                </th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                  Role Type
-                </th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                  Status
-                </th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                  Submitted
-                </th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredData && filteredData.length > 0 ? (
-                filteredData.map((kyc, index) => (
-                  <tr
-                    key={kyc.id}
-                    className="hover:bg-gray-50/50 transition-colors"
-                    style={{ borderTop: index !== 0 ? '1px solid #f9fafb' : 'none' }}
-                  >
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center">
-                        <img
-                          src={kyc.image}
-                          alt={kyc.fullName}
-                          className="h-11 w-11 rounded-full object-cover"
-                        />
-                        <div className="ml-4">
-                          <div className="text-sm font-semibold text-gray-900">
-                            {kyc.fullName}
-                          </div>
-                          <div className="text-xs text-gray-400 mt-0.5">
-                            {kyc.identificationType} - {kyc.identificationNumber}
-                          </div>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm font-medium text-gray-900">{kyc.email}</div>
-                      <div className="text-xs text-gray-400 mt-0.5">
-                        {kyc.phoneNumber}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="px-2.5 py-1 text-xs font-medium rounded-full bg-violet-50 text-violet-700">
-                        {kyc.roleType}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      {getStatusBadge(kyc.status)}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {new Date(kyc.createdAt).toLocaleDateString("en-US", {
-                        month: "short",
-                        day: "numeric",
-                        year: "numeric",
-                      })}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center gap-1">
-                        <button
-                          onClick={() => handleViewDetails(kyc)}
-                          className="p-2 text-gray-400 hover:text-primary hover:bg-gray-100 rounded-lg transition-all"
-                          title="View Details"
-                        >
-                          <Eye className="h-5 w-5" />
-                        </button>
-                        {kyc.status === "PENDING" && (
-                          <>
-                            <button
-                              onClick={(e) => handleReject(kyc.id, e)}
-                              disabled={isRejecting}
-                              className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                              title="Reject"
-                            >
-                              <XCircle className="h-5 w-5" />
-                            </button>
-                            <button
-                              onClick={(e) => handleApprove(kyc.id, e)}
-                              disabled={isApproving}
-                              className="p-2 text-gray-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                              title="Approve"
-                            >
-                              <CheckCircle className="h-5 w-5" />
-                            </button>
-                          </>
-                        )}
-                      </div>
-                    </td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td
-                    colSpan={6}
-                    className="px-6 py-12 text-center"
-                  >
-                    <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-3">
-                      <Search className="h-8 w-8 text-gray-300" />
-                    </div>
-                    <p className="text-base font-medium text-gray-600">
-                      No KYC submissions found
-                    </p>
-                    <p className="text-sm text-gray-400 mt-1">
-                      Try adjusting your search or filters
-                    </p>
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
         </div>
       </div>
+    </div>
+  );
+}
 
-      {/* KYC Details Modal */}
-      {selectedKyc && (
-        <KycDetailsModal
-          isOpen={isModalOpen}
-          onClose={() => {
-            setIsModalOpen(false);
-            setSelectedKyc(null);
-          }}
-          kycData={selectedKyc}
-        />
-      )}
+// Document Row Component mimicking Figma exactly
+function DocumentRow({ title, iconColor, bgColor, fileName, url }: { title: string; iconColor: string; bgColor: string; fileName: string; url: string }) {
+  return (
+    <div className="border border-[#e2e8f0] rounded-[10px] p-[16px] flex items-center justify-between">
+       <div className="flex items-center gap-[16px]">
+          <div className={`w-[40px] h-[40px] rounded-[8px] flex items-center justify-center ${bgColor}`}>
+             <FileText className={`w-[20px] h-[20px] ${iconColor}`} />
+          </div>
+          <div className="flex flex-col">
+             <span className="font-['Arimo',sans-serif] font-bold text-[15px] text-[#0f172b]">{title}</span>
+             <span className="font-['Arimo',sans-serif] font-normal text-[13px] text-[#62748e]">{fileName}</span>
+          </div>
+       </div>
+       <a 
+          href={url || "#"} 
+          target="_blank" 
+          rel="noreferrer"
+          className="text-[#62748e] hover:text-[#0f172b] p-[8px] rounded-[8px] hover:bg-gray-100 transition-colors"
+       >
+          <Eye className="w-[20px] h-[20px]" />
+       </a>
     </div>
   );
 }

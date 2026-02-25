@@ -3,11 +3,11 @@
 import type React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useSession, signOut } from "next-auth/react";
 import { renderIcon } from "@/lib/iconUtils";
-import { getVisibleMenuItems, UserRole } from "@/lib/sidebarRoutes";
-import { X, LogOut, Settings } from "lucide-react";
+import { getVisibleMenuItems, UserRole, MenuItemConfig } from "@/lib/sidebarRoutes";
+import { X, LogOut, Settings, ChevronDown, ChevronUp } from "lucide-react";
 import { useAppDispatch } from "@/redux/store/hooks";
 import { clearCredentials } from "@/redux/features/slice/authSlice";
 import Button from "@/components/ui/Button";
@@ -19,6 +19,11 @@ export default function DashboardSidebar() {
   const { data: session, status } = useSession();
   const dispatch = useAppDispatch();
   const { isMobileMenuOpen, setIsMobileMenuOpen } = useMobileMenu();
+  const [expandedMenus, setExpandedMenus] = useState<Record<string, boolean>>({});
+
+  const toggleMenu = (label: string) => {
+    setExpandedMenus((prev) => ({ ...prev, [label]: !prev[label] }));
+  };
 
   const userRole: UserRole | null =
     status === "authenticated" ? (session?.user?.role as UserRole) : null;
@@ -78,23 +83,68 @@ export default function DashboardSidebar() {
       >
         <div className="flex flex-col h-full mt-6">
           {/* Navigation */}
-          <nav className="flex-1 px-3 space-y-1 overflow-y-auto lg:pt-12">
+          <nav className="flex-1 px-3 space-y-2 overflow-y-auto lg:pt-12">
             {visibleItems.length > 0 ? (
-              visibleItems.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className={`flex items-center gap-3 px-3 py-3 rounded-lg text-sm font-medium transition-colors ${
-                    isActive(item.href)
-                      ? "bg-[#FF7176] text-white"
-                      : "text-gray-700 hover:bg-gray-100"
-                  }`}
-                >
-                  <span className="shrink-0">{renderIcon(item)}</span>
-                  <span>{item.label}</span>
-                </Link>
-              ))
+              visibleItems.map((item) => {
+                const isExpanded = expandedMenus[item.label];
+
+                if (item.subItems) {
+                  return (
+                    <div key={item.label} className="flex flex-col space-y-1">
+                      <button
+                        onClick={() => toggleMenu(item.label)}
+                        className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-[16px] font-['Arial'] transition-colors ${
+                          item.subItems.some((sub) => isActive(sub.href))
+                            ? "bg-[#FF7176]/10 text-[#FF7176]"
+                            : "text-[#282828] hover:bg-gray-100"
+                        }`}
+                      >
+                        <div className="flex items-center gap-2">
+                          <span className="shrink-0">{renderIcon(item)}</span>
+                          <span className="whitespace-nowrap">{item.label}</span>
+                        </div>
+                        {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                      </button>
+                      
+                      {isExpanded && (
+                        <div className="flex flex-col space-y-1 pl-4 mt-1 border-l-2 border-gray-100 ml-5">
+                          {item.subItems.map((subItem) => (
+                            <Link
+                              key={subItem.href}
+                              href={subItem.href}
+                              onClick={() => setIsMobileMenuOpen(false)}
+                              className={`flex items-center gap-3 px-3 py-2 rounded-lg text-[14px] font-['Arial'] transition-colors ${
+                                isActive(subItem.href)
+                                  ? "text-[#FF7176] font-medium bg-gray-50"
+                                  : "text-[#282828] hover:bg-gray-100"
+                              }`}
+                            >
+                              <span className="shrink-0 scale-90">{renderIcon(subItem as MenuItemConfig)}</span>
+                              <span className="whitespace-nowrap">{subItem.label}</span>
+                            </Link>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  );
+                }
+
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className={`flex items-center gap-2 px-3 py-2.5 rounded-lg text-[16px] font-['Arial'] transition-colors ${
+                      isActive(item.href)
+                        ? "bg-[#FF7176] text-white"
+                        : "text-[#282828] hover:bg-gray-100"
+                    }`}
+                  >
+                    <span className="shrink-0">{renderIcon(item)}</span>
+                    <span className="whitespace-nowrap">{item.label}</span>
+                  </Link>
+                );
+              })
             ) : (
               <p className="text-gray-400 px-3 text-sm">
                 No menu items available
@@ -113,7 +163,7 @@ export default function DashboardSidebar() {
               }`}
             >
               <Settings size={20} />
-              <span>Settings</span>
+              <span>Policies & Settings</span>
             </Link>
 
             <Button

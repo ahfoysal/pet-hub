@@ -13,6 +13,56 @@ import { clearCredentials } from "@/redux/features/slice/authSlice";
 import { useMobileMenu } from "@/contexts/MobileMenuContext";
 import { getRedirectSettingPath } from "@/lib/roleRoutes";
 
+import {
+  LayoutDashboard,
+  Settings,
+  LogOut,
+  TrendingUp,
+  BedDouble,
+  UtensilsCrossed,
+  Calendar,
+  Users,
+  Car,
+  Package,
+  Home,
+} from "lucide-react";
+
+const iconMap: Record<string, React.ElementType> = {
+  LayoutDashboard,
+  TrendingUp,
+  BedDouble,
+  UtensilsCrossed,
+  Calendar,
+  Users,
+  Car,
+  Package,
+  Home,
+};
+
+const renderIcon = (item: { icon?: React.ElementType; imageSrc?: string; label: string; href: string }) => {
+  if (item.icon) {
+    const IconComponent = item.icon;
+    return <IconComponent size={20} />;
+  }
+  // Fallback for imageSrc in hotel
+  if (item.imageSrc) {
+     // Map known hotel assets to Lucide for consistency if possible, or use Image
+     const IconFromMap = iconMap[item.href.split("/").pop()?.charAt(0).toUpperCase() + item.href.split("/").pop()?.slice(1) || ""];
+     if (IconFromMap) return <IconFromMap size={20} />;
+
+     return (
+       <Image
+         src={item.imageSrc}
+         alt={item.label}
+         width={20}
+         height={20}
+         className="object-contain"
+       />
+     );
+  }
+  return <LayoutDashboard size={20} />;
+};
+
 export default function DashboardSidebar() {
   const pathname = usePathname();
   const { data: session, status } = useSession();
@@ -63,102 +113,67 @@ export default function DashboardSidebar() {
   };
 
   return (
-    <div className="z-[60] relative">
-      {/* Sidebar */}
+    <div className="z-100 relative">
       <aside
-        className={`bg-white h-screen flex flex-col pt-[80px]
-    fixed inset-y-0 left-0 z-50 w-[276px]
-    transition-transform duration-300 ease-in-out border-r border-[#D0D0D0]
+        className={`bg-white h-screen flex flex-col pt-16 lg:pt-0
+    fixed inset-y-0 left-0 z-50 w-70 border-r border-[#f6f3eb]
+    transition-transform duration-300 ease-in-out
     lg:translate-x-0 ${isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"}
     lg:relative font-montserrat`}
       >
-        <div className="flex flex-col h-full py-[38px]">
-          {/* Navigation */}
-          <nav className="flex-1 px-[24px] space-y-[8px] overflow-y-auto">
+        <div className="flex flex-col h-full pt-10 px-9.5">
+          <nav className="flex-1 flex flex-col gap-3.5 overflow-y-auto min-h-0">
             {visibleItems.length > 0 ? (
               visibleItems.map((item) => (
                 <Link
                   key={item.href}
                   href={item.href}
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className={`flex items-center gap-[12px] px-[16px] py-[14px] rounded-[10px] text-[15px] font-medium transition-all group ${
+                  className={`flex items-center gap-3 h-10 rounded-[5px] text-[16px] font-medium transition-colors ${
                     isActive(item.href)
-                      ? "bg-[#FF7176] text-white shadow-sm"
+                      ? "bg-primary text-white pl-2"
                       : "text-[#282828] hover:bg-gray-50"
                   }`}
                 >
-                  <div className="shrink-0 w-[20px] h-[20px] flex items-center justify-center">
-                    {item.imageSrc ? (
-                      <Image
-                        src={item.imageSrc}
-                        alt={item.label}
-                        width={20}
-                        height={20}
-                        className={`object-contain transition-all ${
-                          isActive(item.href) ? "brightness-0 invert" : "opacity-80 group-hover:opacity-100"
-                        }`}
-                      />
-                    ) : (
-                      <span className="text-gray-400">?</span>
-                    )}
-                  </div>
+                  <span className={`shrink-0 ${isActive(item.href) ? "brightness-0 invert" : ""}`}>
+                    {renderIcon(item)}
+                  </span>
                   <span>{item.label}</span>
                 </Link>
               ))
             ) : (
-              <p className="text-gray-400 px-3 text-sm">
-                No menu items available
-              </p>
+              <p className="text-gray-400 text-sm">No menu items available</p>
             )}
           </nav>
 
           {/* Bottom Section */}
-          <div className="px-[24px] mt-auto space-y-[8px]">
+          <div className="flex flex-col gap-3.5 mt-auto pb-10">
             <Link
               href={getRedirectSettingPath(userRole)}
-              className={`flex items-center gap-[12px] px-[16px] py-[14px] rounded-[10px] text-[15px] font-medium transition-all group ${
+              className={`flex items-center gap-3 h-10 rounded-[5px] text-[16px] font-medium transition-colors ${
                 isActive(getRedirectSettingPath(userRole))
-                  ? "bg-[#FF7176] text-white"
+                  ? "bg-primary text-white pl-2"
                   : "text-[#282828] hover:bg-gray-50"
               }`}
             >
-              <div className="shrink-0 w-[20px] h-[20px] flex items-center justify-center">
-                <Image
-                  src="/assets/settings.svg"
-                  alt="Settings"
-                  width={20}
-                  height={20}
-                  className={`object-contain transition-all ${
-                    isActive(getRedirectSettingPath(userRole)) ? "brightness-0 invert" : "opacity-80 group-hover:opacity-100"
-                  }`}
-                />
-              </div>
+              <Settings size={20} />
               <span>Settings</span>
             </Link>
 
             <button
-              className="w-full flex items-center gap-[12px] px-[16px] py-[14px] rounded-[10px] text-[15px] font-medium text-[#FF7176] hover:bg-red-50 transition-all group"
+              className="flex items-center gap-3 h-10 rounded-[5px] text-[16px] font-medium text-[#282828] hover:bg-gray-50 transition-colors w-full text-left"
               onClick={handleLogout}
             >
-              <div className="shrink-0 w-[20px] h-[20px] flex items-center justify-center">
-                <Image
-                  src="/assets/logout.svg"
-                  alt="Log out"
-                  width={20}
-                  height={20}
-                  className="object-contain opacity-80 group-hover:opacity-100"
-                />
-              </div>
+              <LogOut size={20} />
               <span>Log out</span>
             </button>
           </div>
         </div>
       </aside>
 
-      {/* Mobile Overlay */}
       {isMobileMenuOpen && (
         <div
-          className="fixed inset-0 bg-black/40 z-[55] lg:hidden backdrop-blur-sm"
+          className="fixed inset-0 bg-black/40 z-30 lg:hidden backdrop-blur-sm"
           onClick={() => setIsMobileMenuOpen(false)}
         >
           <div className="absolute top-4 left-4 p-3 bg-white rounded-lg shadow-lg">

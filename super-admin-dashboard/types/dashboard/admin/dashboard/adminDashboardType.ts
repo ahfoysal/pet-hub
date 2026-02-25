@@ -67,6 +67,9 @@ export interface PetSitterItem {
   rating: number;
   status: "ACTIVE" | "BANNED" | "SUSPENDED";
   createdAt: string;
+  kycStatus?: "APPROVED" | "PENDING" | "REJECTED" | "NOT_SUBMITTED";
+  totalEarnings?: number;
+  location?: string;
 }
 
 export interface PetOwnersResponse {
@@ -84,5 +87,135 @@ export interface PetSittersResponse {
   data: {
     items: PetSitterItem[];
     nextCursor: string | null;
+  };
+}
+
+export interface PetSchoolItem {
+  id: string;
+  fullName: string;
+  email: string;
+  phone: string | null;
+  totalCourses: number;
+  rating: number;
+  status: "ACTIVE" | "BANNED" | "SUSPENDED";
+  createdAt: string;
+  kycStatus?: "APPROVED" | "PENDING" | "REJECTED" | "NOT_SUBMITTED";
+  totalEarnings?: number;
+  location?: string;
+}
+
+export interface PetSchoolsResponse {
+  success: boolean;
+  message: string;
+  data: {
+    items: PetSchoolItem[];
+    nextCursor: string | null;
+  };
+}
+
+export interface PetHotelItem {
+  id: string;
+  fullName: string;
+  email: string;
+  phone: string | null;
+  totalRooms: number;
+  totalGuests: number;
+  rating: number;
+  status: "ACTIVE" | "BANNED" | "SUSPENDED";
+  createdAt: string;
+  kycStatus?: "APPROVED" | "PENDING" | "REJECTED" | "NOT_SUBMITTED";
+  totalEarnings?: number;
+  location?: string;
+}
+
+export interface PetHotelsResponse {
+  success: boolean;
+  message: string;
+  data: {
+    items: PetHotelItem[];
+    nextCursor: string | null;
+  };
+}
+
+export interface PetVendorItem {
+  id: string;
+  fullName: string;
+  email: string;
+  phone: string | null;
+  totalProducts: number;
+  totalOrders: number;
+  rating: number;
+  status: "ACTIVE" | "BANNED" | "SUSPENDED";
+  createdAt: string;
+  kycStatus?: "APPROVED" | "PENDING" | "REJECTED" | "NOT_SUBMITTED";
+  totalEarnings?: number;
+  location?: string;
+}
+
+export interface PetVendorsResponse {
+  success: boolean;
+  message: string;
+  data: {
+    items: PetVendorItem[];
+    nextCursor: string | null;
+  };
+}
+
+export interface FinanceStatsResponse {
+  success: boolean;
+  message: string;
+  data: {
+    totalRevenue: number;
+    totalPlatformFees: number;
+    activeUsers: number;
+    totalBookings: number;
+  };
+}
+
+export interface GrowthAnalyticsItem {
+  name: string;
+  users: number;
+  bookings: number;
+}
+
+export interface GrowthAnalyticsResponse {
+  success: boolean;
+  message: string;
+  data: GrowthAnalyticsItem[];
+}
+
+export interface CategoryAnalyticsItem {
+  category: string;
+  revenue: number;
+  bookings: number;
+}
+
+export interface CategoryAnalyticsResponse {
+  success: boolean;
+  message: string;
+  data: CategoryAnalyticsItem[];
+}
+
+export interface TransactionItem {
+  id: string;
+  provider: {
+    name: string;
+    type: "Pet Sitter" | "Pet Hotel" | "Pet School" | "Vendor";
+  };
+  serviceType: string;
+  bookingId: string;
+  completionDate: string;
+  amount: number;
+  platformFee: number;
+  status: "PENDING" | "RELEASED" | "ON_HOLD";
+}
+
+export interface TransactionsResponse {
+  success: boolean;
+  message: string;
+  data: {
+    items: TransactionItem[];
+    nextCursor: string | null;
+    total?: number;
   };
 }

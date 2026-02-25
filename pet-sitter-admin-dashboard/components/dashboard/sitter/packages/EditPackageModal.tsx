@@ -1,9 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { X, Upload, Search, Check } from "lucide-react";
+import { X, Upload, EyeOff, Eye } from "lucide-react";
 import { useToast } from "@/contexts/ToastContext";
-import { useUpdatePackageMutation, useGetPackageByIdQuery } from "@/redux/features/api/dashboard/sitter/packages/sitterPackageApi";
+import { useUpdatePackageMutation } from "@/redux/features/api/dashboard/sitter/packages/sitterPackageApi";
 import { useGetSitterServiceQuery } from "@/redux/features/api/dashboard/sitter/services/sitterServiceApi";
 import { SitterPackageListItem } from "@/types/dashboard/sitter/sitterPackageTypes";
 
@@ -20,12 +20,6 @@ export default function EditPackageModal({
 }: EditPackageModalProps) {
   const { showToast } = useToast();
   const [updatePackage, { isLoading }] = useUpdatePackageMutation();
-
-  // Fetch full package details (includes services)
-  const { data: packageDetails } = useGetPackageByIdQuery(pkg?.id ?? "", {
-    skip: !isOpen || !pkg?.id,
-  });
-
   const { data: servicesData } = useGetSitterServiceQuery(undefined, {
     skip: !isOpen,
   });
@@ -40,31 +34,22 @@ export default function EditPackageModal({
 
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
-  const [serviceSearch, setServiceSearch] = useState("");
+  const [showTotal, setShowTotal] = useState(true);
 
   const services = servicesData?.data?.data ?? [];
-  const filteredServices = services.filter((s) =>
-    s.name.toLowerCase().includes(serviceSearch.toLowerCase())
-  );
 
-  // Populate form when package details load
   useEffect(() => {
-    if (packageDetails?.data && isOpen) {
-      const detail = packageDetails.data;
-      const priceInDollars = detail.offeredPrice
-        ? (parseFloat(detail.offeredPrice) / 100).toFixed(2)
-        : "";
-
+    if (pkg && isOpen) {
       setFormData({
-        name: detail.name || "",
-        description: detail.description || "",
-        offeredPrice: priceInDollars,
-        durationInMinutes: detail.durationInMinutes?.toString() || "",
-        serviceIds: detail.services?.map((s) => s.id) || [],
+        name: pkg.name,
+        description: pkg.description || "",
+        offeredPrice: pkg.offeredPrice ? (Number(pkg.offeredPrice) / 100).toFixed(0) : "",
+        durationInMinutes: pkg.durationInMinutes.toString(),
+        serviceIds: pkg.services?.map(s => s.id) || [],
       });
-      setImagePreview(detail.image || null);
+      setImagePreview(pkg.image || null);
     }
-  }, [packageDetails, isOpen]);
+  }, [pkg, isOpen]);
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -78,9 +63,7 @@ export default function EditPackageModal({
     if (file) {
       setImageFile(file);
       const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result as string);
-      };
+      reader.onloadend = () => setImagePreview(reader.result as string);
       reader.readAsDataURL(file);
     }
   };
@@ -94,20 +77,26 @@ export default function EditPackageModal({
     }));
   };
 
-  const handleSubmit = async () => {
+  const calculateTotalValue = () => {
+    return formData.serviceIds.reduce((total, id) => {
+      const service = services.find((s) => s.id === id);
+      return total + (service ? Number(service.price) / 100 : 0);
+    }, 0);
+  };
+
+  const handleSubmit = async (e?: React.FormEvent) => {
+    e?.preventDefault();
+
     if (!formData.name.trim()) {
       showToast("Package name is required", "error");
       return;
     }
-    if (!formData.description.trim()) {
-      showToast("Description is required", "error");
+    if (!formData.durationInMinutes || parseInt(formData.durationInMinutes) < 1) {
+      showToast("Duration must be at least 1 minute", "error");
       return;
     }
-    if (
-      !formData.durationInMinutes ||
-      parseInt(formData.durationInMinutes) < 1
-    ) {
-      showToast("Duration must be at least 1 minute", "error");
+    if (formData.serviceIds.length === 0) {
+      showToast("Please select at least one service", "error");
       return;
     }
 
@@ -116,20 +105,14 @@ export default function EditPackageModal({
       packageData.append("name", formData.name);
       packageData.append("description", formData.description);
       if (formData.offeredPrice) {
-        const priceInCents = Math.round(
-          parseFloat(formData.offeredPrice) * 100
-        );
+        const priceInCents = Math.round(parseFloat(formData.offeredPrice) * 100);
         packageData.append("offeredPrice", priceInCents.toString());
       }
       packageData.append("durationInMinutes", formData.durationInMinutes);
-      if (formData.serviceIds.length > 0) {
-        formData.serviceIds.forEach((id) => {
-          packageData.append("serviceIds", id);
-        });
-      }
-      if (imageFile) {
-        packageData.append("file", imageFile);
-      }
+      formData.serviceIds.forEach((id) => {
+        packageData.append("serviceIds", id);
+      });
+      if (imageFile) packageData.append("file", imageFile);
 
       if (pkg?.id) {
         await updatePackage({ id: pkg.id, data: packageData }).unwrap();
@@ -151,273 +134,206 @@ export default function EditPackageModal({
     });
     setImagePreview(null);
     setImageFile(null);
-    setServiceSearch("");
     onClose();
   };
 
   if (!isOpen || !pkg) return null;
 
-  const inputStyles =
-    "w-full px-4 py-2.5 bg-gray-50 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:bg-white transition-all";
+  const createdAtDate = new Date(pkg.createdAt || new Date()).toLocaleDateString("en-GB", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  }).replace(/ /g, "-");
 
-  const formatPrice = (price: number | string) => {
-    const numPrice = typeof price === "string" ? parseFloat(price) : price;
-    return `$${(numPrice / 100).toFixed(2)}`;
-  };
+  const inputStyles =
+    "flex-1 h-[38px] px-[12px] bg-white border border-[#f2f2f2] rounded-[12px] text-[14px] text-[#828282] font-arimo focus:outline-none focus:border-[#ff7176] transition-all resize-none";
+  const labelStyles = "w-[120px] shrink-0 text-[14px] text-black font-arimo";
 
   return (
-    <div className="fixed inset-0 z-[200]">
+    <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4">
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-black/50 backdrop-blur-sm"
+        className="absolute inset-0 bg-[#c4c4c4]/80 backdrop-blur-[2px]"
         onClick={handleClose}
       />
 
       {/* Modal Container */}
-      <div className="fixed inset-0 flex items-center justify-center px-4 py-10 sm:py-16">
-        {/* Modal */}
-        <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[80vh] overflow-hidden flex flex-col">
-          {/* Header */}
-          <div className="bg-white px-6 py-4 flex items-center justify-between">
-            <h2 className="text-xl font-bold text-gray-900">Edit Package</h2>
-            <button
-              onClick={handleClose}
-              className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
-            >
-              <X size={20} />
-            </button>
-          </div>
+      <div className="relative bg-white w-full max-w-[512px] p-[32px] rounded-[32px] shadow-[0px_0px_12px_0px_rgba(0,0,0,0.1)] flex flex-col gap-[40px] items-center z-10 max-h-[95vh] overflow-y-auto animate-in fade-in zoom-in duration-200">
+        {/* Close Icon */}
+        <button
+          onClick={handleClose}
+          className="absolute top-6 right-6 p-2 text-[#667085] hover:text-[#ff7176] transition-colors rounded-full hover:bg-gray-100 z-20"
+        >
+          <X size={20} />
+        </button>
 
-          {/* Form */}
-          <div className="px-6 pb-6 space-y-6 flex-1 overflow-y-auto">
-            {/* Image Upload */}
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
-                Package Image
-              </label>
-              <div className="flex items-center gap-4">
-                {imagePreview ? (
-                  <div className="relative">
-                    <img
-                      src={imagePreview}
-                      alt="Package"
-                      className="h-24 w-24 rounded-xl object-cover"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setImagePreview(null);
-                        setImageFile(null);
-                      }}
-                      className="absolute -top-2 -right-2 p-1 bg-red-500 text-white rounded-full hover:bg-red-600"
-                    >
-                      <X size={14} />
-                    </button>
-                  </div>
-                ) : (
-                  <label className="h-24 w-24 flex items-center justify-center border-2 border-dashed border-gray-200 rounded-xl cursor-pointer hover:border-primary/50 hover:bg-primary/5 transition-all">
-                    <Upload className="text-gray-400" size={24} />
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={handleImageChange}
-                      className="hidden"
-                    />
-                  </label>
-                )}
-                <div className="flex-1">
-                  <p className="text-sm text-gray-600">
-                    Upload a new image
-                  </p>
-                  <p className="text-xs text-gray-400 mt-1">
-                    PNG, JPG up to 5MB
-                  </p>
-                </div>
-              </div>
+        {/* Thumbnail Image */}
+        <div className="w-full h-[221px] shrink-0 relative rounded-[24px] overflow-hidden group">
+          <div className="absolute inset-0 bg-gradient-to-br from-[#f3e8ff] to-[#e9d4ff]" />
+          {imagePreview ? (
+            <img
+              src={imagePreview}
+              alt="Package"
+              className="absolute inset-0 w-full h-full object-cover"
+            />
+          ) : (
+            <div className="absolute inset-0 flex flex-col items-center justify-center">
+              <Upload size={32} className="text-[#ff7176]/40" />
+              <span className="text-[#667085] mt-2 font-arimo text-[14px]">
+                Upload Image
+              </span>
             </div>
-
-            {/* Package Name */}
-            <div>
-              <label
-                htmlFor="edit-pkg-name"
-                className="block text-sm font-semibold text-gray-700 mb-2"
-              >
-                Package Name <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="text"
-                id="edit-pkg-name"
-                name="name"
-                value={formData.name}
-                onChange={handleInputChange}
-                placeholder="e.g., Premium Care Bundle"
-                className={inputStyles}
-                style={{ border: "none" }}
-                required
-              />
-            </div>
-
-            {/* Description */}
-            <div>
-              <label
-                htmlFor="edit-pkg-description"
-                className="block text-sm font-semibold text-gray-700 mb-2"
-              >
-                Description <span className="text-red-500">*</span>
-              </label>
-              <textarea
-                id="edit-pkg-description"
-                name="description"
-                value={formData.description}
-                onChange={handleInputChange}
-                placeholder="Describe what's included in this package..."
-                rows={3}
-                className={`${inputStyles} resize-none`}
-                style={{ border: "none" }}
-                required
-              />
-            </div>
-
-            {/* Price and Duration */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label
-                  htmlFor="edit-pkg-price"
-                  className="block text-sm font-semibold text-gray-700 mb-2"
-                >
-                  Offered Price ($)
-                </label>
-                <input
-                  type="number"
-                  id="edit-pkg-price"
-                  name="offeredPrice"
-                  value={formData.offeredPrice}
-                  onChange={handleInputChange}
-                  placeholder="e.g., 35.00 (optional)"
-                  min="0.01"
-                  step="0.01"
-                  className={inputStyles}
-                  style={{ border: "none" }}
-                />
-                <p className="text-xs text-gray-400 mt-1">
-                  Cannot exceed calculated price
-                </p>
-              </div>
-              <div>
-                <label
-                  htmlFor="edit-pkg-duration"
-                  className="block text-sm font-semibold text-gray-700 mb-2"
-                >
-                  Duration (minutes) <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="number"
-                  id="edit-pkg-duration"
-                  name="durationInMinutes"
-                  value={formData.durationInMinutes}
-                  onChange={handleInputChange}
-                  placeholder="e.g., 60"
-                  min="1"
-                  className={inputStyles}
-                  style={{ border: "none" }}
-                  required
-                />
-              </div>
-            </div>
-
-            {/* Services Selection */}
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
-                Select Services
-              </label>
-              <p className="text-xs text-gray-400 mb-3">
-                Update services included in this package
-              </p>
-
-              {/* Service Search */}
-              <div className="relative mb-3">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                <input
-                  type="text"
-                  value={serviceSearch}
-                  onChange={(e) => setServiceSearch(e.target.value)}
-                  placeholder="Search services..."
-                  className={`${inputStyles} pl-10`}
-                  style={{ border: "none" }}
-                />
-              </div>
-
-              {/* Service List */}
-              <div className="max-h-48 overflow-y-auto rounded-xl bg-gray-50" style={{ border: "none" }}>
-                {filteredServices.length > 0 ? (
-                  filteredServices.map((service, idx) => {
-                    const isSelected = formData.serviceIds.includes(service.id);
-                    return (
-                      <button
-                        key={service.id}
-                        type="button"
-                        onClick={() => toggleService(service.id)}
-                        style={{ borderTop: idx !== 0 ? "1px solid #f3f4f6" : "none" }}
-                        className={`w-full flex items-center gap-3 px-4 py-3 text-left transition-all hover:bg-gray-100 ${
-                          isSelected ? "bg-primary/5" : ""
-                        }`}
-                      >
-                        <div
-                          className={`flex-shrink-0 w-5 h-5 rounded-md flex items-center justify-center transition-all ${
-                            isSelected
-                              ? "bg-primary text-white"
-                              : "bg-white ring-1 ring-gray-300"
-                          }`}
-                        >
-                          {isSelected && <Check size={14} />}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium text-gray-900 truncate">
-                            {service.name}
-                          </p>
-                        </div>
-                        <span className="text-sm font-medium text-gray-500">
-                          {formatPrice(service.price)}
-                        </span>
-                      </button>
-                    );
-                  })
-                ) : (
-                  <div className="px-4 py-6 text-center text-sm text-gray-400">
-                    {services.length === 0
-                      ? "No services available."
-                      : "No services match your search"}
-                  </div>
-                )}
-              </div>
-
-              {formData.serviceIds.length > 0 && (
-                <p className="text-xs text-primary font-medium mt-2">
-                  {formData.serviceIds.length} service
-                  {formData.serviceIds.length > 1 ? "s" : ""} selected
-                </p>
-              )}
-            </div>
-          </div>
-
-          {/* Footer */}
-          <div className="px-6 pt-4 pb-6 bg-white flex flex-col sm:flex-row gap-3 flex-shrink-0">
-            <button
-              type="button"
-              onClick={handleClose}
-              className="flex-1 px-4 py-3 bg-gray-100 text-gray-700 font-medium rounded-xl hover:bg-gray-200 order-2 sm:order-1 transition-colors"
-            >
-              Cancel
-            </button>
-            <button
-              onClick={handleSubmit}
-              disabled={isLoading}
-              className="flex-1 px-4 py-3 bg-primary hover:bg-primary/90 text-white font-medium rounded-xl disabled:opacity-50 order-1 sm:order-2 transition-colors"
-            >
-              {isLoading ? "Updating..." : "Update Package"}
-            </button>
-          </div>
+          )}
+          <label className="absolute inset-0 cursor-pointer flex items-center justify-center bg-black/0 group-hover:bg-black/10 transition-all opacity-0 group-hover:opacity-100">
+            <span className="bg-white/80 px-4 py-2 rounded-full text-sm font-arimo font-medium text-black">
+              Change Image
+            </span>
+            <input
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={handleImageChange}
+            />
+          </label>
         </div>
+
+        {/* Form Content */}
+        <form onSubmit={handleSubmit} className="w-full flex flex-col gap-[16px]">
+          {/* Info Rows */}
+          <div className="w-full flex flex-col gap-[12px] border border-white shrink-0 font-arimo text-[14px]">
+            <div className="flex items-center justify-between w-full">
+              <p className="text-black w-[146px] shrink-0">Package Category</p>
+              <p className="flex-1 text-[#828282]">Custom Package</p>
+            </div>
+            <div className="flex items-center justify-between w-full">
+              <p className="text-black w-[120px] shrink-0">Creation Date</p>
+              <p className="flex-1 text-[#828282]">{createdAtDate}</p>
+            </div>
+          </div>
+
+          <div className="flex items-center justify-between w-full">
+            <p className={labelStyles}>Name</p>
+            <input
+              type="text"
+              name="name"
+              value={formData.name}
+              onChange={handleInputChange}
+              className={inputStyles}
+              required
+            />
+          </div>
+
+          <div className="flex items-center justify-between w-full">
+            <p className={labelStyles}>Price ($)</p>
+            <input
+              type="number"
+              name="offeredPrice"
+              value={formData.offeredPrice}
+              onChange={handleInputChange}
+              className={inputStyles}
+            />
+          </div>
+
+          <div className="flex items-center justify-between w-full">
+            <p className={labelStyles}>Duration (min)</p>
+            <input
+              type="number"
+              name="durationInMinutes"
+              value={formData.durationInMinutes}
+              onChange={handleInputChange}
+              className={inputStyles}
+              required
+            />
+          </div>
+
+          <div className="flex items-start justify-between w-full">
+            <p className={labelStyles}>Description</p>
+            <textarea
+              name="description"
+              value={formData.description}
+              onChange={handleInputChange}
+              className={`${inputStyles} h-[80px] py-[8px]`}
+              required
+            />
+          </div>
+
+          {/* What's Included */}
+          <div className="flex items-start justify-between w-full">
+            <p className={labelStyles}>What&apos;s Included</p>
+            <div className="flex-1 flex flex-col gap-[4px] px-[16px]">
+              <div className="max-h-[160px] overflow-y-auto pr-2 flex flex-col gap-[4px] custom-scrollbar">
+                {services.map((service) => {
+                  const isSelected = formData.serviceIds.includes(service.id);
+                  const priceStr = (Number(service.price) / 100).toFixed(0);
+
+                  return (
+                    <div
+                      key={service.id}
+                      onClick={() => toggleService(service.id)}
+                      className="flex items-center px-[14px] py-[8px] rounded-[8px] cursor-pointer hover:bg-gray-50 transition-colors gap-[8px]"
+                    >
+                      {/* Radio-style Icon */}
+                      <div className="relative w-[20px] h-[20px] shrink-0 flex items-center justify-center">
+                        {isSelected ? (
+                          <>
+                            <div className="absolute inset-0 rounded-full border-2 border-[#ff7176]" />
+                            <div className="absolute inset-[4px] rounded-full bg-[#ff7176]" />
+                          </>
+                        ) : (
+                          <div className="absolute inset-0 rounded-full border-2 border-[#d0d5dd]" />
+                        )}
+                      </div>
+                      <p className="font-['Inter'] font-normal text-[14px] text-[#717680] leading-[1.55] truncate">
+                        {service.name} - ${priceStr}
+                      </p>
+                    </div>
+                  );
+                })}
+                {services.length === 0 && (
+                  <p className="text-[14px] text-[#717680] italic px-[14px] py-[8px]">
+                    No services available.
+                  </p>
+                )}
+              </div>
+
+              {/* Total Display */}
+              <div className="mt-2 w-full border border-[#c0c0c0] rounded-[4px] flex items-center justify-between px-[10px] py-[8px]">
+               <div className="flex items-center gap-[4px]">
+                  <span className="font-['Inter'] font-normal text-[14px] text-[#717680] leading-[1.55]">
+                    Total - 
+                  </span>
+                  {showTotal ? (
+                    <span className="font-['Inter'] font-normal text-[14px] leading-[1.55] text-[#ff7176]">
+                     ${calculateTotalValue().toFixed(0)}
+                    </span>
+                  ) : (
+                    <span className="font-['Inter'] font-normal text-[14px] leading-[1.55] text-[#ff7176] line-through">
+                     ${calculateTotalValue().toFixed(0)}
+                    </span>
+                  )}
+               </div>
+               <button
+                  type="button"
+                  onClick={() => setShowTotal(!showTotal)}
+                  className="text-[#667085] hover:text-[#ff7176] transition-colors p-1"
+               >
+                  {showTotal ? <Eye size={18} /> : <EyeOff size={18} />}
+               </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Save Button */}
+          <div className="w-full flex justify-center mt-[8px]">
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="w-[190px] h-[48px] bg-[#ff7176] text-white rounded-[10px] text-[16px] font-arimo font-normal hover:bg-[#ff7176]/90 transition-all disabled:opacity-50 shadow-sm flex items-center justify-center"
+            >
+              {isLoading ? "Saving..." : "Save"}
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   );

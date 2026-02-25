@@ -29,27 +29,31 @@ export const BookingTrendsChart = () => {
       </h3>
       <div className="h-[300px] w-full">
         <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={data}>
+          <LineChart data={data} margin={{ top: 20, right: 20, left: 0, bottom: 0 }}>
             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
             <XAxis 
               dataKey="month" 
-              axisLine={false} 
+              axisLine={true} 
               tickLine={false} 
-              tick={{ fill: "#64748b", fontSize: 12 }} 
+              tick={{ fill: "#64748b", fontSize: 12, fontFamily: "Nunito" }} 
+              stroke="#e5e7eb"
             />
             <YAxis 
-              axisLine={false} 
+              axisLine={true} 
               tickLine={false} 
-              tick={{ fill: "#64748b", fontSize: 12 }} 
+              tick={{ fill: "#64748b", fontSize: 12, fontFamily: "Nunito" }} 
+              stroke="#e5e7eb"
             />
-            <Tooltip />
+            <Tooltip 
+              contentStyle={{ borderRadius: "8px", border: "1px solid #e5e7eb", boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.05)" }}
+            />
             <Line
               type="monotone"
               dataKey="bookings"
-              stroke="#155dfc"
+              stroke="#4379EE"
               strokeWidth={3}
-              dot={{ r: 4, fill: "#155dfc" }}
-              activeDot={{ r: 6 }}
+              dot={{ r: 4, fill: "#ffffff", stroke: "#4379EE", strokeWidth: 2 }}
+              activeDot={{ r: 6, fill: "#4379EE", stroke: "#ffffff", strokeWidth: 2 }}
             />
           </LineChart>
         </ResponsiveContainer>

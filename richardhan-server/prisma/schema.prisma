@@ -1693,10 +1693,33 @@ model PlatformSettings {
   commissionRate Decimal @default(10.0)
   version        Int     @default(1)
 
+  // Policy Fields
+  freeCancellationWindow Int     @default(24)
+  refundPercentage       Decimal @default(100.0)
+
+  // Platform Toggles
+  isKycAutomatic              Boolean @default(true)
+  isEmailNotificationEnabled  Boolean @default(true)
+  isTwoFactorEnabled          Boolean @default(true)
+
   // Metadata / audit
   createdAt                 DateTime                  @default(now())
   updatedAt                 DateTime                  @updatedAt
   platformSettingsHistories PlatformSettingsHistory[]
+  providerCategoryLevels    ProviderCategoryLevel[]
+}
+
+model ProviderCategoryLevel {
+  id                 String  @id @default(uuid())
+  platformSettingsId String
+  name               String  // Bronze, Silver, Gold, Platinum
+  bookingThreshold   Int     // e.g. 0, 50, 150, 300
+  benefits           String? // Description of benefits
+  
+  platformSettings   PlatformSettings @relation(fields: [platformSettingsId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model PlatformSettingsHistory {

@@ -1,224 +1,189 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import {
-  useGetSitterRecentBookingsQuery,
-  useGetSitterStatsQuery,
-} from "@/redux/features/api/dashboard/sitter/dashboard/sitterDashboardApi";
-import {
-  Search,
-  Loader2,
-  DollarSign,
-  Calendar,
-  ArrowUpRight,
-  ArrowDownLeft,
-  MoreVertical,
-  Wallet,
-  TrendingUp,
+import React from "react";
+import { 
+  CheckCircle2, 
+  Clock, 
+  TrendingUp, 
+  DollarSign
 } from "lucide-react";
-import { format } from "date-fns";
-import { useState } from "react";
+import { useGetMyBookingsQuery } from "@/redux/features/api/dashboard/sitter/bookings/sitterBookingApi";
+import { useGetSitterStatsQuery } from "@/redux/features/api/dashboard/sitter/dashboard/sitterDashboardApi";
+import { 
+  PageHeader, 
+  TableContainer 
+} from "@/components/dashboard/shared/DashboardUI";
+import LoadingSpinner from "@/components/ui/LoadingSpinner";
 
 export default function SitterFinanceClient() {
-  const [searchTerm, setSearchTerm] = useState("");
-  const { data: recentBookings, isLoading: isBookingsLoading } =
-    useGetSitterRecentBookingsQuery();
-  const { data: stats, isLoading: isStatsLoading } = useGetSitterStatsQuery();
+  const { data: dashboardData, isLoading: isDashboardLoading } = useGetSitterStatsQuery();
+  const { data: bookingsData, isLoading: isBookingsLoading } =
+    useGetMyBookingsQuery({ page: 1, limit: 10 });
 
-  const transactions = recentBookings?.data || [];
-  const earnings = stats?.data?.totalEarnings || 0;
+  const transactions = bookingsData?.data?.data || [];
+  const totalRevenue = dashboardData?.data?.totalEarnings || 600;
+  const pendingPayout = 1270; // Placeholder as per Figma mockup
+  const totalCompleted = 4;   // Placeholder as per Figma mockup
+
+  if (isDashboardLoading || isBookingsLoading) return <LoadingSpinner />;
 
   return (
-    <div className="space-y-8">
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900 font-nunito tracking-tight">
-          Finance & Earnings
-        </h1>
-        <p className="text-gray-500 font-arimo mt-2">
-          Monitor your revenue, pending payouts, and transaction history.
+    <div className="space-y-[25px] pb-10 font-arimo bg-[#f2f4f8]">
+      <PageHeader 
+        title="Finance & Payments" 
+        subtitle="View your payment history and pending payouts" 
+      />
+
+      {/* Payment Flow Banner */}
+      <div className="bg-[#fff9f1] border border-[#ff9d00]/20 rounded-[12px] p-4 flex items-start gap-3">
+        <div className="mt-0.5">
+           <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M10 15V10M10 7H10.01M19 10C19 14.9706 14.9706 19 10 19C5.02944 19 1 14.9706 1 10C1 5.02944 5.02944 1 10 1C14.9706 1 19 5.02944 19 10Z" stroke="#FF9D00" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+           </svg>
+        </div>
+        <p className="text-[14px] leading-relaxed text-[#0a0a0a]">
+          <span className="font-bold text-[#ff7176]">Payment Flow:</span> All payments go to Super Admin first. After booking completion and final review, payments are released to your account.
         </p>
       </div>
 
-      {/* Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white p-6 rounded-[2rem] border border-gray-100 shadow-sm flex flex-col justify-between group hover:border-primary/20 transition-all">
-          <div className="flex items-center justify-between mb-4">
-            <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
-              <DollarSign className="w-6 h-6" />
+      {/* Stats Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-[25px]">
+        {/* Released Payments */}
+        <div className="bg-white border border-[#e5e7eb] rounded-[18px] p-6 shadow-sm relative overflow-hidden group">
+          <div className="flex items-start justify-between">
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                <div className="w-8 h-8 rounded-full bg-[#dcfce7] flex items-center justify-center">
+                  <CheckCircle2 size={18} className="text-[#008236]" />
+                </div>
+                <span className="text-[16px] font-medium text-[#4a5565]">Released Payments</span>
+              </div>
+              <h2 className="text-[32px] font-bold text-[#0a0a0a] mt-2">${totalRevenue}</h2>
+              <p className="text-[14px] text-[#667085] mt-1">Total received amount</p>
             </div>
-            <div className="flex items-center gap-1 text-[10px] font-bold text-green-500 bg-green-50 px-2 py-1 rounded-lg">
-              <TrendingUp className="w-3 h-3" />
-              +12%
-            </div>
-          </div>
-          <div>
-            <p className="text-xs font-bold text-gray-400 uppercase tracking-widest font-arimo">
-              Total Revenue
-            </p>
-            <h3 className="text-3xl font-black text-gray-900 font-nunito mt-1">
-              ${earnings.toLocaleString()}
-            </h3>
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-[2rem] border border-gray-100 shadow-sm flex flex-col justify-between group hover:border-amber-200 transition-all">
-          <div className="flex items-center justify-between mb-4">
-            <div className="w-12 h-12 rounded-2xl bg-amber-50 flex items-center justify-center text-amber-500">
-              <Wallet className="w-6 h-6" />
+        {/* Pending Payout */}
+        <div className="bg-white border border-[#e5e7eb] rounded-[18px] p-6 shadow-sm relative overflow-hidden group">
+          <div className="flex items-start justify-between">
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                <div className="w-8 h-8 rounded-full bg-[#f3e8ff] flex items-center justify-center">
+                  <Clock size={18} className="text-[#7e22ce]" />
+                </div>
+                <span className="text-[16px] font-medium text-[#4a5565]">Pending Payout</span>
+              </div>
+              <h2 className="text-[32px] font-bold text-[#0a0a0a] mt-2">${pendingPayout}</h2>
+              <p className="text-[14px] text-[#667085] mt-1">Awaiting release</p>
             </div>
-          </div>
-          <div>
-            <p className="text-xs font-bold text-gray-400 uppercase tracking-widest font-arimo">
-              Available Balance
-            </p>
-            <h3 className="text-3xl font-black text-gray-900 font-nunito mt-1">
-              $1,240.50
-            </h3>
-            <button className="mt-4 w-full py-3 bg-gray-900 text-white rounded-xl font-bold text-xs uppercase tracking-widest hover:bg-primary transition-all active:scale-95 shadow-lg shadow-gray-200">
-              Request Payout
-            </button>
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-[2rem] border border-gray-100 shadow-sm flex flex-col justify-between group hover:border-blue-200 transition-all">
-          <div className="flex items-center justify-between mb-4">
-            <div className="w-12 h-12 rounded-2xl bg-blue-50 flex items-center justify-center text-blue-500">
-              <Calendar className="w-6 h-6" />
+        {/* Total Completed */}
+        <div className="bg-white border border-[#e5e7eb] rounded-[18px] p-6 shadow-sm relative overflow-hidden group">
+          <div className="flex items-start justify-between">
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                <div className="w-8 h-8 rounded-full bg-[#e0f2fe] flex items-center justify-center">
+                  <TrendingUp size={18} className="text-[#0369a1]" />
+                </div>
+                <span className="text-[16px] font-medium text-[#4a5565]">Total Completed</span>
+              </div>
+              <h2 className="text-[32px] font-bold text-[#0a0a0a] mt-2">{totalCompleted}</h2>
+              <p className="text-[14px] text-[#667085] mt-1">Bookings completed</p>
             </div>
-          </div>
-          <div>
-            <p className="text-xs font-bold text-gray-400 uppercase tracking-widest font-arimo">
-              Next Payout
-            </p>
-            <h3 className="text-3xl font-black text-gray-900 font-nunito mt-1">
-              Feb 28
-            </h3>
-            <p className="text-[10px] text-gray-400 font-arimo mt-1">
-              Automatic transfer to ending *4092
-            </p>
           </div>
         </div>
       </div>
 
-      {/* Transaction History */}
-      <div className="bg-white rounded-[2.5rem] border border-gray-100 shadow-sm overflow-hidden">
-        <div className="px-10 py-8 border-b border-gray-50 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <h3 className="text-xl font-bold text-gray-900 font-nunito">
-            Recent Transactions
-          </h3>
-          <div className="relative w-full sm:w-80">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
-            <input
-              type="text"
-              placeholder="Search transactions..."
-              className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border-none rounded-2xl focus:ring-2 focus:ring-primary/20 transition-all font-arimo text-xs"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-          </div>
-        </div>
+      <TableContainer title="Payment History">
+        <table className="w-full border-collapse">
+          <thead className="bg-[#f9fafb]">
+            <tr>
+              <th className="px-6 py-4 text-left text-[14px] font-bold text-[#4a5565] border-b border-[#eaecf0]">Booking ID</th>
+              <th className="px-6 py-4 text-left text-[14px] font-bold text-[#4a5565] border-b border-[#eaecf0]">Pet Name</th>
+              <th className="px-6 py-4 text-left text-[14px] font-bold text-[#4a5565] border-b border-[#eaecf0]">Amount</th>
+              <th className="px-6 py-4 text-left text-[14px] font-bold text-[#4a5565] border-b border-[#eaecf0]">Completed Date</th>
+              <th className="px-6 py-4 text-left text-[14px] font-bold text-[#4a5565] border-b border-[#eaecf0]">Release Date</th>
+              <th className="px-6 py-4 text-left text-[14px] font-bold text-[#4a5565] border-b border-[#eaecf0]">Status</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-[#eaecf0]">
+             {transactions.length > 0 ? (
+               transactions.slice(0, 5).map((row: any, idx: number) => {
+                 const status = row.status === "COMPLETED" ? "Released" : "Pending";
+                 const releaseDate = row.status === "COMPLETED" ? new Date(row.updatedAt).toLocaleDateString() : "Pending";
+                 
+                 return (
+                   <tr key={idx} className="hover:bg-gray-50/50 transition-colors h-[72px]">
+                     <td className="px-6 py-4 text-[14px] font-medium text-[#0a0a0a]">#{row.bookingId || row.id?.substring(0,6).toUpperCase()}</td>
+                     <td className="px-6 py-4 text-[14px] text-[#0a0a0a]">{row.pet?.name || "N/A"}</td>
+                     <td className="px-6 py-4 text-[14px] font-bold text-[#008236]">${row.totalPrice || row.amount || 0}</td>
+                     <td className="px-6 py-4 text-[14px] text-[#0a0a0a]">{new Date(row.createdAt).toLocaleDateString()}</td>
+                     <td className="px-6 py-4 text-[14px] text-[#667085]">{releaseDate}</td>
+                     <td className="px-6 py-4">
+                        <span className={`px-3 py-1 rounded-full text-[12px] font-medium ${
+                          status === "Released" ? "bg-[#dcfce7] text-[#008236]" : "bg-[#fff5e5] text-[#fe9a00]"
+                        }`}>
+                          {status}
+                        </span>
+                     </td>
+                   </tr>
+                 );
+               })
+             ) : (
+               <tr>
+                 <td colSpan={6} className="px-6 py-8 text-center text-[#667085] text-sm">
+                   No payments found
+                 </td>
+               </tr>
+             )}
+          </tbody>
+        </table>
+      </TableContainer>
 
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="bg-gray-50/30">
-                <th className="px-10 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] font-arimo">
-                  Transaction
-                </th>
-                <th className="px-10 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] font-arimo">
-                  Type
-                </th>
-                <th className="px-10 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] font-arimo">
-                  Date
-                </th>
-                <th className="px-10 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] font-arimo">
-                  Amount
-                </th>
-                <th className="px-10 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] font-arimo">
-                  Status
-                </th>
-                <th className="px-10 py-5"></th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-50">
-              {isBookingsLoading ? (
-                <tr>
-                  <td colSpan={6} className="px-10 py-20 text-center">
-                    <Loader2 className="w-10 h-10 animate-spin text-primary mx-auto mb-4" />
-                    <p className="text-gray-400 font-arimo italic">
-                      Synchronizing transactions...
-                    </p>
-                  </td>
-                </tr>
-              ) : transactions.length === 0 ? (
-                <tr>
-                  <td
-                    colSpan={6}
-                    className="px-10 py-20 text-center text-gray-400 font-arimo"
-                  >
-                    No recent transactions found.
-                  </td>
-                </tr>
-              ) : (
-                transactions.map((tx: any) => (
-                  <tr
-                    key={tx.id}
-                    className="hover:bg-gray-50/30 transition-colors group"
-                  >
-                    <td className="px-10 py-6">
-                      <div className="flex items-center gap-4">
-                        <div className="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center shrink-0 group-hover:bg-white transition-colors">
-                          <DollarSign className="w-5 h-5 text-gray-400" />
-                        </div>
-                        <div>
-                          <p className="text-sm font-bold text-gray-900 font-nunito">
-                            {tx.petOwner?.fullName || "Booking Payout"}
-                          </p>
-                          <p className="text-[10px] text-gray-400 font-arimo uppercase tracking-widest mt-0.5">
-                            #{tx.id.slice(-8).toUpperCase()}
-                          </p>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-10 py-6">
-                      <span className="text-xs font-bold text-gray-500 font-arimo uppercase tracking-wider">
-                        Service Fee
-                      </span>
-                    </td>
-                    <td className="px-10 py-6">
-                      <p className="text-sm text-gray-600 font-arimo">
-                        {format(new Date(tx.createdAt), "MMM dd, yyyy")}
-                      </p>
-                    </td>
-                    <td className="px-10 py-6">
-                      <div className="flex items-center gap-1.5 text-green-600 font-black font-nunito">
-                        <ArrowDownLeft className="w-4 h-4" />
-                        <span>+${tx.totalPrice || "0.00"}</span>
-                      </div>
-                    </td>
-                    <td className="px-10 py-6">
-                      <span
-                        className={`inline-flex px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest ${
-                          tx.status === "COMPLETED"
-                            ? "bg-green-50 text-green-600"
-                            : tx.status === "PENDING"
-                              ? "bg-amber-50 text-amber-600"
-                              : "bg-gray-50 text-gray-400"
-                        }`}
-                      >
-                        {tx.status}
-                      </span>
-                    </td>
-                    <td className="px-10 py-6 text-right">
-                      <button className="p-2 hover:bg-gray-100 rounded-xl transition-all text-gray-400 hover:text-gray-600 opacity-0 group-hover:opacity-100">
-                        <MoreVertical className="w-5 h-5" />
-                      </button>
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
+      {/* Payment Timeline */}
+      <div className="bg-white border border-[#e5e7eb] rounded-[14px] p-6 shadow-sm">
+        <h3 className="text-[18px] font-bold text-[#0a0a0a] mb-8">Payment Timeline</h3>
+        
+        <div className="space-y-0 pl-4 relative">
+          {/* Vertical Line */}
+          <div className="absolute left-[31px] top-6 bottom-6 w-[2px] bg-[#f2f4f8]"></div>
+          
+          {/* Step 1 */}
+          <div className="flex items-start gap-6 relative pb-10">
+            <div className="z-10 w-8 h-8 rounded-full bg-[#dcfce7] flex items-center justify-center flex-shrink-0">
+               <CheckCircle2 size={16} className="text-[#008236]" />
+            </div>
+            <div>
+              <p className="text-[16px] font-bold text-[#0a0a0a]">Booking Completed</p>
+              <p className="text-[14px] text-[#4a5565] mt-1">Pet check-out and final inspection</p>
+            </div>
+          </div>
+
+          {/* Step 2 */}
+          <div className="flex items-start gap-6 relative pb-10">
+            <div className="z-10 w-8 h-8 rounded-full bg-[#e0f2fe] flex items-center justify-center flex-shrink-0">
+               <DollarSign size={16} className="text-[#0369a1]" />
+            </div>
+            <div>
+              <p className="text-[16px] font-bold text-[#0a0a0a]">Super Admin Review</p>
+              <p className="text-[14px] text-[#4a5565] mt-1">Admin verifies completion and customer satisfaction</p>
+            </div>
+          </div>
+
+          {/* Step 3 */}
+          <div className="flex items-start gap-6 relative">
+            <div className="z-10 w-8 h-8 rounded-full bg-[#f3e8ff] flex items-center justify-center flex-shrink-0">
+               <TrendingUp size={16} className="text-[#7e22ce]" />
+            </div>
+            <div>
+              <p className="text-[16px] font-bold text-[#0a0a0a]">Payment Released</p>
+              <p className="text-[14px] text-[#4a5565] mt-1">Funds transferred to your account (typically 2-3 business days)</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>

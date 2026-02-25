@@ -6,7 +6,7 @@ export type KYCStatus = "PENDING" | "APPROVED" | "REJECTED";
 /**
  * Represents the role type associated with the user.
  */
-export type RoleType = "SCHOOL" | "INDIVIDUAL"; // Added common variations
+export type RoleType = "SCHOOL" | "HOTEL" | "VENDOR" | "PET_SITTER";
 
 export interface KYCData {
   id: string; // UUID

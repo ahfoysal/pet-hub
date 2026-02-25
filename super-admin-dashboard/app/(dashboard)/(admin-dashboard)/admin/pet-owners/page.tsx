@@ -1,9 +1,12 @@
 import PetOwnersClient from "@/components/dashboard/admin/users/PetOwnersClient";
+import React from "react";
 
-export default function PetOwnersPage() {
+const page = () => {
   return (
-    <div className="p-6">
+    <div>
       <PetOwnersClient />
     </div>
   );
-}
+};
+
+export default page;

@@ -30,6 +30,31 @@ export class AdminDashboardOverviewController {
     return this.adminDashboardOverviewService.getUsersCountByRole();
   }
 
+  @Get('/admins/analytics')
+  @ApiOperation({
+    summary: 'Get Admin Analytics',
+    description: 'Returns the analytics related to Admin users (total, active, suspended, actions taken).',
+  })
+  async getAdminAnalytics() {
+    return this.adminDashboardOverviewService.getAdminAnalytics();
+  }
+
+  @Get('/admins')
+  @ApiOperation({
+    summary: 'Get all admins',
+    description: 'Returns a paginated list of admin users.',
+  })
+  @ApiQuery({ name: 'search', required: false, description: 'Search by name, email, or username' })
+  @ApiQuery({ name: 'cursor', required: false, description: 'Cursor for pagination' })
+  @ApiQuery({ name: 'limit', required: false, type: Number, description: 'Limit' })
+  async getAllAdmins(
+    @Query('search') search?: string,
+    @Query('cursor') cursor?: string,
+    @Query('limit', new ParseIntPipe({ optional: true })) limit = 20
+  ) {
+    return this.adminDashboardOverviewService.getAllAdmins(search, cursor, limit);
+  }
+
   @Get('/kyc/recent')
   @ApiOperation({
     summary: 'Get recent kyc',
@@ -138,5 +163,46 @@ export class AdminDashboardOverviewController {
       cursor,
       limit
     );
+  }
+
+  @Get('finance-stats')
+  @ApiOperation({
+    summary: 'Get platform finance statistics',
+    description: 'Returns aggregated revenue, fees, and booking totals.',
+  })
+  async getFinanceStats() {
+    return this.adminDashboardOverviewService.getFinanceStats();
+  }
+
+  @Get('transactions')
+  @ApiOperation({
+    summary: 'Get all transactions',
+    description: 'Returns a detailed list of all payment transactions.',
+  })
+  @ApiQuery({ name: 'limit', required: false, type: Number })
+  @ApiQuery({ name: 'cursor', required: false, type: String })
+  async getTransactions(
+    @Query('limit', new ParseIntPipe({ optional: true })) limit = 20,
+    @Query('cursor') cursor?: string
+  ) {
+    return this.adminDashboardOverviewService.getTransactions(limit, cursor);
+  }
+
+  @Get('analytics/growth')
+  @ApiOperation({
+    summary: 'Get platform growth analytics',
+    description: 'Returns monthly user and booking growth data.',
+  })
+  async getGrowthAnalytics() {
+    return this.adminDashboardOverviewService.getGrowthAnalytics();
+  }
+
+  @Get('analytics/categories')
+  @ApiOperation({
+    summary: 'Get revenue by provider category',
+    description: 'Returns breakdown of revenue and bookings by provider type.',
+  })
+  async getCategoryAnalytics() {
+    return this.adminDashboardOverviewService.getCategoryAnalytics();
   }
 }

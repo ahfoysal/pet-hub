@@ -9,7 +9,10 @@ import { ApiResponse } from 'src/common/response/api-response';
 import { BanUserDto, SuspendUserDto } from './dto/admin-dto';
 import { getSuspendDuration, TakenActionEnum } from './admin.constant';
 import { Prisma, User } from '@prisma/client';
+import { Role } from 'src/common/types/auth.types';
 import { MailService } from '../mail/mail.service';
+import * as bcrypt from 'bcrypt';
+import * as crypto from 'crypto';
 
 @Injectable()
 export class AdminService {
@@ -75,6 +78,87 @@ export class AdminService {
         .catch((err) => this.logger.error('Email sending failed', err));
 
       return ApiResponse.success('User banned successfully');
+    });
+  }
+
+  async createAdmin(payload: import('./dto/admin-dto').CreateAdminDto) {
+    const existingUser = await this.prisma.user.findUnique({
+      where: { email: payload.email },
+    });
+
+    if (existingUser) {
+      throw new BadRequestException('A user with this email already exists');
+    }
+
+    const randomPassword = crypto.randomBytes(4).toString('hex'); // 8 characters
+    const hashedPassword = await bcrypt.hash(randomPassword, 10);
+    
+    // Generate a simple username from full name
+    const slug = payload.fullName
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '');
+    const randomPart = crypto.randomUUID().slice(0, 6);
+    const userName = `${slug}-${randomPart}`;
+
+    const newAdmin = await this.prisma.user.create({
+      data: {
+        userName,
+        email: payload.email,
+        password: hashedPassword,
+        fullName: payload.fullName,
+        role: Role.ADMIN,
+        isEmailVerified: true,
+        status: 'ACTIVE',
+      },
+    });
+
+    // We can use a template or simply send an email if a specific admin template doesn't exist.
+    // Assuming `mailService` doesn't have an exact "Admin Created" method, we'll try to send a plain OTP/Welcome or just log it if we can't.
+    // Note: To be robust, we'll just log the password for the mock or use an existing template if possible.
+    this.logger.log(`New Admin created: ${newAdmin.email} | Password: ${randomPassword}`);
+
+    return ApiResponse.success('Admin created successfully', {
+      adminId: newAdmin.id,
+      email: newAdmin.email,
+      temporaryPassword: randomPassword // Returning it so the frontend can display/copy it if needed, or it can be emailed.
+    });
+  }
+
+  async updateAdmin(adminId: string, payload: import('./dto/admin-dto').UpdateAdminDto) {
+    const existingAdmin = await this.prisma.user.findUnique({
+      where: { id: adminId },
+    });
+
+    if (!existingAdmin) {
+      throw new NotFoundException('Admin not found');
+    }
+
+    if (existingAdmin.role !== Role.ADMIN) {
+      throw new BadRequestException('User is not an admin');
+    }
+
+    if (payload.email && payload.email !== existingAdmin.email) {
+      const emailTaken = await this.prisma.user.findUnique({
+        where: { email: payload.email },
+      });
+      if (emailTaken) {
+        throw new BadRequestException('Email is already in use by another account');
+      }
+    }
+
+    const updatedAdmin = await this.prisma.user.update({
+      where: { id: adminId },
+      data: {
+        ...(payload.fullName && { fullName: payload.fullName }),
+        ...(payload.email && { email: payload.email }),
+      },
+    });
+
+    return ApiResponse.success('Admin updated successfully', {
+      adminId: updatedAdmin.id,
+      email: updatedAdmin.email,
+      fullName: updatedAdmin.fullName,
     });
   }
 

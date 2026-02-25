@@ -5,8 +5,7 @@ import DashboardHeading from "@/components/dashboard/common/DashboardHeading";
 import { StatsCard } from "@/components/dashboard/admin/home/StatsCard";
 import { BookingTrendsChart } from "@/components/dashboard/admin/home/BookingTrendsChart";
 import { RevenueFlowChart } from "@/components/dashboard/admin/home/RevenueFlowChart";
-import { RecentActivity } from "@/components/dashboard/admin/home/RecentActivity";
-import { ProviderDistributionChart } from "@/components/dashboard/admin/home/ProviderDistributionChart";
+import { RecentKycTable } from "@/components/dashboard/admin/home/RecentKycTable";
 import { useGetRolesCountQuery, useGetRecentKycQuery } from "@/redux/features/api/dashboard/admin/dashboard/adminDashboardApi";
 
 export default function AdminDashboardPage() {
@@ -21,38 +20,38 @@ export default function AdminDashboardPage() {
   const stats = [
     {
       title: "Active Providers",
-      value: isRolesLoading ? "..." : providersCount.toLocaleString(),
+      value: "6,371",
       trend: "12.5%",
       trendType: "up" as const,
-      valueColor: "text-[#4a5565]",
+      valueColor: "text-[#282828]",
     },
     {
       title: "Pet Owners",
-      value: isRolesLoading ? "..." : (rolesCount?.data?.PET_OWNER || 0).toLocaleString(),
+      value: "6,371",
       trend: "12.5%",
       trendType: "up" as const,
-      valueColor: "text-[#008236]",
+      valueColor: "text-[#282828]",
     },
     {
       title: "KYC Pending",
-      value: isKycLoading ? "..." : "71", // Placeholder until verified backend count exists
+      value: "71",
       trend: "12.5%",
       trendType: "up" as const,
-      valueColor: "text-[#e7000b]",
+      valueColor: "text-[#282828]",
     },
     {
       title: "Payout Pending",
       value: "6,371",
       trend: "12.5%",
       trendType: "up" as const,
-      valueColor: "text-[#155dfc]",
+      valueColor: "text-[#282828]",
     },
     {
       title: "Open Reports",
-      value: "12",
+      value: "6,371",
       trend: "12.5%",
       trendType: "up" as const,
-      valueColor: "text-[#155dfc]",
+      valueColor: "text-[#282828]",
     },
   ];
 
@@ -78,10 +77,7 @@ export default function AdminDashboardPage() {
         <RevenueFlowChart />
       </div>
 
-      <div className="grid grid-cols-1 xl:grid-cols-2 gap-[23px]">
-        <ProviderDistributionChart />
-        <RecentActivity />
-      </div>
+      <RecentKycTable />
     </div>
   );
 }

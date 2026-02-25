@@ -1,10 +1,10 @@
-import { Controller, Patch, Param, UseGuards, Body, Get } from '@nestjs/common';
+import { Controller, Patch, Param, UseGuards, Body, Get, Post } from '@nestjs/common';
 import { AdminService } from './admin.service';
 import { AuthGuard } from 'src/common/guards/auth.guard';
 import { Roles } from 'src/common/decorators/role.decorator';
 import { Role } from 'src/common/types/auth.types';
 import { ApiBody, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
-import { BanUserDto, SuspendUserDto } from './dto/admin-dto';
+import { BanUserDto, SuspendUserDto, CreateAdminDto, UpdateAdminDto, UpdateAdminParamDto } from './dto/admin-dto';
 
 @UseGuards(AuthGuard)
 @Roles(Role.ADMIN)
@@ -22,6 +22,27 @@ export class AdminController {
   @ApiBody({ type: BanUserDto, description: 'Ban user payload' })
   async banUser(@Body() payload: BanUserDto) {
     return await this.adminService.banUser(payload);
+  }
+
+  @Post('create')
+  @ApiOperation({
+    summary: 'Create a new Admin user [ADMIN]',
+    description: 'Allows an existing admin to create a new admin account. Generates a random password and emails it.',
+  })
+  @ApiBody({ type: CreateAdminDto, description: 'Payload to create a new admin' })
+  async createAdmin(@Body() payload: CreateAdminDto) {
+    return await this.adminService.createAdmin(payload);
+  }
+
+  @Patch('update/:adminId')
+  @ApiOperation({
+    summary: 'Update an Admin user [ADMIN]',
+    description: 'Allows an existing admin to update the details of an admin account.',
+  })
+  @ApiParam({ name: 'adminId', description: 'The ID of the admin to update', type: String })
+  @ApiBody({ type: UpdateAdminDto, description: 'Payload to update an admin' })
+  async updateAdmin(@Param() params: UpdateAdminParamDto, @Body() payload: UpdateAdminDto) {
+    return await this.adminService.updateAdmin(params.adminId, payload);
   }
 
   @Patch('reactivate-user/:userId')

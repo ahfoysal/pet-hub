@@ -1,5 +1,34 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsOptional, IsNumber, Min } from 'class-validator';
+import {
+  IsOptional,
+  IsNumber,
+  Min,
+  IsInt,
+  IsBoolean,
+  IsArray,
+  ValidateNested,
+} from 'class-validator';
+import { Type } from 'class-transformer';
+
+export class ProviderCategoryLevelDto {
+  @ApiPropertyOptional()
+  @IsOptional()
+  id?: string;
+
+  @ApiPropertyOptional({ example: 'Bronze' })
+  @IsOptional()
+  name?: string;
+
+  @ApiPropertyOptional({ example: 0 })
+  @IsOptional()
+  @IsInt()
+  @Min(0)
+  bookingThreshold?: number;
+
+  @ApiPropertyOptional({ example: 'Basic benefits' })
+  @IsOptional()
+  benefits?: string;
+}
 
 export class PlatformSettingsDto {
   @ApiPropertyOptional({
@@ -20,4 +49,38 @@ export class PlatformSettingsDto {
   @IsNumber({}, { message: 'commissionRate must be a number' })
   @Min(0, { message: 'commissionRate cannot be negative' })
   commissionRate?: number;
+
+  @ApiPropertyOptional({ example: 24 })
+  @IsOptional()
+  @IsInt()
+  @Min(0)
+  freeCancellationWindow?: number;
+
+  @ApiPropertyOptional({ example: 100.0 })
+  @IsOptional()
+  @IsNumber()
+  @Min(0)
+  refundPercentage?: number;
+
+  @ApiPropertyOptional({ example: true })
+  @IsOptional()
+  @IsBoolean()
+  isKycAutomatic?: boolean;
+
+  @ApiPropertyOptional({ example: true })
+  @IsOptional()
+  @IsBoolean()
+  isEmailNotificationEnabled?: boolean;
+
+  @ApiPropertyOptional({ example: true })
+  @IsOptional()
+  @IsBoolean()
+  isTwoFactorEnabled?: boolean;
+
+  @ApiPropertyOptional({ type: [ProviderCategoryLevelDto] })
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => ProviderCategoryLevelDto)
+  providerCategoryLevels?: ProviderCategoryLevelDto[];
 }

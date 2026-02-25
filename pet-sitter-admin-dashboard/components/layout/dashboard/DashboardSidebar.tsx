@@ -10,7 +10,6 @@ import { getVisibleMenuItems, UserRole } from "@/lib/sidebarRoutes";
 import { X, LogOut, Settings } from "lucide-react";
 import { useAppDispatch } from "@/redux/store/hooks";
 import { clearCredentials } from "@/redux/features/slice/authSlice";
-import Button from "@/components/ui/Button";
 import { useMobileMenu } from "@/contexts/MobileMenuContext";
 import { getRedirectSettingPath } from "@/lib/roleRoutes";
 
@@ -58,37 +57,34 @@ export default function DashboardSidebar() {
 
   const handleLogout = async () => {
     dispatch(clearCredentials());
-    
-    // Clear local NextAuth session
     await signOut({ redirect: false });
-
     const authUrl = process.env.NEXT_PUBLIC_AUTH_URL || "http://auth.lvh.me:3000";
     window.location.href = `${authUrl}/logout`;
   };
 
   return (
     <div className="z-100 relative">
-      {/* Sidebar */}
       <aside
         className={`bg-white h-screen flex flex-col pt-16 lg:pt-0
-    fixed inset-y-0 left-0 z-50 w-64 sm:w-72
+    fixed inset-y-0 left-0 z-50 w-70 border-r border-[#f6f3eb]
     transition-transform duration-300 ease-in-out
     lg:translate-x-0 ${isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"}
     lg:relative`}
       >
-        <div className="flex flex-col h-full mt-6">
-          {/* Navigation */}
-          <nav className="flex-1 px-3 space-y-1 overflow-y-auto lg:pt-12">
+        <div className="flex flex-col h-full pt-10 px-9.5">
+          {/* Logo container if needed, but Navbar has it. Figma shows Sidebar starts with items */}
+          
+          <nav className="flex-1 flex flex-col gap-3.5 overflow-y-auto min-h-0">
             {visibleItems.length > 0 ? (
               visibleItems.map((item) => (
                 <Link
                   key={item.href}
                   href={item.href}
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className={`flex items-center gap-3 px-3 py-3 rounded-lg text-sm font-medium transition-colors font-montserrat ${
+                  className={`flex items-center gap-3 h-10 rounded-[5px] text-[16px] font-medium transition-colors font-montserrat ${
                     isActive(item.href)
-                      ? "bg-[#ff7176] text-white"
-                      : "text-[#282828] hover:bg-gray-100"
+                      ? "bg-[#ff7176] text-white pl-2"
+                      : "text-[#282828] hover:bg-gray-50"
                   }`}
                 >
                   <span className="shrink-0">{renderIcon(item)}</span>
@@ -96,41 +92,35 @@ export default function DashboardSidebar() {
                 </Link>
               ))
             ) : (
-              <p className="text-gray-400 px-3 text-sm">
-                No menu items available
-              </p>
+              <p className="text-gray-400 text-sm">No menu items available</p>
             )}
           </nav>
 
           {/* Bottom Section */}
-          <div className="px-3 py-4 mt-auto border-t border-primary   ">
+          <div className="flex flex-col gap-3.5 mt-auto pb-10">
             <Link
               href={getRedirectSettingPath(userRole)}
-              className={`flex items-center gap-3 px-3 py-3 rounded-lg text-sm font-medium transition-colors ${
+              className={`flex items-center gap-3 h-10 rounded-[5px] text-[16px] font-medium transition-colors font-montserrat ${
                 isActive(getRedirectSettingPath(userRole))
-                  ? "bg-primary text-white"
-                  : "text-gray-700 hover:bg-gray-100"
+                  ? "bg-[#ff7176] text-white pl-2"
+                  : "text-[#282828] hover:bg-gray-50"
               }`}
             >
               <Settings size={20} />
               <span>Settings</span>
             </Link>
 
-            <Button
-              variant="outline"
-              className="w-full flex items-center gap-3 px-3 py-3 c rounded-lg text-sm text-foreground bg-white text-[#FF7176]  border border-[#FF7176]! font-bold!   hover:bg-[#FF7176] hover:text-white!  transition-colors mt-1"
-              onClick={async () => {
-                await handleLogout();
-              }}
+            <button
+              className="flex items-center gap-3 h-10 rounded-[5px] text-[16px] font-medium text-[#282828] hover:bg-gray-50 transition-colors font-montserrat w-full text-left"
+              onClick={handleLogout}
             >
               <LogOut size={20} />
               <span>Log out</span>
-            </Button>
+            </button>
           </div>
         </div>
       </aside>
 
-      {/* Mobile Overlay */}
       {isMobileMenuOpen && (
         <div
           className="fixed inset-0 bg-black/40 z-30 lg:hidden backdrop-blur-sm"

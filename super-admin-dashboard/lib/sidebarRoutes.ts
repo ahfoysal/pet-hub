@@ -36,40 +36,34 @@ export interface MenuItemConfig {
   icon?: LucideIcon; // lucide component
   imageSrc?: string; // for image icons
   imageSize?: number;
+  subItems?: { label: string; href: string; icon?: LucideIcon }[];
 }
 
 export const menuItemsConfig: MenuItemConfig[] = [
   // ── ADMIN MENU ───────────────────────────────────────────────
   {
-    label: "Kyc",
-    href: "/admin/kyc",
-    icon: ShieldUser,
-    imageSize: 20,
+    label: "Dashboard",
+    href: "/admin",
+    icon: LayoutDashboard,
     roles: ["ADMIN"],
   },
   {
-    label: "Analytics",
+    label: "Platform Analytics",
     href: "/admin/analytics",
     icon: BarChart3,
     roles: ["ADMIN"],
   },
   {
-    label: "Rooms",
-    href: "/admin/room-management",
-    icon: BedDouble,
-    roles: ["ADMIN"],
-  },
-  {
-    label: "Community",
-    href: "/admin/community",
-    imageSrc: "/images/dashboard/sidebar/community.png",
-    roles: ["ADMIN"],
-  },
-  {
-    label: "Manage Users",
-    href: "/admin/manage-users",
+    label: "Provider Management",
+    href: "#",
     icon: Users,
     roles: ["ADMIN"],
+    subItems: [
+      { label: "Pet Sitters", href: "/admin/pet-sitters", icon: Users },
+      { label: "Pet Schools", href: "/admin/pet-schools", icon: GraduationCap },
+      { label: "Pet Hotels", href: "/admin/pet-hotels", icon: BedDouble },
+      { label: "Vendors", href: "/admin/vendors", icon: Package },
+    ],
   },
   {
     label: "Pet Owners (Users)",
@@ -78,21 +72,33 @@ export const menuItemsConfig: MenuItemConfig[] = [
     roles: ["ADMIN"],
   },
   {
-    label: "Pet Sitters",
-    href: "/admin/pet-sitters",
-    icon: Users, // Using Users as a fallback, can refine later
-    roles: ["ADMIN"],
-  },
-  {
-    label: "Finance",
+    label: "Payments & Payouts",
     href: "/admin/finance",
     icon: DollarSign,
     roles: ["ADMIN"],
   },
   {
-    label: "Platform Settings",
-    href: "/admin/platform-settings",
+    label: "KYC Verification",
+    href: "/admin/kyc",
+    icon: ShieldUser,
+    roles: ["ADMIN"],
+  },
+  {
+    label: "Reports & Complaints",
+    href: "/admin/reports",
+    icon: MessagesSquare,
+    roles: ["ADMIN"],
+  },
+  {
+    label: "Admin Management",
+    href: "/admin/manage-admins",
     icon: Settings,
+    roles: ["ADMIN"],
+  },
+  {
+    label: "Community",
+    href: "/admin/community",
+    imageSrc: "/images/dashboard/sidebar/community.png",
     roles: ["ADMIN"],
   },
 

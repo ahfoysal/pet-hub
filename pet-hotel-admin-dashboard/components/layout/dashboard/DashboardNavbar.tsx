@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import { useSession, signOut } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
-import { Bell, ChevronRight, LogOut, Settings } from "lucide-react";
+import { Bell, ChevronRight, LogOut, Settings, Mail } from "lucide-react";
 import { useSelector } from "react-redux";
 import { useAppDispatch } from "@/redux/store/hooks";
 import { clearCredentials } from "@/redux/features/slice/authSlice";
@@ -64,8 +64,8 @@ export function DashboardNavbar() {
   }, []);
 
   return (
-    <nav className="fixed top-0 z-50 w-full bg-white border-b border-[#D0D0D0]">
-      <div className="flex items-center justify-between px-6 lg:px-[38px] h-[80px]">
+    <nav className="absolute top-0 z-100 w-full bg-white border-b border-[#d0d0d0] h-20">
+      <div className="flex items-center justify-between px-9.5 h-full">
         {/* Left - Logo Section */}
         <div className="flex items-center gap-4">
           <button
@@ -79,41 +79,45 @@ export function DashboardNavbar() {
           <Link href="/" className="flex items-center">
             <Image
               src="/assets/logo.svg"
-              alt="Petzy"
+              alt="Logo"
               width={92}
               height={38}
-              className="object-contain"
+              className="object-contain h-9.5 w-auto"
               priority
             />
           </Link>
         </div>
 
-        {/* Right - Icons & Profile */}
-        <div className="flex items-center gap-6 lg:gap-[32px]">
+        {/* Right - Icons */}
+        <div className="flex items-center gap-6">
+          {/* Messages (Mail) Icon - Matching Figma fidelity */}
+          <button className="relative flex items-center justify-center size-8 hover:bg-gray-50 rounded-full transition-colors cursor-pointer">
+            <div className="relative">
+              <Mail size={22.5} className="text-[#101828]" strokeWidth={1.5} />
+              <span className="absolute -top-1.25 -right-3.75 min-w-[15.3px] h-[15.3px] px-[4.5px] bg-primary text-white text-[9.9px] font-bold font-plus-jakarta rounded-full flex items-center justify-center">
+                2
+              </span>
+            </div>
+          </button>
+
           {/* Notifications */}
           <div className="relative" ref={notificationRef}>
-            <button 
+            <button
               onClick={() => setShowNotifications(!showNotifications)}
-              className="relative p-2 hover:bg-gray-50 rounded-full transition-colors cursor-pointer group"
+              className="relative flex items-center justify-center size-8 hover:bg-gray-50 rounded-full transition-colors cursor-pointer"
             >
-              <Image 
-                src="/assets/bell.svg" 
-                alt="Notifications" 
-                width={22} 
-                height={22}
-                className="group-hover:opacity-80 transition-opacity"
-              />
+              <Bell size={22.5} className="text-[#101828]" strokeWidth={1.5} />
               {totalUnreadCount > 0 && (
-                <span className="absolute top-1.5 right-1.5 min-w-[15px] h-[15px] px-0.5 bg-[#FF7176] text-white text-[9px] font-bold rounded-full flex items-center justify-center border-2 border-white">
+                <span className="absolute -top-1 -right-1 min-w-3.75 h-3.75 px-[4.5px] bg-primary text-white text-[9.9px] font-bold font-plus-jakarta rounded-full flex items-center justify-center">
                   {totalUnreadCount > 9 ? "9+" : totalUnreadCount}
                 </span>
               )}
             </button>
 
-            {/* Notification Dropdown (Placeholder for clicked state) */}
+            {/* Notification Dropdown */}
             {showNotifications && (
-              <div className="absolute right-0 mt-3 w-80 bg-white rounded-xl shadow-xl border border-gray-100 z-50 overflow-hidden font-plus-jakarta">
-                <div className="p-4 border-b border-gray-50 flex justify-between items-center">
+              <div className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg border border-gray-200 z-50 overflow-hidden font-inter">
+                <div className="p-4 border-b border-gray-100 flex justify-between items-center">
                   <h3 className="font-bold text-gray-900">Notifications</h3>
                   <span className="text-xs text-[#FF7176] font-medium cursor-pointer">Mark all as read</span>
                 </div>
@@ -130,20 +134,20 @@ export function DashboardNavbar() {
           <div className="relative" ref={profileDropdownRef}>
             <button
               onClick={() => setShowProfileMenu(!showProfileMenu)}
-              className="flex items-center justify-center cursor-pointer transition-transform hover:scale-105"
+              className="flex items-center justify-center cursor-pointer"
             >
-              <div className="w-[32px] h-[32px] rounded-full overflow-hidden border border-gray-100">
+              <div className="size-[32.4px] rounded-full flex items-center justify-center overflow-hidden hover:ring-2 hover:ring-primary/30 transition-all bg-[#f2f4f7]">
                 {userImage ? (
                   <Image
                     src={userImage}
                     alt={userName}
                     width={32}
                     height={32}
-                    className="w-full h-full object-cover"
+                    className="size-full object-cover rounded-full"
                   />
                 ) : (
-                  <div className="w-full h-full bg-[#FF7176]/10 flex items-center justify-center">
-                    <span className="text-[10px] font-bold text-[#FF7176]">
+                  <div className="size-full flex items-center justify-center">
+                    <span className="text-[10px] font-semibold text-primary">
                       {userInitials}
                     </span>
                   </div>
@@ -153,32 +157,32 @@ export function DashboardNavbar() {
 
             {/* Profile Dropdown */}
             {showProfileMenu && (
-              <div className="absolute right-0 mt-3 w-64 bg-white rounded-xl shadow-xl border border-gray-100 z-50 overflow-hidden font-plus-jakarta animate-fadeIn">
-                <div className="p-4 bg-gray-50/50 border-b border-gray-100">
-                  <p className="font-bold text-gray-900 truncate">
-                    {session?.user?.name || "Habib"}
+              <div className="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-lg border border-gray-200 z-50 overflow-hidden font-inter">
+                <div className="p-4 border-b border-gray-100">
+                  <p className="font-medium text-gray-900 truncate">
+                    {session?.user?.name || "User"}
                   </p>
-                  <p className="text-xs text-gray-500 truncate mt-0.5">
+                  <p className="text-sm text-gray-500 truncate mt-0.5">
                     {session?.user?.email}
                   </p>
                 </div>
-                <div className="py-2">
+                <div className="py-1">
                   <Link
                     href={getRedirectSettingPath(userRole)}
-                    className="flex items-center px-4 py-2.5 text-sm text-gray-700 hover:bg-[#FF7176]/5 group transition-colors"
+                    className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
                     onClick={() => setShowProfileMenu(false)}
                   >
-                    <Settings size={16} className="mr-3 text-gray-400 group-hover:text-[#FF7176]" />
-                    <span className="font-medium">Settings</span>
-                    <ChevronRight size={14} className="ml-auto text-gray-300" />
+                    <Settings size={16} className="mr-3" />
+                    Settings
+                    <ChevronRight size={16} className="ml-auto" />
                   </Link>
                   <button
-                    className="w-full flex items-center px-4 py-2.5 text-sm text-gray-700 hover:bg-red-50 group transition-colors"
+                    className="w-full flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
                     onClick={handleLogout}
                   >
-                    <LogOut size={16} className="mr-3 text-gray-400 group-hover:text-red-500" />
-                    <span className="font-medium text-red-600">Log out</span>
-                    <ChevronRight size={14} className="ml-auto text-gray-300" />
+                    <LogOut size={16} className="mr-3" />
+                    Log out
+                    <ChevronRight size={16} className="ml-auto" />
                   </button>
                 </div>
               </div>

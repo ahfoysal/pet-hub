@@ -70,25 +70,25 @@ export default function DashboardSidebar() {
     <div className="z-100 relative">
       {/* Sidebar */}
       <aside
-        className={`bg-white h-screen flex flex-col pt-16 lg:pt-0
-    fixed inset-y-0 left-0 z-50 w-64 sm:w-72
+        className={`bg-white h-screen flex flex-col pt-[80px] lg:pt-0
+    fixed inset-y-0 left-0 z-50 w-[280px] font-['Montserrat:Medium'] font-medium
     transition-transform duration-300 ease-in-out
     lg:translate-x-0 ${isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"}
     lg:relative`}
       >
         <div className="flex flex-col h-full mt-6">
           {/* Navigation */}
-          <nav className="flex-1 px-3 space-y-1 overflow-y-auto lg:pt-12">
+          <nav className="flex-1 px-[38px] space-y-1 overflow-y-auto lg:pt-8">
             {visibleItems.length > 0 ? (
               visibleItems.map((item) => (
                 <Link
                   key={item.href}
                   href={item.href}
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className={`flex items-center gap-3 px-3 py-3 rounded-lg text-sm font-medium transition-colors ${
+                  className={`flex items-center gap-3 px-3 py-[14px] rounded-[10px] text-[16px] leading-[19px] transition-colors ${
                     isActive(item.href)
-                      ? "bg-[#FF7176] text-white"
-                      : "text-gray-700 hover:bg-gray-100"
+                      ? "bg-[#ff7176] text-white"
+                      : "text-[#282828] hover:bg-gray-100"
                   }`}
                 >
                   <span className="shrink-0">{renderIcon(item)}</span>
@@ -103,13 +103,13 @@ export default function DashboardSidebar() {
           </nav>
 
           {/* Bottom Section */}
-          <div className="px-3 py-4 mt-auto border-t border-primary   ">
+          <div className="px-[38px] py-4 mt-auto">
             <Link
               href={getRedirectSettingPath(userRole)}
-              className={`flex items-center gap-3 px-3 py-3 rounded-lg text-sm font-medium transition-colors ${
+              className={`flex items-center gap-3 px-3 py-[14px] rounded-[10px] text-[16px] leading-[19px] transition-colors ${
                 isActive(getRedirectSettingPath(userRole))
-                  ? "bg-primary text-white"
-                  : "text-gray-700 hover:bg-gray-100"
+                  ? "bg-[#ff7176] text-white"
+                  : "text-[#282828] hover:bg-gray-100"
               }`}
             >
               <Settings size={20} />
@@ -118,13 +118,13 @@ export default function DashboardSidebar() {
 
             <Button
               variant="outline"
-              className="w-full flex items-center gap-3 px-3 py-3 c rounded-lg text-sm text-foreground bg-white text-[#FF7176]  border border-[#FF7176]! font-bold!   hover:bg-[#FF7176] hover:text-white!  transition-colors mt-1"
+              className="w-full flex items-center justify-start gap-3 px-3 py-[14px] rounded-[10px] border-none shadow-none text-[16px] leading-[19px] text-[#282828] bg-transparent hover:bg-gray-100 transition-colors mt-2"
               onClick={async () => {
                 await handleLogout();
               }}
             >
               <LogOut size={20} />
-              <span>Log out</span>
+              <span className="font-['Montserrat:Medium'] font-medium">Log out</span>
             </Button>
           </div>
         </div>

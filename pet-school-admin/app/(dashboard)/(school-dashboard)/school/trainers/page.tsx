@@ -1,299 +1,184 @@
 "use client";
 
-import { useState } from "react";
-import Button from "@/components/ui/Button";
-import {
-  Edit,
-  Trash2,
-  Plus,
-  Star,
-  Users,
-  GraduationCap,
-} from "lucide-react";
-import { useToast } from "@/contexts/ToastContext";
-import {
-  useGetSchoolTrainersQuery,
-  useCreateTrainerMutation,
-  useUpdateTrainerMutation,
-  useDeleteTrainerMutation,
-} from "@/redux/features/api/dashboard/school/trainers/SchoolTrainersApi";
-import { useSession } from "next-auth/react";
-import CreateTrainerModal from "@/components/dashboard/school/trainers/CreateTrainerModal";
-import DeleteTrainerModal from "@/components/dashboard/school/trainers/DeleteTrainerModal";
-import LoadingSpinner from "@/components/ui/LoadingSpinner";
-import { Trainer } from "@/types/dashboard/school/SchoolTrainersTypes";
-import Image from "next/image";
+import DashboardHeading from "@/components/dashboard/common/DashboardHeading";
+import { Plus, Mail, Phone, Eye, Edit3, Trash2, Users, BookOpen, Star, TrendingUp } from "lucide-react";
+import React from "react";
 
-export default function SchoolTrainersPage() {
-  const { status } = useSession();
-  const { showToast } = useToast();
-  const {
-    data: trainersData,
-    isLoading,
-    error,
-    refetch,
-  } = useGetSchoolTrainersQuery(undefined, { skip: status === "loading" });
+// Mock data for trainers
+const trainersData = [
+  {
+    id: 1,
+    name: "Sarah Johnson",
+    initials: "SJ",
+    rating: 4.9,
+    status: "Active",
+    email: "sarah.j@petschool.com",
+    phone: "+1 (555) 123-4567",
+    specializations: ["Obedience Training", "Behavior Modification"],
+    activeClasses: 4,
+    totalStudents: 48,
+  },
+  {
+    id: 2,
+    name: "Mike Chen",
+    initials: "MC",
+    rating: 4.8,
+    status: "Active",
+    email: "mike.c@petschool.com",
+    phone: "+1 (555) 234-5678",
+    specializations: ["Puppy Training", "Toilet Training"],
+    activeClasses: 3,
+    totalStudents: 32,
+  },
+  {
+    id: 3,
+    name: "Emily Rodriguez",
+    initials: "ER",
+    rating: 4.9,
+    status: "Active",
+    email: "emily.r@petschool.com",
+    phone: "+1 (555) 345-6789",
+    specializations: ["Social Skills", "Agility Training"],
+    activeClasses: 3,
+    totalStudents: 36,
+  },
+  {
+    id: 4,
+    name: "David Kim",
+    initials: "DK",
+    rating: 5,
+    status: "Active",
+    email: "david.k@petschool.com",
+    phone: "+1 (555) 456-7890",
+    specializations: ["Behavior Correction", "Anxiety Management"],
+    activeClasses: 2,
+    totalStudents: 18,
+  },
+  {
+    id: 5,
+    name: "Lisa Anderson",
+    initials: "LA",
+    rating: 4.7,
+    status: "Active",
+    email: "lisa.a@petschool.com",
+    phone: "+1 (555) 567-8901",
+    specializations: ["Puppy Socialization", "Basic Obedience"],
+    activeClasses: 2,
+    totalStudents: 24,
+  },
+];
 
-  const [createTrainer] = useCreateTrainerMutation();
-  const [updateTrainer] = useUpdateTrainerMutation();
-  const [deleteTrainer] = useDeleteTrainerMutation();
+const statsData = [
+  { label: "Total Trainers", value: "5", icon: Users, color: "bg-purple-50", iconColor: "text-purple-500" },
+  { label: "Active Classes", value: "14", icon: BookOpen, color: "bg-blue-50", iconColor: "text-blue-500" },
+  { label: "Total Students", value: "158", icon: TrendingUp, color: "bg-green-50", iconColor: "text-green-500" },
+  { label: "Avg Rating", value: "4.9", icon: Star, color: "bg-yellow-50", iconColor: "text-yellow-500" },
+];
 
-  const [isCreating, setIsCreating] = useState(false);
-  const [editingTrainer, setEditingTrainer] = useState<Trainer | null>(null);
-  const [trainerToDelete, setTrainerToDelete] = useState<Trainer | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  // Create trainer
-  const handleCreateTrainer = async (formData: FormData) => {
-    setIsSubmitting(true);
-    try {
-      await createTrainer(formData).unwrap();
-      showToast("Trainer created successfully!", "success");
-      setIsCreating(false);
-      refetch();
-    } catch (err) {
-      console.error(err);
-      showToast("Failed to create trainer.", "error");
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  // Update trainer
-  const handleUpdateTrainer = async (formData: FormData) => {
-    if (!editingTrainer) return;
-    setIsSubmitting(true);
-    try {
-      await updateTrainer({
-        trainerId: editingTrainer.id,
-        data: formData,
-      }).unwrap();
-      showToast("Trainer updated successfully!", "success");
-      setIsCreating(false);
-      setEditingTrainer(null);
-      refetch();
-    } catch (err) {
-      console.error(err);
-      showToast("Failed to update trainer.", "error");
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  // Delete trainer
-  const handleDeleteTrainer = async () => {
-    if (!trainerToDelete) return;
-    setIsSubmitting(true);
-    try {
-      await deleteTrainer(trainerToDelete.id).unwrap();
-      showToast("Trainer deleted successfully!", "success");
-      setTrainerToDelete(null);
-      refetch();
-    } catch (err) {
-      console.error(err);
-      showToast("Failed to delete trainer.", "error");
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  const startEditing = (trainer: Trainer) => {
-    setEditingTrainer(trainer);
-    setIsCreating(true);
-  };
-
-  const cancelEditing = () => {
-    setIsCreating(false);
-    setEditingTrainer(null);
-  };
-
-  if (isLoading) return <LoadingSpinner />;
-
-  if (error) {
-    return (
-      <div className="bg-red-50 border border-red-200 rounded-xl p-6 text-center">
-        <h2 className="text-red-800 font-semibold text-lg">
-          Error loading trainers
-        </h2>
-        <p className="text-red-600 mt-2">
-          {error instanceof Error
-            ? error.message
-            : "An error occurred while loading trainers."}
-        </p>
-      </div>
-    );
-  }
-
-  const trainers = trainersData?.data.trainers || [];
-  const stats = trainersData?.data.stats || {
-    totalTrainers: 0,
-    totalStudents: 0,
-    avgRating: 0,
-  };
-
-  const statisticsValues = [
-    {
-      id: 1,
-      title: "Total Trainers",
-      icon: <Users />,
-      value: stats.totalTrainers,
-      bgColor: "bg-pink-100",
-      textColor: "text-pink-600",
-    },
-    {
-      id: 2,
-      title: "Total Students",
-      icon: <GraduationCap />,
-      value: stats.totalStudents,
-      bgColor: "bg-green-100",
-      textColor: "text-green-600",
-    },
-    {
-      id: 3,
-      title: "Avg Rating",
-      icon: <Star />,
-      value: stats.avgRating,
-      bgColor: "bg-yellow-100",
-      textColor: "text-yellow-600",
-    },
-  ];
-
+export default function TrainersPage() {
   return (
     <div className="space-y-6 pb-10">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h1 className="text-2xl sm:text-3xl font-bold">Trainer Management</h1>
-          <p className="text-gray-500">
-            Manage your training staff and their schedules
-          </p>
-        </div>
-
-        <Button
-          text="Add New Trainer"
-          onClick={() => setIsCreating(true)}
-          icon={<Plus size={18} />}
-          iconPosition="left"
-          className="bg-rose-600 hover:bg-rose-700 text-white px-5 py-2.5 rounded-lg font-medium shadow-sm"
+      <div className="flex justify-between items-start w-full max-w-[1092px]">
+        <DashboardHeading 
+          title="Trainer Management" 
+          subtitle="Manage your training staff and their schedules" 
         />
+        <button className="bg-[#ff7176] h-[48px] px-4 rounded-[10px] flex items-center justify-center gap-2 hover:bg-[#ff5c62] transition-colors shrink-0 mt-4">
+          <Plus className="w-5 h-5 text-white" />
+          <span className="text-white text-[16px] font-['Arial:Regular']">Add New Trainer</span>
+        </button>
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        {statisticsValues.map((item, index) => (
-          <div
-            className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm"
-            key={index}
-          >
-            <div className="flex items-center gap-3 ">
-              <div className={`p-3 ${item.bgColor} rounded-lg`}>
-                <div className={`w-6 h-6 ${item.textColor}`}>{item.icon}</div>
-              </div>
-              <div className="">
-                <p className="text-sm text-gray-500 ">{item.title}</p>
-                <p className="text-2xl font-bold">{item.value}</p>
-              </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 w-full max-w-[1092px]">
+        {statsData.map((stat, index) => (
+          <div key={index} className="bg-white border border-[#f3f4f6] rounded-[14px] p-6 flex justify-between items-center shadow-sm">
+            <div className="flex flex-col gap-1">
+              <span className="text-[14px] text-gray-500 font-['Arial:Regular']">{stat.label}</span>
+              <span className="text-[24px] font-bold text-[#101828] font-['Arial:Bold']">{stat.value}</span>
+            </div>
+            <div className={`w-12 h-12 rounded-[10px] ${stat.color} flex items-center justify-center`}>
+              <stat.icon className={`w-6 h-6 ${stat.iconColor}`} />
             </div>
           </div>
         ))}
       </div>
 
-      {/* Trainer Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-5">
-        {trainers.map((trainer) => (
-          <div
-            key={trainer.id}
-            className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden"
-          >
-            <div className="p-5 border-b border-gray-100! flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <Image
-                  height={400}
-                  width={400}
-                  src={trainer.image}
-                  alt={trainer.name}
-                  className="w-14 h-14 rounded-full object-cover"
-                />
-                <div>
-                  <h3 className="font-semibold text-lg">{trainer.name}</h3>
-                  <span className="inline-flex items-center px-2.5 py-0.5 text-xs font-medium bg-green-100 text-green-700 rounded-full">
-                    Active
+      {/* Trainers Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-[1092px]">
+        {trainersData.map((trainer) => (
+          <div key={trainer.id} className="bg-white border border-[#f3f4f6] rounded-[14px] p-6 shadow-sm flex flex-col gap-4">
+            {/* Card Header */}
+            <div className="flex justify-between items-start">
+              <div className="flex items-center gap-4">
+                <div className="w-[52px] h-[52px] rounded-full bg-[#ff7176] flex items-center justify-center text-white font-bold text-[18px]">
+                  {trainer.initials}
+                </div>
+                <div className="flex flex-col">
+                  <h3 className="text-[18px] font-bold text-[#101828] font-['Arial:Bold']">{trainer.name}</h3>
+                  <div className="flex items-center gap-1 text-yellow-500 mt-0.5">
+                    <Star className="w-4 h-4 fill-current" />
+                    <span className="text-[14px] text-[#4a5565] font-['Arial:Regular']">{trainer.rating}</span>
+                  </div>
+                </div>
+              </div>
+              <span className="bg-[#dcfce7] text-[#008236] text-[12px] font-medium px-3 py-1 rounded-full">
+                {trainer.status}
+              </span>
+            </div>
+
+            {/* Contact Info */}
+            <div className="flex flex-col gap-2">
+              <div className="flex items-center gap-2 text-gray-500">
+                <Mail className="w-4 h-4" />
+                <span className="text-[14px] font-['Arial:Regular']">{trainer.email}</span>
+              </div>
+              <div className="flex items-center gap-2 text-gray-500">
+                <Phone className="w-4 h-4" />
+                <span className="text-[14px] font-['Arial:Regular']">{trainer.phone}</span>
+              </div>
+            </div>
+
+            {/* Specializations */}
+            <div className="flex flex-col gap-2">
+              <span className="text-[12px] font-bold text-gray-400 uppercase tracking-wider font-['Arial:Bold']">Specializations</span>
+              <div className="flex flex-wrap gap-2">
+                {trainer.specializations.map((spec, index) => (
+                  <span key={index} className="bg-red-50 text-[#ff7176] text-[12px] px-3 py-1 rounded-[14px] border border-red-100">
+                    {spec}
                   </span>
-                </div>
-              </div>
-              <div className="flex items-center gap-1">
-                <button
-                  onClick={() => startEditing(trainer)}
-                  className="p-2 text-gray-500 cursor-pointer hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors"
-                  title="Edit"
-                >
-                  <Edit size={18} />
-                </button>
-                <button
-                  onClick={() => setTrainerToDelete(trainer)}
-                  className="p-2 text-gray-500 cursor-pointer hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                  title="Delete"
-                >
-                  <Trash2 size={18} />
-                </button>
+                ))}
               </div>
             </div>
 
-            <div className="p-5 space-y-4 text-sm text-gray-600">
-              <p>
-                <span className="font-medium">Email:</span>{" "}
-                {trainer.email || "—"}
-              </p>
-              <p>
-                <span className="font-medium">Phone:</span>{" "}
-                {trainer.phone || "—"}
-              </p>
-
-              <div>
-                <p className="text-xs text-gray-500 mb-1.5 font-medium">
-                  SPECIALIZATIONS
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  {(trainer.specialization.length
-                    ? trainer.specialization
-                    : ["Obedience Training", "Puppy Training"]
-                  ).map((spec, i) => (
-                    <span
-                      key={i}
-                      className="px-3 py-1 text-xs font-medium bg-pink-100 text-pink-700 rounded-full"
-                    >
-                      {spec}
-                    </span>
-                  ))}
-                </div>
+            {/* Stats */}
+            <div className="grid grid-cols-2 gap-4 py-4 border-t border-b border-gray-50">
+              <div className="flex flex-col">
+                <span className="text-[12px] text-gray-400 font-['Arial:Regular']">Active Classes</span>
+                <span className="text-[18px] font-bold text-[#101828]">{trainer.activeClasses}</span>
               </div>
+              <div className="flex flex-col">
+                <span className="text-[12px] text-gray-400 font-['Arial:Regular']">Total Students</span>
+                <span className="text-[18px] font-bold text-[#101828]">{trainer.totalStudents}</span>
+              </div>
+            </div>
+
+            {/* Actions */}
+            <div className="flex items-center gap-3">
+              <button className="flex-grow bg-[#f9fafb] h-[40px] rounded-[10px] flex items-center justify-center gap-2 text-[#364153] hover:bg-gray-100 transition-colors">
+                <Eye className="w-4 h-4" />
+                <span className="text-[14px] font-['Arial:Regular']">View Details</span>
+              </button>
+              <button className="w-[40px] h-[40px] bg-[#f9fafb] rounded-[10px] flex items-center justify-center text-gray-500 hover:bg-gray-100 transition-colors">
+                <Edit3 className="w-4 h-4" />
+              </button>
+              <button className="w-[40px] h-[40px] bg-[#fdf2f2] rounded-[10px] flex items-center justify-center text-red-500 hover:bg-red-100 transition-colors">
+                <Trash2 className="w-4 h-4" />
+              </button>
             </div>
           </div>
         ))}
       </div>
-
-      {trainers.length === 0 && (
-        <div className="text-center py-16 text-gray-500">
-          <p>No trainers yet. Add your first trainer to get started.</p>
-        </div>
-      )}
-
-      {/* Modals */}
-      <CreateTrainerModal
-        isOpen={isCreating}
-        onClose={cancelEditing}
-        onSubmit={editingTrainer ? handleUpdateTrainer : handleCreateTrainer}
-        trainer={editingTrainer}
-        isSubmitting={isSubmitting}
-      />
-
-      <DeleteTrainerModal
-        isOpen={!!trainerToDelete}
-        onClose={() => setTrainerToDelete(null)}
-        onConfirm={handleDeleteTrainer}
-        trainerName={trainerToDelete?.name}
-        isSubmitting={isSubmitting}
-      />
     </div>
   );
 }

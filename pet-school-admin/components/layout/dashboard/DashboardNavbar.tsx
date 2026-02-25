@@ -64,8 +64,8 @@ export function DashboardNavbar() {
   }, []);
 
   return (
-    <nav className="absolute top-0 z-100 w-full bg-white ">
-      <div className="flex items-center justify-between px-6 lg:px-8 h-16">
+    <nav className="absolute top-0 z-100 w-full bg-white border-b border-solid border-[#d0d0d0]">
+      <div className="flex items-center justify-between px-[38px] h-[80px]">
         {/* Left - Greeting Section */}
         <div className="flex items-center gap-4 flex-1">
           {/* Mobile Hamburger Menu */}
@@ -81,8 +81,8 @@ export function DashboardNavbar() {
             <Image
               src={petzyLogo}
               alt="Logo"
-              width={80}
-              height={40}
+              width={126}
+              height={38}
               className="object-contain"
             />
           </Link>
@@ -106,7 +106,7 @@ export function DashboardNavbar() {
               onClick={() => setShowProfileMenu(!showProfileMenu)}
               className="flex items-center justify-center cursor-pointer"
             >
-              <div className="w-8 h-8 rounded-full flex items-center justify-center overflow-hidden hover:ring-2 hover:ring-primary/30 transition-all">
+              <div className="w-[42px] h-[42px] rounded-full flex items-center justify-center overflow-hidden hover:ring-2 hover:ring-primary/30 transition-all">
                 {userImage ? (
                   <img
                     src={userImage}
