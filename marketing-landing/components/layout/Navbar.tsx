@@ -9,7 +9,6 @@ import { clearCredentials } from "@/redux/features/slice/authSlice";
 import Image from "next/image";
 import Button from "../ui/Button";
 import { getRedirectPath } from "@/lib/roleRoutes";
-import logoImg from "@/public/images/Petzy.png";
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -55,51 +54,56 @@ export default function Navbar() {
   }, []);
 
   return (
-    <section className="bg-background">
-      <nav className="fixed top-0 right-0 left-0 z-50 px-4 py-4 sm:px-6">
-        <div className="relative mx-auto flex max-w-7xl items-center justify-between rounded-full bg-white/10 px-4 py-3 shadow-sm backdrop-blur-sm sm:px-8 sm:py-4 border ">
+    <header className="relative w-full">
+
+      <nav className="fixed top-0 right-0 left-0 z-50 px-4 py-8">
+        <div className="relative mx-auto flex max-w-[1400px] h-[88px] items-center justify-between rounded-full bg-white/30 border border-white/20 shadow-[0_4px_30px_rgba(0,0,0,0.03)] backdrop-blur-md px-8 transition-all duration-300">
           {/* Logo */}
           <Link
             href="/"
             className="flex items-center hover:scale-105 transition-transform duration-200 cursor-pointer"
           >
-            <div className="w-12  h-10 md:w-18 md:h-12 flex items-center justify-center">
-              <Image
-                src={logoImg}
-                alt="Petzy"
-                className="w-full h-full object-contain text-foreground "
-              />
-            </div>
+            <Image
+              src="/assets/logo.svg"
+              alt="Petzy"
+              width={92}
+              height={38}
+              className="object-contain"
+            />
           </Link>
 
           {/* Navigation Links - Centered */}
-          <div className="hidden sm:flex absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 items-center gap-8">
+          <div className="hidden lg:flex items-center gap-[32px] font-montserrat px-[34px] py-[17px]">
             <Link
-              href="/"
-              className="relative text-base font-medium text-foreground transition-colors hover:text-primary after:absolute after:left-1/2 after:-bottom-1 after:h-[2px] after:w-0 after:bg-primary after:transition-all after:duration-300 hover:after:w-full hover:after:-translate-1/2
-              "
+              href="#features"
+              className="text-[18px] font-normal text-[#282828] transition-colors hover:text-primary"
             >
-              Home
-            </Link>
-
-            {/* <Link
-              href="/about"
-              className="text-base font-medium text-foreground transition-colors hover:text-primary"
-            >
-              About
+              App Features
             </Link>
             <Link
-              href="/services"
-              className="text-base font-medium text-foreground transition-colors hover:text-primary"
+              href="#services"
+              className="text-[18px] font-normal text-[#282828] transition-colors hover:text-primary tracking-[-0.18px]"
             >
               Services
             </Link>
             <Link
-              href="/contact"
-              className="text-base font-medium text-foreground transition-colors hover:text-primary"
+              href="#how-it-works"
+              className="text-[18px] font-normal text-[#282828] transition-colors hover:text-primary"
             >
-              Contact
-            </Link> */}
+              How it Works
+            </Link>
+            <Link
+              href="#testimonials"
+              className="text-[18px] font-normal text-[#282828] transition-colors hover:text-primary"
+            >
+              Testimonials
+            </Link>
+            <Link
+              href="#faq"
+              className="text-[18px] font-normal text-[#282828] transition-colors hover:text-primary"
+            >
+              FAQ
+            </Link>
           </div>
 
           {/* Right Side Actions */}
@@ -108,64 +112,46 @@ export default function Navbar() {
               <div className="relative" ref={authDropdownRef}>
                 <button
                   onClick={() => setIsAuthOpen(!isAuthOpen)}
-                  className="flex items-center gap-2 rounded-full bg-muted p-1 text-base focus:outline-none focus:ring-2 focus:ring-primary cursor-pointer"
+                  className="flex items-center gap-2 rounded-full bg-white/30 backdrop-blur-md p-1 text-base focus:outline-none focus:ring-2 focus:ring-primary cursor-pointer border border-white/50"
                   aria-expanded={isAuthOpen}
                   aria-haspopup="true"
                 >
                   <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-primary-foreground">
                     <User className="h-4 w-4" />
                   </div>
-                  <span className="hidden sm:block truncate max-w-25 text-base font-medium">
+                  <span className="hidden sm:block truncate max-w-25 text-[15px] font-medium text-[#282828] font-montserrat">
                     {user?.name || user?.email?.split("@")[0] || "User"}
                   </span>
                 </button>
 
                 {isAuthOpen && (
-                  <div className="absolute right-0 mt-2 w-56 origin-top-right rounded-md bg-background shadow-lg ring-1 ring-black ring-opacity-5 z-50">
+                  <div className="absolute right-0 mt-2 w-56 origin-top-right rounded-2xl bg-white shadow-xl ring-1 ring-black ring-opacity-5 z-50 overflow-hidden backdrop-blur-xl border border-white/20">
                     <div className="py-1">
-                      <div className="px-4 py-2">
-                        <p className="text-base font-medium text-foreground truncate">
+                      <div className="px-4 py-3 bg-gray-50/50">
+                        <p className="text-[14px] font-bold text-gray-900 font-montserrat truncate">
                           {user?.name || "User"}
                         </p>
-                        <p className="text-xs text-muted-foreground truncate">
+                        <p className="text-[11px] text-gray-400 font-arimo truncate">
                           {user?.email || ""}
                         </p>
                       </div>
 
-                      <div className="border-t border-border my-1"></div>
+                      <div className="h-px bg-gray-100 mx-4 my-1"></div>
 
                       <Link
                         href={getRedirectPath(user?.role || null)}
-                        className="flex items-center gap-2 px-4 py-2 text-base text-foreground hover:bg-muted transition-colors cursor-pointer"
+                        className="flex items-center gap-2 px-4 py-2 text-[14px] text-gray-700 font-montserrat hover:bg-gray-50 transition-colors cursor-pointer"
                         onClick={() => setIsAuthOpen(false)}
                       >
-                        <CreditCard className="h-4 w-4" />
+                        <CreditCard className="h-4 w-4 text-primary" />
                         <span>Dashboard</span>
                       </Link>
 
-                      {/* <Link
-                        href="/profile"
-                        className="flex items-center gap-2 px-4 py-2 text-base text-foreground hover:bg-muted transition-colors"
-                        onClick={() => setIsAuthOpen(false)}
-                      >
-                        <User className="h-4 w-4" />
-                        <span>Profile</span>
-                      </Link>
-
-                      <Link
-                        href="/settings"
-                        className="flex items-center gap-2 px-4 py-2 text-base text-foreground cursor-pointer hover:bg-muted transition-colors"
-                        onClick={() => setIsAuthOpen(false)}
-                      >
-                        <Settings className="h-4 w-4" />
-                        <span>Settings</span>
-                      </Link> */}
-
                       <button
                         onClick={handleLogout}
-                        className="flex w-full items-center gap-2 px-4 py-2 cursor-pointer text-base text-foreground hover:bg-muted transition-colors"
+                        className="flex w-full items-center gap-2 px-4 py-2 cursor-pointer text-[14px] text-gray-700 font-montserrat hover:bg-gray-50 transition-colors"
                       >
-                        <LogOut className="h-4 w-4" />
+                        <LogOut className="h-4 w-4 text-red-500" />
                         <span>Sign out</span>
                       </button>
                     </div>
@@ -173,20 +159,12 @@ export default function Navbar() {
                 )}
               </div>
             ) : (
-              <div className="flex items-center gap-2">
-                <Button
-                  text="Log in"
-                  variant="outline"
-                  href="/login"
-                  className="rounded-lg"
-                />
-                <Button
-                  text="Get Started"
-                  className="bg-white "
-                  icon={<ChevronRight size={16} />}
-                  href="/register"
-                />
-              </div>
+              <Link
+                href="/register"
+                className="bg-[#ff7176] text-white px-[30px] py-[14px] rounded-full font-montserrat font-medium text-[18px] uppercase tracking-wider hover:brightness-110 active:scale-95 transition-all shadow-lg shadow-primary/20 flex items-center justify-center"
+              >
+                join Us
+              </Link>
             )}
           </div>
 
@@ -319,6 +297,6 @@ export default function Navbar() {
           </div>
         )}
       </nav>
-    </section>
+    </header>
   );
 }

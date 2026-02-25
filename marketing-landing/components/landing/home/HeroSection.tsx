@@ -1,60 +1,46 @@
 "use client";
 
-import Button from "@/components/ui/Button";
-import { getRedirectPath } from "@/lib/roleRoutes";
-import { ChevronRight } from "lucide-react";
 import { useSession } from "next-auth/react";
+import Image from "next/image";
 
 export function HeroSection() {
   const { data: session, status } = useSession();
   return (
-    <section className="min-h-screen flex items-center justify-center px-4 py-20 relative">
-      <div className="max-w-4xl mx-auto text-center relative z-10 animate-fade-in-hero">
-        {/* Badge */}
-        <div className="inline-flex items-center px-4 py-2 rounded-full bg-background/20 backdrop-blur-md border border-white/30 text-foreground text-sm font-medium mb-8 mt-12 animate-fade-in-badge">
-          <span className="w-2 h-2 bg-foreground rounded-full mr-2 animate-pulse"></span>
-          Pet Care Platform
+    <section className="relative min-h-[931px] w-full pt-[200px] overflow-hidden bg-transparent">
+      {/* Consolidating glow into Navbar for smoother transition */}
+      {/* Background Curved Section */}
+      <div className="absolute top-0 left-0 w-full pointer-events-none z-0">
+        <Image 
+          src="/assets/bg-circle.svg" 
+          alt="" 
+          width={1920} 
+          height={130} 
+          className="w-full object-cover"
+        />
+      </div>
+
+      <div className="container mx-auto px-4 relative z-10 text-center">
+        {/* Main Heading */}
+        <div className="max-w-[899px] mx-auto space-y-4 mb-[60px]">
+          <h1 className="text-[54px] font-bold font-nunito leading-[1.1] tracking-[-1.08px] text-[#282828] font-nunito">
+            Your All-in-One <span className="text-primary">PetCare</span> Companion
+          </h1>
+          <p className="text-[20px] font-medium font-montserrat text-[#282828] leading-[1.2] tracking-[-0.2px] w-full mx-auto opacity-70 whitespace-nowrap">
+            Book trusted caregivers, find quality pet foods & manage your pet&apos;s needs from one app.
+          </p>
         </div>
 
-        {/* Main Heading */}
-        <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-bold text-balance mb-6 animate-fade-in-heading">
-          <span className="text-foreground">Welcome to</span>
-          <br />
-          <span className="inline-flex items-center justify-center flex-wrap gap-2 mt-4 sm:mt-6 md:mt-8">
-            <span className="text-foreground">Petzy</span>
-          </span>
-        </h1>
-
-        {/* Subheading */}
-        <p className=" xs:text-base text-sm  sm:text-xl md:text-2xl text-foreground text-balance max-w-sm sm:max-w-3xl mx-auto mb-8 sm:mb-12 leading-relaxed px-4 sm:px-0 animate-fade-in-subheading font-light">
-          Your trusted platform for connecting pet owners with quality pet care
-          services. Book, manage, and discover premium pet care solutions all in
-          one place.
-        </p>
-
-        {/* CTA Buttons */}
-        <div className="w-full flex justify-center">
-          {session?.user?.role ? (
-            <Button
-              text={`${session?.user?.role} PROFILE `}
-              href={getRedirectPath(session?.user?.role)}
+        {/* Mockups Container - Simplified to Single Image */}
+        <div className="relative w-full max-w-[1000px] mx-auto mt-10">
+          <div className="relative w-full h-auto aspect-[1000/550]">
+            <Image 
+              src="/assets/hero-mockup-main.png" 
+              alt="Petzy App Mockup" 
+              fill 
+              className="object-contain"
+              priority
             />
-          ) : (
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8 sm:mb-16 animate-fade-in-buttons">
-              <Button
-                text="Log in"
-                variant="outline"
-                href="/login"
-                className="px-14"
-              />
-
-              <Button
-                text="Get Started"
-                href="/register"
-                icon={<ChevronRight className="w-6 h-6" />}
-              />
-            </div>
-          )}
+          </div>
         </div>
       </div>
     </section>

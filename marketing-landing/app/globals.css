@@ -6,9 +6,12 @@
 .font-nunito {
   font-family: var(--font-nunito), sans-serif;
 }
+.font-montserrat {
+  font-family: var(--font-montserrat), sans-serif;
+}
 
 @theme {
-  --color-primary: #ff868a;
+  --color-primary: #ff7176;
   --breakpoint-xs: 20rem;
 }
 
@@ -16,7 +19,7 @@
 :root {
   --background: #f2f4f8;
   --foreground: #171717;
-  --primary: #ff868a;
+  --primary: #ff7176;
   --primary-foreground: #ffffff;
   --secondary: #828282;
   --secondary-foreground: #ffffff;
@@ -123,7 +126,7 @@
 }
 
 body {
-  background: var(--background);
+  background-color: #f2f4f8;
   color: var(--foreground);
   font-family: var(--font-geist-sans, Arial, Helvetica, sans-serif);
 }

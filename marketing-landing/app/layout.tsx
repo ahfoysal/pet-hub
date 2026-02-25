@@ -3,9 +3,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import AuthSync from "@/components/auth/AuthSync";
 import AppProviders from "@/providers/AppProviders";
-import { Nunito } from "next/font/google";
-
-import { Arimo } from "next/font/google";
+import { Arimo, Nunito, Montserrat } from "next/font/google";
 
 export const arimo = Arimo({
   subsets: ["latin"],
@@ -18,6 +16,12 @@ const nunito = Nunito({
   weight: ["300", "400", "500", "600", "700", "800"],
   display: "swap",
   variable: "--font-nunito",
+});
+
+const montserrat = Montserrat({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800", "900"],
+  variable: "--font-montserrat",
 });
 
 export const metadata: Metadata = {
@@ -34,7 +38,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning className={arimo.variable}>
       <body
-        className={`${nunito.variable} font-nunito`}
+        className={`${nunito.variable} ${montserrat.variable} ${arimo.variable} font-nunito`}
         suppressHydrationWarning
       >
         <AppProviders>
