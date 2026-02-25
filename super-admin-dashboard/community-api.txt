@@ -1,0 +1,4407 @@
+Story
+
+
+POST
+/api/story
+Add a new story
+
+
+Parameters
+Cancel
+Reset
+No parameters
+
+Request body
+
+multipart/form-data
+Add a story with an image, optional location, and visibility
+
+file *
+string($binary)
+The story image file to upload (JPEG, PNG, or MP4)
+
+pacto-visual-cWOzOnSoh6Q-unsplash.jpg
+location
+string
+Optional location for the story, e.g., "New York City"
+
+New York City
+Send empty value
+visibility
+string
+Visibility of the story. PUBLIC = anyone can see, FRIENDS = only friends, PRIVATE = only you
+
+
+PUBLIC
+Send empty value
+Execute
+Clear
+Responses
+Curl
+
+curl -X 'POST' \
+  'https://elusive-regional-harvey.ngrok-free.dev/api/story' \
+  -H 'accept: */*' \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjFiN2UxM2NjLTY1NzctNGJiYS1hZDY1LTc3ODViYWQ5YjEyZSIsImVtYWlsIjoiY2lrb2o2NzMwMUBjb3N3ei5jb20iLCJyb2xlIjoiVkVORE9SIiwiaWF0IjoxNzY5NTc5MjgzLCJleHAiOjE3Njk2NjU2ODN9.rZVKYUPKwidDf2kJlldsQTUhEq9uz0TkUT9rUaPH-yA' \
+  -H 'Content-Type: multipart/form-data' \
+  -F 'file=@pacto-visual-cWOzOnSoh6Q-unsplash.jpg;type=image/jpeg' \
+  -F 'location=New York City' \
+  -F 'visibility=PUBLIC'
+Request URL
+https://elusive-regional-harvey.ngrok-free.dev/api/story
+Server response
+Code	Details
+201	
+Response body
+Download
+{
+  "success": true,
+  "message": "Story added successfully",
+  "data": {
+    "id": "90647c93-3ace-450c-8684-55c2b6d5b2a9",
+    "userId": "1b7e13cc-6577-4bba-ad65-7785bad9b12e",
+    "media": "https://res.cloudinary.com/db0ecop7c/image/upload/v1769662262/stories/gsj50idys27y6euhjlqy.jpg",
+    "location": "New York City",
+    "viewCount": 0,
+    "isPublished": true,
+    "visibility": "PUBLIC",
+    "isDeleted": false,
+    "trendingScore": 0,
+    "likeCount": 0,
+    "createdAt": "2026-01-29T04:50:56.628Z",
+    "expiresAt": "2026-01-30T04:50:56.627Z"
+  }
+}
+Response headers
+ access-control-allow-credentials: true 
+ access-control-allow-origin: * 
+ content-length: 469 
+ content-type: application/json; charset=utf-8 
+ date: Thu,29 Jan 2026 04:50:56 GMT 
+ etag: W/"1d5-LYQs7GH04DWvjIKBguTbAmMieow" 
+ ngrok-agent-ips: 103.174.189.241 
+ vary: Origin 
+ x-powered-by: Express 
+Request duration
+7270 ms
+Responses
+Code	Description	Links
+201	
+No links
+
+GET
+/api/story
+Fetch stories with pagination
+
+
+Parameters
+Cancel
+Name	Description
+limit
+number
+(query)
+Number of stories to fetch (default 20, max 50)
+
+limit
+cursor
+string
+(query)
+Cursor ID for pagination
+
+cursor
+Execute
+Clear
+Responses
+Curl
+
+curl -X 'GET' \
+  'https://elusive-regional-harvey.ngrok-free.dev/api/story' \
+  -H 'accept: */*' \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjFiN2UxM2NjLTY1NzctNGJiYS1hZDY1LTc3ODViYWQ5YjEyZSIsImVtYWlsIjoiY2lrb2o2NzMwMUBjb3N3ei5jb20iLCJyb2xlIjoiVkVORE9SIiwiaWF0IjoxNzY5NTc5MjgzLCJleHAiOjE3Njk2NjU2ODN9.rZVKYUPKwidDf2kJlldsQTUhEq9uz0TkUT9rUaPH-yA'
+Request URL
+https://elusive-regional-harvey.ngrok-free.dev/api/story
+Server response
+Code	Details
+200	
+Response body
+Download
+{
+  "success": true,
+  "message": "Stories fetched successfully",
+  "data": {
+    "items": [
+      {
+        "id": "dc232013-cc3f-486a-adc4-5a8f0f3acf31",
+        "media": "https://res.cloudinary.com/db0ecop7c/image/upload/v1769659184/stories/lhnom2xnyf6lg37v2kq3.jpg",
+        "location": null,
+        "createdAt": "2026-01-29T03:59:38.768Z",
+        "expiresAt": "2026-01-30T03:59:38.766Z",
+        "user": {
+          "id": "1b7e13cc-6577-4bba-ad65-7785bad9b12e",
+          "fullName": "Alex Debnath",
+          "image": "https://res.cloudinary.com/db0ecop7c/image/upload/v1769414650/pajsvndvdqe4mdj7hb7l.jpg"
+        },
+        "remainingHours": 23.12171,
+        "likeCount": 1,
+        "viewCount": 1,
+        "isLiked": true,
+        "isViewed": true
+      },
+      {
+        "id": "e31c3aa7-f7e5-4284-ac48-d718c596f317",
+        "media": "https://res.cloudinary.com/db0ecop7c/image/upload/v1769604206/stories/ftrndbdp82kufn3tz72i.jpg",
+        "location": null,
+        "createdAt": "2026-01-28T12:43:22.033Z",
+        "expiresAt": "2026-01-29T12:43:22.031Z",
+        "user": {
+          "id": "1b7e13cc-6577-4bba-ad65-7785bad9b12e",
+          "fullName": "Alex Debnath",
+          "image": "https://res.cloudinary.com/db0ecop7c/image/upload/v1769414650/pajsvndvdqe4mdj7hb7l.jpg"
+        },
+        "remainingHours": 7.850394722222222,
+        "likeCount": 1,
+        "viewCount": 1,
+        "isLiked": true,
+        "isViewed": true
+      },
+      {
+        "id": "66429fd0-a0f2-4ea9-9201-efcd89369d97",
+        "media": "https://res.cloudinary.com/db0ecop7c/image/upload/v1769594362/stories/kx7p5njxco0ja42kagod.jpg",
+        "location": null,
+        "createdAt": "2026-01-28T09:59:17.263Z",
+        "expiresAt": "2026-01-29T09:59:17.256Z",
+        "user": {
+          "id": "1b7e13cc-6577-4bba-ad65-7785bad9b12e",
+          "fullName": "Alex Debnath",
+          "image": "https://res.cloudinary.com/db0ecop7c/image/upload/v1769414650/pajsvndvdqe4mdj7hb7l.jpg"
+        },
+        "remainingHours": 5.115735,
+        "likeCount": 1,
+        "viewCount": 1,
+        "isLiked": true,
+        "isViewed": true
+      },
+      {
+        "id": "56285ceb-07e2-4e31-bc37-77f35eb5c2d6",
+        "media": "https://res.cloudinary.com/db0ecop7c/image/upload/v1769594192/stories/rvt8dgeewzyspttymdzg.jpg",
+        "location": "testing",
+        "createdAt": "2026-01-28T09:56:27.276Z",
+        "expiresAt": "2026-01-29T09:56:27.275Z",
+        "user": {
+          "id": "1b7e13cc-6577-4bba-ad65-7785bad9b12e",
+          "fullName": "Alex Debnath",
+          "image": "https://res.cloudinary.com/db0ecop7c/image/upload/v1769414650/pajsvndvdqe4mdj7hb7l.jpg"
+        },
+        "remainingHours": 5.068518055555556,
+        "likeCount": 0,
+        "viewCount": 1,
+        "isLiked": false,
+        "isViewed": true
+      }
+    ],
+    "nextCursor": null
+  }
+}
+Response headers
+ access-control-allow-credentials: true 
+ access-control-allow-origin: * 
+ content-length: 2142 
+ content-type: application/json; charset=utf-8 
+ date: Thu,29 Jan 2026 04:52:20 GMT 
+ etag: W/"85e-6wpFZU+OA5h4LRSmCSYvvAkSKa4" 
+ ngrok-agent-ips: 103.174.189.241 
+ vary: Origin 
+ x-powered-by: Express 
+Request duration
+262 ms
+Responses
+Code	Description	Links
+200	
+No links
+
+DELETE
+/api/story/{id}
+Delete a story
+
+
+Parameters
+Cancel
+Name	Description
+id *
+string
+(path)
+The ID of the story to delete
+
+90647c93-3ace-450c-8684-55c2b6d5b2a9
+Execute
+Clear
+Responses
+Curl
+
+curl -X 'DELETE' \
+  'https://elusive-regional-harvey.ngrok-free.dev/api/story/90647c93-3ace-450c-8684-55c2b6d5b2a9' \
+  -H 'accept: application/json' \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjFiN2UxM2NjLTY1NzctNGJiYS1hZDY1LTc3ODViYWQ5YjEyZSIsImVtYWlsIjoiY2lrb2o2NzMwMUBjb3N3ei5jb20iLCJyb2xlIjoiVkVORE9SIiwiaWF0IjoxNzY5NTc5MjgzLCJleHAiOjE3Njk2NjU2ODN9.rZVKYUPKwidDf2kJlldsQTUhEq9uz0TkUT9rUaPH-yA'
+Request URL
+https://elusive-regional-harvey.ngrok-free.dev/api/story/90647c93-3ace-450c-8684-55c2b6d5b2a9
+Server response
+Code	Details
+200	
+Response body
+Download
+{
+  "success": true,
+  "message": "Story deleted successfully",
+  "data": {
+    "id": "90647c93-3ace-450c-8684-55c2b6d5b2a9",
+    "userId": "1b7e13cc-6577-4bba-ad65-7785bad9b12e",
+    "media": "https://res.cloudinary.com/db0ecop7c/image/upload/v1769662262/stories/gsj50idys27y6euhjlqy.jpg",
+    "location": "New York City",
+    "viewCount": 1,
+    "isPublished": false,
+    "visibility": "PUBLIC",
+    "isDeleted": true,
+    "trendingScore": 0,
+    "likeCount": 1,
+    "createdAt": "2026-01-29T04:50:56.628Z",
+    "expiresAt": "2026-01-30T04:50:56.627Z"
+  }
+}
+Response headers
+ access-control-allow-credentials: true 
+ access-control-allow-origin: * 
+ content-length: 471 
+ content-type: application/json; charset=utf-8 
+ date: Thu,29 Jan 2026 04:52:52 GMT 
+ etag: W/"1d7-WG7Qddgzg6wAro9t4qJJnS19yjQ" 
+ ngrok-agent-ips: 103.174.189.241 
+ vary: Origin 
+ x-powered-by: Express 
+Request duration
+254 ms
+Responses
+Code	Description	Links
+200	
+Story deleted successfully
+
+Media type
+
+application/json
+Controls Accept header.
+Example Value
+Schema
+{
+  "success": true,
+  "message": "Story deleted successfully",
+  "data": {
+    "id": "story-id",
+    "userId": "user-id",
+    "isDeleted": true,
+    "expiresAt": "2026-01-11T12:00:00.000Z"
+  }
+}
+No links
+400	
+Story not found or already deleted / Story has expired
+
+No links
+403	
+You are not the owner of this story
+
+No links
+
+PATCH
+/api/story/like/{id}
+Toggle the like status of a story
+
+
+Parameters
+Cancel
+Name	Description
+id *
+string
+(path)
+The ID of the story to toggle the like status
+
+90647c93-3ace-450c-8684-55c2b6d5b2a9
+Execute
+Clear
+Responses
+Curl
+
+curl -X 'PATCH' \
+  'https://elusive-regional-harvey.ngrok-free.dev/api/story/like/90647c93-3ace-450c-8684-55c2b6d5b2a9' \
+  -H 'accept: */*' \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjFiN2UxM2NjLTY1NzctNGJiYS1hZDY1LTc3ODViYWQ5YjEyZSIsImVtYWlsIjoiY2lrb2o2NzMwMUBjb3N3ei5jb20iLCJyb2xlIjoiVkVORE9SIiwiaWF0IjoxNzY5NTc5MjgzLCJleHAiOjE3Njk2NjU2ODN9.rZVKYUPKwidDf2kJlldsQTUhEq9uz0TkUT9rUaPH-yA'
+Request URL
+https://elusive-regional-harvey.ngrok-free.dev/api/story/like/90647c93-3ace-450c-8684-55c2b6d5b2a9
+Server response
+Code	Details
+200	
+Response body
+Download
+{
+  "success": true,
+  "message": "Story like added successfully",
+  "data": {
+    "likeCount": 1
+  }
+}
+Response headers
+ access-control-allow-credentials: true 
+ access-control-allow-origin: * 
+ content-length: 81 
+ content-type: application/json; charset=utf-8 
+ date: Thu,29 Jan 2026 04:51:18 GMT 
+ etag: W/"51-mBZEAiVhSB5keWXzfKeaNUtKQR8" 
+ ngrok-agent-ips: 103.174.189.241 
+ vary: Origin 
+ x-powered-by: Express 
+Request duration
+222 ms
+Responses
+Code	Description	Links
+200	
+No links
+
+GET
+/api/story/me
+Get my stories with cursor pagination
+
+
+Parameters
+Cancel
+Name	Description
+limit
+number
+(query)
+Number of stories to fetch (max 50)
+
+limit
+cursor
+string
+(query)
+ID of the last story from previous page for pagination
+
+cursor
+Execute
+Clear
+Responses
+Curl
+
+curl -X 'GET' \
+  'https://elusive-regional-harvey.ngrok-free.dev/api/story/me' \
+  -H 'accept: */*' \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjFiN2UxM2NjLTY1NzctNGJiYS1hZDY1LTc3ODViYWQ5YjEyZSIsImVtYWlsIjoiY2lrb2o2NzMwMUBjb3N3ei5jb20iLCJyb2xlIjoiVkVORE9SIiwiaWF0IjoxNzY5NTc5MjgzLCJleHAiOjE3Njk2NjU2ODN9.rZVKYUPKwidDf2kJlldsQTUhEq9uz0TkUT9rUaPH-yA'
+Request URL
+https://elusive-regional-harvey.ngrok-free.dev/api/story/me
+Server response
+Code	Details
+200	
+Response body
+Download
+{
+  "success": true,
+  "message": "My stories fetched successfully",
+  "data": {
+    "items": [
+      {
+        "id": "90647c93-3ace-450c-8684-55c2b6d5b2a9",
+        "media": "https://res.cloudinary.com/db0ecop7c/image/upload/v1769662262/stories/gsj50idys27y6euhjlqy.jpg",
+        "location": "New York City",
+        "createdAt": "2026-01-29T04:50:56.628Z",
+        "likeCount": 1,
+        "viewCount": 0,
+        "visibility": "PUBLIC",
+        "expiresAt": "2026-01-30T04:50:56.627Z",
+        "storyReplies": [
+          {
+            "id": "bb39c511-d012-4e41-8cc5-1182127505ed",
+            "comment": "comment",
+            "createdAt": "2026-01-29T04:51:07.980Z",
+            "user": {
+              "id": "1b7e13cc-6577-4bba-ad65-7785bad9b12e",
+              "fullName": "Alex Debnath",
+              "image": "https://res.cloudinary.com/db0ecop7c/image/upload/v1769414650/pajsvndvdqe4mdj7hb7l.jpg"
+            }
+          }
+        ],
+        "remainingHours": 23.992615277777777
+      },
+      {
+        "id": "dc232013-cc3f-486a-adc4-5a8f0f3acf31",
+        "media": "https://res.cloudinary.com/db0ecop7c/image/upload/v1769659184/stories/lhnom2xnyf6lg37v2kq3.jpg",
+        "location": null,
+        "createdAt": "2026-01-29T03:59:38.768Z",
+        "likeCount": 1,
+        "viewCount": 1,
+        "visibility": "PUBLIC",
+        "expiresAt": "2026-01-30T03:59:38.766Z",
+        "storyReplies": [
+          {
+            "id": "9cb1bb30-cbae-4f4c-8f88-1d47f83dd0c4",
+            "comment": "hello",
+            "createdAt": "2026-01-29T03:59:49.027Z",
+            "user": {
+              "id": "1b7e13cc-6577-4bba-ad65-7785bad9b12e",
+              "fullName": "Alex Debnath",
+              "image": "https://res.cloudinary.com/db0ecop7c/image/upload/v1769414650/pajsvndvdqe4mdj7hb7l.jpg"
+            }
+          }
+        ],
+        "remainingHours": 23.137653888888888
+      },
+      {
+        "id": "e31c3aa7-f7e5-4284-ac48-d718c596f317",
+        "media": "https://res.cloudinary.com/db0ecop7c/image/upload/v1769604206/stories/ftrndbdp82kufn3tz72i.jpg",
+        "location": null,
+        "createdAt": "2026-01-28T12:43:22.033Z",
+        "likeCount": 1,
+        "viewCount": 1,
+        "visibility": "PUBLIC",
+        "expiresAt": "2026-01-29T12:43:22.031Z",
+        "storyReplies": [
+          {
+            "id": "cd5ebbaf-f61e-4c4d-85c0-cb14c3814eb4",
+            "comment": "wtf",
+            "createdAt": "2026-01-28T12:43:30.729Z",
+            "user": {
+              "id": "1b7e13cc-6577-4bba-ad65-7785bad9b12e",
+              "fullName": "Alex Debnath",
+              "image": "https://res.cloudinary.com/db0ecop7c/image/upload/v1769414650/pajsvndvdqe4mdj7hb7l.jpg"
+            }
+          }
+        ],
+        "remainingHours": 7.866338611111111
+      },
+      {
+        "id": "66429fd0-a0f2-4ea9-9201-efcd89369d97",
+        "media": "https://res.cloudinary.com/db0ecop7c/image/upload/v1769594362/stories/kx7p5njxco0ja42kagod.jpg",
+        "location": null,
+        "createdAt": "2026-01-28T09:59:17.263Z",
+        "likeCount": 1,
+        "viewCount": 1,
+        "visibility": "FRIENDS",
+        "expiresAt": "2026-01-29T09:59:17.256Z",
+        "storyReplies": [
+          {
+            "id": "908f396b-de5f-4b92-971f-eb68f58d6018",
+            "comment": "testng",
+            "createdAt": "2026-01-28T10:22:53.208Z",
+            "user": {
+              "id": "1b7e13cc-6577-4bba-ad65-7785bad9b12e",
+              "fullName": "Alex Debnath",
+              "image": "https://res.cloudinary.com/db0ecop7c/image/upload/v1769414650/pajsvndvdqe4mdj7hb7l.jpg"
+            }
+          },
+          {
+            "id": "ccdba69c-6f56-4dac-b41b-f71f52483b0d",
+            "comment": "test test test",
+            "createdAt": "2026-01-28T11:44:55.067Z",
+            "user": {
+              "id": "1b7e13cc-6577-4bba-ad65-7785bad9b12e",
+              "fullName": "Alex Debnath",
+              "image": "https://res.cloudinary.com/db0ecop7c/image/upload/v1769414650/pajsvndvdqe4mdj7hb7l.jpg"
+            }
+          }
+        ],
+        "remainingHours": 5.131678888888889
+      },
+      {
+        "id": "56285ceb-07e2-4e31-bc37-77f35eb5c2d6",
+        "media": "https://res.cloudinary.com/db0ecop7c/image/upload/v1769594192/stories/rvt8dgeewzyspttymdzg.jpg",
+        "location": "testing",
+        "createdAt": "2026-01-28T09:56:27.276Z",
+        "likeCount": 0,
+        "viewCount": 1,
+        "visibility": "PUBLIC",
+        "expiresAt": "2026-01-29T09:56:27.275Z",
+        "storyReplies": [],
+        "remainingHours": 5.0844619444444445
+      }
+    ],
+    "nextCursor": null
+  }
+}
+Response headers
+ access-control-allow-credentials: true 
+ access-control-allow-origin: * 
+ content-length: 3258 
+ content-type: application/json; charset=utf-8 
+ date: Thu,29 Jan 2026 04:51:23 GMT 
+ etag: W/"cba-hjtr7bcxoe9geCBbTR2QV83SOUU" 
+ ngrok-agent-ips: 103.174.189.241 
+ vary: Origin 
+ x-powered-by: Express 
+Request duration
+224 ms
+Responses
+Code	Description	Links
+200	
+No links
+
+PATCH
+/api/story/published/{id}
+Toggle the published status of a story
+
+
+Parameters
+Cancel
+Name	Description
+id *
+string
+(path)
+The ID of the story to toggle
+
+90647c93-3ace-450c-8684-55c2b6d5b2a9
+Execute
+Clear
+Responses
+Curl
+
+curl -X 'PATCH' \
+  'https://elusive-regional-harvey.ngrok-free.dev/api/story/published/90647c93-3ace-450c-8684-55c2b6d5b2a9' \
+  -H 'accept: */*' \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjFiN2UxM2NjLTY1NzctNGJiYS1hZDY1LTc3ODViYWQ5YjEyZSIsImVtYWlsIjoiY2lrb2o2NzMwMUBjb3N3ei5jb20iLCJyb2xlIjoiVkVORE9SIiwiaWF0IjoxNzY5NTc5MjgzLCJleHAiOjE3Njk2NjU2ODN9.rZVKYUPKwidDf2kJlldsQTUhEq9uz0TkUT9rUaPH-yA'
+Request URL
+https://elusive-regional-harvey.ngrok-free.dev/api/story/published/90647c93-3ace-450c-8684-55c2b6d5b2a9
+Server response
+Code	Details
+200	
+Response body
+Download
+{
+  "success": true,
+  "message": "Story has been unpublished successfully",
+  "data": {
+    "id": "90647c93-3ace-450c-8684-55c2b6d5b2a9",
+    "userId": "1b7e13cc-6577-4bba-ad65-7785bad9b12e",
+    "media": "https://res.cloudinary.com/db0ecop7c/image/upload/v1769662262/stories/gsj50idys27y6euhjlqy.jpg",
+    "location": "New York City",
+    "viewCount": 0,
+    "isPublished": false,
+    "visibility": "PUBLIC",
+    "isDeleted": false,
+    "trendingScore": 0,
+    "likeCount": 1,
+    "createdAt": "2026-01-29T04:50:56.628Z",
+    "expiresAt": "2026-01-30T04:50:56.627Z"
+  }
+}
+Response headers
+ access-control-allow-credentials: true 
+ access-control-allow-origin: * 
+ content-length: 485 
+ content-type: application/json; charset=utf-8 
+ date: Thu,29 Jan 2026 04:51:29 GMT 
+ etag: W/"1e5-6Uo9g602OdWiyEWW+BMLKgq7x3Q" 
+ ngrok-agent-ips: 103.174.189.241 
+ vary: Origin 
+ x-powered-by: Express 
+Request duration
+232 ms
+Responses
+Code	Description	Links
+200	
+No links
+
+POST
+/api/story/reply/{id}
+Reply to a story
+
+
+Parameters
+Cancel
+Name	Description
+id *
+string
+(path)
+The ID of the story to reply to
+
+90647c93-3ace-450c-8684-55c2b6d5b2a9
+Request body
+
+application/json
+Edit Value
+Schema
+{
+  "comment": "comment"
+}
+Execute
+Clear
+Responses
+Curl
+
+curl -X 'POST' \
+  'https://elusive-regional-harvey.ngrok-free.dev/api/story/reply/90647c93-3ace-450c-8684-55c2b6d5b2a9' \
+  -H 'accept: */*' \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjFiN2UxM2NjLTY1NzctNGJiYS1hZDY1LTc3ODViYWQ5YjEyZSIsImVtYWlsIjoiY2lrb2o2NzMwMUBjb3N3ei5jb20iLCJyb2xlIjoiVkVORE9SIiwiaWF0IjoxNzY5NTc5MjgzLCJleHAiOjE3Njk2NjU2ODN9.rZVKYUPKwidDf2kJlldsQTUhEq9uz0TkUT9rUaPH-yA' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "comment": "comment"
+}'
+Request URL
+https://elusive-regional-harvey.ngrok-free.dev/api/story/reply/90647c93-3ace-450c-8684-55c2b6d5b2a9
+Server response
+Code	Details
+201	
+Response body
+Download
+{
+  "success": true,
+  "message": "Reply added successfully"
+}
+Response headers
+ access-control-allow-credentials: true 
+ access-control-allow-origin: * 
+ content-length: 53 
+ content-type: application/json; charset=utf-8 
+ date: Thu,29 Jan 2026 04:51:07 GMT 
+ etag: W/"35-J2t2Rncst9pQGT7vfRq/aYZpxhI" 
+ ngrok-agent-ips: 103.174.189.241 
+ vary: Origin 
+ x-powered-by: Express 
+Request duration
+214 ms
+Responses
+Code	Description	Links
+201	
+No links
+
+PATCH
+/api/story/view/{id}
+Increment the view count of a story
+
+
+Parameters
+Cancel
+Name	Description
+id *
+string
+(path)
+The ID of the story to increment the view count
+
+90647c93-3ace-450c-8684-55c2b6d5b2a9
+Execute
+Clear
+Responses
+Curl
+
+curl -X 'PATCH' \
+  'https://elusive-regional-harvey.ngrok-free.dev/api/story/view/90647c93-3ace-450c-8684-55c2b6d5b2a9' \
+  -H 'accept: */*' \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjFiN2UxM2NjLTY1NzctNGJiYS1hZDY1LTc3ODViYWQ5YjEyZSIsImVtYWlsIjoiY2lrb2o2NzMwMUBjb3N3ei5jb20iLCJyb2xlIjoiVkVORE9SIiwiaWF0IjoxNzY5NTc5MjgzLCJleHAiOjE3Njk2NjU2ODN9.rZVKYUPKwidDf2kJlldsQTUhEq9uz0TkUT9rUaPH-yA'
+Request URL
+https://elusive-regional-harvey.ngrok-free.dev/api/story/view/90647c93-3ace-450c-8684-55c2b6d5b2a9
+Server response
+Code	Details
+200	
+Response body
+Download
+{
+  "success": true,
+  "message": "Story view count incremented successfully",
+  "data": {
+    "viewCount": 1
+  }
+}
+Response headers
+ access-control-allow-credentials: true 
+ access-control-allow-origin: * 
+ content-length: 93 
+ content-type: application/json; charset=utf-8 
+ date: Thu,29 Jan 2026 04:51:44 GMT 
+ etag: W/"5d-grY+/jBrvEW99DX3o4WHRZYaAug" 
+ ngrok-agent-ips: 103.174.189.241 
+ vary: Origin 
+ x-powered-by: Express 
+Request duration
+238 ms
+Responses
+Code	Description	Links
+200	
+No links
+
+PATCH
+/api/story/visibility/{id}
+Change the visibility of a story
+
+
+Parameters
+Cancel
+Name	Description
+id *
+string
+(path)
+The ID of the story
+
+90647c93-3ace-450c-8684-55c2b6d5b2a9
+Request body
+
+application/json
+Edit Value
+Schema
+{
+  "visibility": "PUBLIC"
+}
+Execute
+Clear
+Responses
+Curl
+
+curl -X 'PATCH' \
+  'https://elusive-regional-harvey.ngrok-free.dev/api/story/visibility/90647c93-3ace-450c-8684-55c2b6d5b2a9' \
+  -H 'accept: */*' \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjFiN2UxM2NjLTY1NzctNGJiYS1hZDY1LTc3ODViYWQ5YjEyZSIsImVtYWlsIjoiY2lrb2o2NzMwMUBjb3N3ei5jb20iLCJyb2xlIjoiVkVORE9SIiwiaWF0IjoxNzY5NTc5MjgzLCJleHAiOjE3Njk2NjU2ODN9.rZVKYUPKwidDf2kJlldsQTUhEq9uz0TkUT9rUaPH-yA' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "visibility": "PUBLIC"
+}'
+Request URL
+https://elusive-regional-harvey.ngrok-free.dev/api/story/visibility/90647c93-3ace-450c-8684-55c2b6d5b2a9
+Server response
+Code	Details
+200	
+Response body
+Download
+{
+  "success": true,
+  "message": "Story visibility changed successfully",
+  "data": {
+    "id": "90647c93-3ace-450c-8684-55c2b6d5b2a9",
+    "userId": "1b7e13cc-6577-4bba-ad65-7785bad9b12e",
+    "media": "https://res.cloudinary.com/db0ecop7c/image/upload/v1769662262/stories/gsj50idys27y6euhjlqy.jpg",
+    "location": "New York City",
+    "viewCount": 1,
+    "isPublished": false,
+    "visibility": "PUBLIC",
+    "isDeleted": false,
+    "trendingScore": 0,
+    "likeCount": 1,
+    "createdAt": "2026-01-29T04:50:56.628Z",
+    "expiresAt": "2026-01-30T04:50:56.627Z"
+  }
+}
+Response headers
+ access-control-allow-credentials: true 
+ access-control-allow-origin: * 
+ content-length: 483 
+ content-type: application/json; charset=utf-8 
+ date: Thu,29 Jan 2026 04:51:52 GMT 
+ etag: W/"1e3-JcjJuCrKIWWrXdp93io184howxo" 
+ ngrok-agent-ips: 103.174.189.241 
+ vary: Origin 
+ x-powered-by: Express 
+Request duration
+244 ms
+Responses
+Code	Description	Links
+200
+
+----
+
+
+
+
+Community
+
+
+GET
+/api/community/{postId}
+[App] Get a single post
+
+
+Parameters
+Cancel
+Name	Description
+postId *
+string
+(path)
+a981a7d8-ed55-4673-8a26-948cf20ad082
+Execute
+Clear
+Responses
+Curl
+
+curl -X 'GET' \
+  'https://elusive-regional-harvey.ngrok-free.dev/api/community/a981a7d8-ed55-4673-8a26-948cf20ad082' \
+  -H 'accept: */*' \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjFiN2UxM2NjLTY1NzctNGJiYS1hZDY1LTc3ODViYWQ5YjEyZSIsImVtYWlsIjoiY2lrb2o2NzMwMUBjb3N3ei5jb20iLCJyb2xlIjoiVkVORE9SIiwiaWF0IjoxNzY5NTc5MjgzLCJleHAiOjE3Njk2NjU2ODN9.rZVKYUPKwidDf2kJlldsQTUhEq9uz0TkUT9rUaPH-yA'
+Request URL
+https://elusive-regional-harvey.ngrok-free.dev/api/community/a981a7d8-ed55-4673-8a26-948cf20ad082
+Server response
+Code	Details
+200	
+Response body
+Download
+{
+  "success": true,
+  "message": "Post fetched successfully",
+  "data": {
+    "id": "a981a7d8-ed55-4673-8a26-948cf20ad082",
+    "caption": "hello morning",
+    "location": null,
+    "media": [
+      "https://res.cloudinary.com/db0ecop7c/image/upload/v1769659044/posts/wribcas1ia1xeayi5mli.jpg"
+    ],
+    "createdAt": "2026-01-29T03:57:18.816Z",
+    "author": {
+      "id": "1b7e13cc-6577-4bba-ad65-7785bad9b12e",
+      "fullName": "Alex Debnath",
+      "image": "https://res.cloudinary.com/db0ecop7c/image/upload/v1769414650/pajsvndvdqe4mdj7hb7l.jpg",
+      "userName": "alex-debnath-837fc1"
+    },
+    "likedBy": [
+      {
+        "id": "1b7e13cc-6577-4bba-ad65-7785bad9b12e",
+        "fullName": "Alex Debnath",
+        "image": "https://res.cloudinary.com/db0ecop7c/image/upload/v1769414650/pajsvndvdqe4mdj7hb7l.jpg"
+      }
+    ],
+    "likeCount": 1,
+    "commentCount": 1,
+    "bookmarkCount": 0,
+    "isLiked": true,
+    "isSaved": false
+  }
+}
+Response headers
+ access-control-allow-credentials: true 
+ access-control-allow-origin: * 
+ content-length: 765 
+ content-type: application/json; charset=utf-8 
+ date: Thu,29 Jan 2026 05:11:56 GMT 
+ etag: W/"2fd-HjZnzn2ie2dBSLiL6Z3WC5PkD0Q" 
+ ngrok-agent-ips: 103.174.189.241 
+ vary: Origin 
+ x-powered-by: Express 
+Request duration
+289 ms
+Responses
+Code	Description	Links
+200	
+No links
+
+GET
+/api/community/{postId}/liked-by
+[App] Get users who liked a post
+
+
+Parameters
+Cancel
+Name	Description
+postId *
+string
+(path)
+a981a7d8-ed55-4673-8a26-948cf20ad082
+Execute
+Clear
+Responses
+Curl
+
+curl -X 'GET' \
+  'https://elusive-regional-harvey.ngrok-free.dev/api/community/a981a7d8-ed55-4673-8a26-948cf20ad082/liked-by' \
+  -H 'accept: */*' \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjFiN2UxM2NjLTY1NzctNGJiYS1hZDY1LTc3ODViYWQ5YjEyZSIsImVtYWlsIjoiY2lrb2o2NzMwMUBjb3N3ei5jb20iLCJyb2xlIjoiVkVORE9SIiwiaWF0IjoxNzY5NTc5MjgzLCJleHAiOjE3Njk2NjU2ODN9.rZVKYUPKwidDf2kJlldsQTUhEq9uz0TkUT9rUaPH-yA'
+Request URL
+https://elusive-regional-harvey.ngrok-free.dev/api/community/a981a7d8-ed55-4673-8a26-948cf20ad082/liked-by
+Server response
+Code	Details
+200	
+Response body
+Download
+{
+  "success": true,
+  "message": "Post liked by fetched successfully",
+  "data": {
+    "likedBy": [
+      {
+        "id": "1b7e13cc-6577-4bba-ad65-7785bad9b12e",
+        "fullName": "Alex Debnath",
+        "image": "https://res.cloudinary.com/db0ecop7c/image/upload/v1769414650/pajsvndvdqe4mdj7hb7l.jpg"
+      }
+    ]
+  }
+}
+Response headers
+ access-control-allow-credentials: true 
+ access-control-allow-origin: * 
+ content-length: 253 
+ content-type: application/json; charset=utf-8 
+ date: Thu,29 Jan 2026 05:13:40 GMT 
+ etag: W/"fd-gRjLGS/F5+jYLOdMBJPfIzhvNOQ" 
+ ngrok-agent-ips: 103.174.189.241 
+ vary: Origin 
+ x-powered-by: Express 
+Request duration
+385 ms
+Responses
+Code	Description	Links
+200	
+No links
+
+GET
+/api/community/all
+[App] Get all posts with cursor pagination
+
+
+Parameters
+Cancel
+Name	Description
+limit
+number
+(query)
+Number of posts to fetch (max 50, default 20)
+
+limit
+cursor
+string
+(query)
+Cursor for pagination (post id)
+
+cursor
+Execute
+Clear
+Responses
+Curl
+
+curl -X 'GET' \
+  'https://elusive-regional-harvey.ngrok-free.dev/api/community/all' \
+  -H 'accept: */*' \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjFiN2UxM2NjLTY1NzctNGJiYS1hZDY1LTc3ODViYWQ5YjEyZSIsImVtYWlsIjoiY2lrb2o2NzMwMUBjb3N3ei5jb20iLCJyb2xlIjoiVkVORE9SIiwiaWF0IjoxNzY5NTc5MjgzLCJleHAiOjE3Njk2NjU2ODN9.rZVKYUPKwidDf2kJlldsQTUhEq9uz0TkUT9rUaPH-yA'
+Request URL
+https://elusive-regional-harvey.ngrok-free.dev/api/community/all
+Server response
+Code	Details
+200	
+Response body
+Download
+{
+  "success": true,
+  "message": "Posts fetched successfully",
+  "data": {
+    "items": [
+      {
+        "id": "a981a7d8-ed55-4673-8a26-948cf20ad082",
+        "caption": "hello morning",
+        "location": null,
+        "media": [
+          "https://res.cloudinary.com/db0ecop7c/image/upload/v1769659044/posts/wribcas1ia1xeayi5mli.jpg"
+        ],
+        "createdAt": "2026-01-29T03:57:18.816Z",
+        "user": {
+          "id": "1b7e13cc-6577-4bba-ad65-7785bad9b12e",
+          "fullName": "Alex Debnath",
+          "image": "https://res.cloudinary.com/db0ecop7c/image/upload/v1769414650/pajsvndvdqe4mdj7hb7l.jpg",
+          "userName": "alex-debnath-837fc1"
+        },
+        "isLiked": true,
+        "isSaved": false,
+        "likeCount": 1,
+        "commentCount": 1
+      },
+      {
+        "id": "c6a2fd6f-7ec2-4491-9355-9ba7cb148f90",
+        "caption": "just chatting",
+        "location": "",
+        "media": [
+          "https://res.cloudinary.com/db0ecop7c/image/upload/v1769603818/posts/pam0vz5ivjfbbgitokbp.jpg",
+          "https://res.cloudinary.com/db0ecop7c/image/upload/v1769659112/posts/ftt9lg0g4cyqo8kinqgp.jpg"
+        ],
+        "createdAt": "2026-01-28T09:55:57.051Z",
+        "user": {
+          "id": "1b7e13cc-6577-4bba-ad65-7785bad9b12e",
+          "fullName": "Alex Debnath",
+          "image": "https://res.cloudinary.com/db0ecop7c/image/upload/v1769414650/pajsvndvdqe4mdj7hb7l.jpg",
+          "userName": "alex-debnath-837fc1"
+        },
+        "isLiked": true,
+        "isSaved": false,
+        "likeCount": 1,
+        "commentCount": 1
+      },
+      {
+        "id": "4ad7744f-6242-41e3-89f9-1f929da01273",
+        "caption": "what are you looking at?",
+        "location": "",
+        "media": [
+          "https://res.cloudinary.com/db0ecop7c/image/upload/v1769604040/posts/jlgnriwycrdngzgldvhb.jpg"
+        ],
+        "createdAt": "2026-01-28T12:40:35.753Z",
+        "user": {
+          "id": "1b7e13cc-6577-4bba-ad65-7785bad9b12e",
+          "fullName": "Alex Debnath",
+          "image": "https://res.cloudinary.com/db0ecop7c/image/upload/v1769414650/pajsvndvdqe4mdj7hb7l.jpg",
+          "userName": "alex-debnath-837fc1"
+        },
+        "isLiked": true,
+        "isSaved": false,
+        "likeCount": 1,
+        "commentCount": 0
+      },
+      {
+        "id": "8b49b1f7-2ef1-4352-8dc4-42f07ee1bcd7",
+        "caption": null,
+        "location": null,
+        "media": [
+          "https://res.cloudinary.com/db0ecop7c/image/upload/v1769603999/posts/nkkeeheqg84xumqikqjj.jpg"
+        ],
+        "createdAt": "2026-01-28T12:39:54.279Z",
+        "user": {
+          "id": "1b7e13cc-6577-4bba-ad65-7785bad9b12e",
+          "fullName": "Alex Debnath",
+          "image": "https://res.cloudinary.com/db0ecop7c/image/upload/v1769414650/pajsvndvdqe4mdj7hb7l.jpg",
+          "userName": "alex-debnath-837fc1"
+        },
+        "isLiked": false,
+        "isSaved": false,
+        "likeCount": 0,
+        "commentCount": 0
+      },
+      {
+        "id": "acb2fc36-3a7d-418d-a5a4-3ddc573e7072",
+        "caption": null,
+        "location": null,
+        "media": [
+          "https://res.cloudinary.com/db0ecop7c/image/upload/v1769601913/posts/irhnddsaxqxfxwemdi8d.jpg",
+          "https://res.cloudinary.com/db0ecop7c/image/upload/v1769601916/posts/pqnraapvjok8mlduhzhz.jpg"
+        ],
+        "createdAt": "2026-01-28T12:05:11.778Z",
+        "user": {
+          "id": "1b7e13cc-6577-4bba-ad65-7785bad9b12e",
+          "fullName": "Alex Debnath",
+          "image": "https://res.cloudinary.com/db0ecop7c/image/upload/v1769414650/pajsvndvdqe4mdj7hb7l.jpg",
+          "userName": "alex-debnath-837fc1"
+        },
+        "isLiked": false,
+        "isSaved": false,
+        "likeCount": 0,
+        "commentCount": 0
+      },
+      {
+        "id": "d41da902-e849-42d1-bad5-be19223e348f",
+        "caption": null,
+        "location": null,
+        "media": [
+          "https://res.cloudinary.com/db0ecop7c/image/upload/v1769599555/posts/va8hqs6awq1u1byjbukn.jpg"
+        ],
+        "createdAt": "2026-01-28T11:25:53.648Z",
+        "user": {
+          "id": "1b7e13cc-6577-4bba-ad65-7785bad9b12e",
+          "fullName": "Alex Debnath",
+          "image": "https://res.cloudinary.com/db0ecop7c/image/upload/v1769414650/pajsvndvdqe4mdj7hb7l.jpg",
+          "userName": "alex-debnath-837fc1"
+        },
+        "isLiked": false,
+        "isSaved": false,
+        "likeCount": 0,
+        "commentCount": 0
+      },
+      {
+        "id": "6fd6ca28-4973-402e-982b-72b00e509238",
+        "caption": "testing my bug",
+        "location": null,
+        "media": [
+          "https://res.cloudinary.com/db0ecop7c/image/upload/v1769594680/posts/wu5iw3blorsxxl0a0tic.jpg"
+        ],
+        "createdAt": "2026-01-28T10:04:35.080Z",
+        "user": {
+          "id": "1b7e13cc-6577-4bba-ad65-7785bad9b12e",
+          "fullName": "Alex Debnath",
+          "image": "https://res.cloudinary.com/db0ecop7c/image/upload/v1769414650/pajsvndvdqe4mdj7hb7l.jpg",
+          "userName": "alex-debnath-837fc1"
+        },
+        "isLiked": false,
+        "isSaved": false,
+        "likeCount": 0,
+        "commentCount": 0
+      },
+      {
+        "id": "adf1f042-7410-4fa4-b3d5-9f39ba42b597",
+        "caption": "testing the bug",
+        "location": null,
+        "media": [
+          "https://res.cloudinary.com/db0ecop7c/image/upload/v1769594580/posts/koygggezbrwtvsw2mccz.jpg"
+        ],
+        "createdAt": "2026-01-28T10:02:55.327Z",
+        "user": {
+          "id": "1b7e13cc-6577-4bba-ad65-7785bad9b12e",
+          "fullName": "Alex Debnath",
+          "image": "https://res.cloudinary.com/db0ecop7c/image/upload/v1769414650/pajsvndvdqe4mdj7hb7l.jpg",
+          "userName": "alex-debnath-837fc1"
+        },
+        "isLiked": true,
+        "isSaved": false,
+        "likeCount": 1,
+        "commentCount": 0
+      },
+      {
+        "id": "7b37ec37-ca0b-477b-b01d-12ad62c040bd",
+        "caption": "just testing 2 ",
+        "location": null,
+        "media": [
+          "https://res.cloudinary.com/db0ecop7c/image/upload/v1769594334/posts/ifv6yuyn9lymdtfhtgg1.jpg"
+        ],
+        "createdAt": "2026-01-28T09:58:49.006Z",
+        "user": {
+          "id": "1b7e13cc-6577-4bba-ad65-7785bad9b12e",
+          "fullName": "Alex Debnath",
+          "image": "https://res.cloudinary.com/db0ecop7c/image/upload/v1769414650/pajsvndvdqe4mdj7hb7l.jpg",
+          "userName": "alex-debnath-837fc1"
+        },
+        "isLiked": false,
+        "isSaved": false,
+        "likeCount": 0,
+        "commentCount": 0
+      },
+      {
+        "id": "ceb10bcc-4336-4f73-8e04-790374f1add9",
+        "caption": "Enjoying the sunset",
+        "location": "Seoul, Korea",
+        "media": [
+          "https://res.cloudinary.com/db0ecop7c/image/upload/v1769663432/posts/eigcfuykzi87fuvieial.jpg"
+        ],
+        "createdAt": "2026-01-29T05:10:28.175Z",
+        "user": {
+          "id": "1b7e13cc-6577-4bba-ad65-7785bad9b12e",
+          "fullName": "Alex Debnath",
+          "image": "https://res.cloudinary.com/db0ecop7c/image/upload/v1769414650/pajsvndvdqe4mdj7hb7l.jpg",
+          "userName": "alex-debnath-837fc1"
+        },
+        "isLiked": false,
+        "isSaved": false,
+        "likeCount": 0,
+        "commentCount": 0
+      }
+    ],
+    "nextCursor": null
+  }
+}
+Response headers
+ access-control-allow-credentials: true 
+ access-control-allow-origin: * 
+ content-length: 5313 
+ content-type: application/json; charset=utf-8 
+ date: Thu,29 Jan 2026 05:11:30 GMT 
+ etag: W/"14c1-PpM3Mr6PW86q78X8PEDMY5X7ZWw" 
+ ngrok-agent-ips: 103.174.189.241 
+ vary: Origin 
+ x-powered-by: Express 
+Request duration
+881 ms
+Responses
+Code	Description	Links
+200	
+No links
+
+POST
+/api/community/create-post
+[App] Create a new post with media
+
+
+Parameters
+Cancel
+Reset
+No parameters
+
+Request body
+
+multipart/form-data
+Create post with optional caption and location
+
+caption
+string
+Post caption
+
+Enjoying the sunset
+Send empty value
+location
+string
+Post location
+
+Seoul, Korea
+Send empty value
+visibility *
+string
+Post visibility
+
+
+PUBLIC
+isCommentAllowed
+boolean
+Whether comments are allowed on the post
+
+
+true
+Send empty value
+isShareToStory
+boolean
+Whether to share the post to your story
+
+
+false
+Send empty value
+files *
+array<string>
+Images or videos to upload
+
+mikhail-vasilyev-NodtnCsLdTE-unsplash.jpg-
+Add string item
+Execute
+Clear
+Responses
+Curl
+
+curl -X 'POST' \
+  'https://elusive-regional-harvey.ngrok-free.dev/api/community/create-post' \
+  -H 'accept: */*' \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjFiN2UxM2NjLTY1NzctNGJiYS1hZDY1LTc3ODViYWQ5YjEyZSIsImVtYWlsIjoiY2lrb2o2NzMwMUBjb3N3ei5jb20iLCJyb2xlIjoiVkVORE9SIiwiaWF0IjoxNzY5NTc5MjgzLCJleHAiOjE3Njk2NjU2ODN9.rZVKYUPKwidDf2kJlldsQTUhEq9uz0TkUT9rUaPH-yA' \
+  -H 'Content-Type: multipart/form-data' \
+  -F 'caption=Enjoying the sunset' \
+  -F 'location=Seoul, Korea' \
+  -F 'visibility=PUBLIC' \
+  -F 'isCommentAllowed=true' \
+  -F 'isShareToStory=false' \
+  -F 'files=@mikhail-vasilyev-NodtnCsLdTE-unsplash.jpg;type=image/jpeg'
+Request URL
+https://elusive-regional-harvey.ngrok-free.dev/api/community/create-post
+Server response
+Code	Details
+201	
+Response body
+Download
+{
+  "success": true,
+  "message": "Post created successfully",
+  "data": {
+    "media": [
+      "https://res.cloudinary.com/db0ecop7c/image/upload/v1769663432/posts/eigcfuykzi87fuvieial.jpg"
+    ]
+  }
+}
+Response headers
+ access-control-allow-credentials: true 
+ access-control-allow-origin: * 
+ content-length: 168 
+ content-type: application/json; charset=utf-8 
+ date: Thu,29 Jan 2026 05:10:28 GMT 
+ etag: W/"a8-/6Cn/ei+E9sfY6z0UX+Ve4bClg0" 
+ ngrok-agent-ips: 103.174.189.241 
+ vary: Origin 
+ x-powered-by: Express 
+Request duration
+17896 ms
+Responses
+Code	Description	Links
+201	
+No links
+
+DELETE
+/api/community/delete-post/{postId}
+[App] Delete a post, only creator can delete
+
+
+Parameters
+Cancel
+Name	Description
+postId *
+string
+(path)
+a981a7d8-ed55-4673-8a26-948cf20ad082
+Execute
+Clear
+Responses
+Curl
+
+curl -X 'DELETE' \
+  'https://elusive-regional-harvey.ngrok-free.dev/api/community/delete-post/a981a7d8-ed55-4673-8a26-948cf20ad082' \
+  -H 'accept: */*' \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjFiN2UxM2NjLTY1NzctNGJiYS1hZDY1LTc3ODViYWQ5YjEyZSIsImVtYWlsIjoiY2lrb2o2NzMwMUBjb3N3ei5jb20iLCJyb2xlIjoiVkVORE9SIiwiaWF0IjoxNzY5NTc5MjgzLCJleHAiOjE3Njk2NjU2ODN9.rZVKYUPKwidDf2kJlldsQTUhEq9uz0TkUT9rUaPH-yA'
+Request URL
+https://elusive-regional-harvey.ngrok-free.dev/api/community/delete-post/a981a7d8-ed55-4673-8a26-948cf20ad082
+Server response
+Code	Details
+200	
+Response body
+Download
+{
+  "success": true,
+  "message": "Post deleted successfully"
+}
+Response headers
+ access-control-allow-credentials: true 
+ access-control-allow-origin: * 
+ content-length: 54 
+ content-type: application/json; charset=utf-8 
+ date: Thu,29 Jan 2026 05:15:21 GMT 
+ etag: W/"36-h1dHx+ryosXJ0pmTdUm5ZUHD+PA" 
+ ngrok-agent-ips: 103.174.189.241 
+ vary: Origin 
+ x-powered-by: Express 
+Request duration
+398 ms
+Responses
+Code	Description	Links
+200	
+No links
+
+PATCH
+/api/community/edit-post/{postId}
+[App] Edit a post, only creator can edit
+
+
+Parameters
+Cancel
+Reset
+Name	Description
+postId *
+string
+(path)
+a981a7d8-ed55-4673-8a26-948cf20ad082
+Request body
+
+multipart/form-data
+caption
+string
+Post caption
+
+Enjoying the sunset Edit
+Send empty value
+location
+string
+Post location
+
+Seoul, Korea
+Send empty value
+visibility
+string
+Post visibility
+
+
+PUBLIC
+Send empty value
+files
+array<string>
+New images or videos to upload
+
+pacto-visual-cWOzOnSoh6Q-unsplash.jpg-
+Add string item
+Send empty value
+removedMediaLinks
+array<string>
+Existing media links to remove from the post
+
+string
+-
+Add string item
+Send empty value
+isCommentAllowed
+boolean
+Whether comments are allowed on the post
+
+
+true
+Send empty value
+Execute
+Clear
+Responses
+Curl
+
+curl -X 'PATCH' \
+  'https://elusive-regional-harvey.ngrok-free.dev/api/community/edit-post/a981a7d8-ed55-4673-8a26-948cf20ad082' \
+  -H 'accept: */*' \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjFiN2UxM2NjLTY1NzctNGJiYS1hZDY1LTc3ODViYWQ5YjEyZSIsImVtYWlsIjoiY2lrb2o2NzMwMUBjb3N3ei5jb20iLCJyb2xlIjoiVkVORE9SIiwiaWF0IjoxNzY5NTc5MjgzLCJleHAiOjE3Njk2NjU2ODN9.rZVKYUPKwidDf2kJlldsQTUhEq9uz0TkUT9rUaPH-yA' \
+  -H 'Content-Type: multipart/form-data' \
+  -F 'caption=Enjoying the sunset Edit' \
+  -F 'location=Seoul, Korea' \
+  -F 'visibility=PUBLIC' \
+  -F 'files=@pacto-visual-cWOzOnSoh6Q-unsplash.jpg;type=image/jpeg' \
+  -F 'removedMediaLinks=string' \
+  -F 'isCommentAllowed=true'
+Request URL
+https://elusive-regional-harvey.ngrok-free.dev/api/community/edit-post/a981a7d8-ed55-4673-8a26-948cf20ad082
+Server response
+Code	Details
+200	
+Response body
+Download
+{
+  "success": true,
+  "message": "Post updated successfully",
+  "data": {
+    "id": "a981a7d8-ed55-4673-8a26-948cf20ad082",
+    "userId": "1b7e13cc-6577-4bba-ad65-7785bad9b12e",
+    "caption": "Enjoying the sunset Edit",
+    "location": "Seoul, Korea",
+    "media": [
+      "https://res.cloudinary.com/db0ecop7c/image/upload/v1769659044/posts/wribcas1ia1xeayi5mli.jpg",
+      "https://res.cloudinary.com/db0ecop7c/image/upload/v1769663573/posts/wqumj8l92g9a0opaqwyb.jpg"
+    ],
+    "visibility": "PUBLIC",
+    "trendingScore": 4,
+    "createdAt": "2026-01-29T03:57:18.816Z",
+    "updatedAt": "2026-01-29T05:12:47.785Z",
+    "isCommentAllowed": true,
+    "isHidden": false,
+    "isDeleted": false
+  }
+}
+Response headers
+ access-control-allow-credentials: true 
+ access-control-allow-origin: * 
+ content-length: 595 
+ content-type: application/json; charset=utf-8 
+ date: Thu,29 Jan 2026 05:12:47 GMT 
+ etag: W/"253-+RiF0AlleH8/FLSUcL7yW5WpMGA" 
+ ngrok-agent-ips: 103.174.189.241 
+ vary: Origin 
+ x-powered-by: Express 
+Request duration
+27694 ms
+Responses
+Code	Description	Links
+200	
+No links
+
+PATCH
+/api/community/toggle-like/{postId}
+[App] Toggle like on a post, returns like count
+
+
+Parameters
+Cancel
+Name	Description
+postId *
+string
+(path)
+a981a7d8-ed55-4673-8a26-948cf20ad082
+Execute
+Clear
+Responses
+Curl
+
+curl -X 'PATCH' \
+  'https://elusive-regional-harvey.ngrok-free.dev/api/community/toggle-like/a981a7d8-ed55-4673-8a26-948cf20ad082' \
+  -H 'accept: */*' \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjFiN2UxM2NjLTY1NzctNGJiYS1hZDY1LTc3ODViYWQ5YjEyZSIsImVtYWlsIjoiY2lrb2o2NzMwMUBjb3N3ei5jb20iLCJyb2xlIjoiVkVORE9SIiwiaWF0IjoxNzY5NTc5MjgzLCJleHAiOjE3Njk2NjU2ODN9.rZVKYUPKwidDf2kJlldsQTUhEq9uz0TkUT9rUaPH-yA'
+Request URL
+https://elusive-regional-harvey.ngrok-free.dev/api/community/toggle-like/a981a7d8-ed55-4673-8a26-948cf20ad082
+Server response
+Code	Details
+200	
+Response body
+Download
+{
+  "success": true,
+  "message": "Like added successfully",
+  "data": {
+    "likeCount": 1
+  }
+}
+Response headers
+ access-control-allow-credentials: true 
+ access-control-allow-origin: * 
+ content-length: 75 
+ content-type: application/json; charset=utf-8 
+ date: Thu,29 Jan 2026 05:13:25 GMT 
+ etag: W/"4b-aTlef268tvtcdERr7DO/KeX/R5s" 
+ ngrok-agent-ips: 103.174.189.241 
+ vary: Origin 
+ x-powered-by: Express 
+Request duration
+441 ms
+Responses
+Code	Description	Links
+200
+
+
+----
+
+
+
+Comments
+
+
+DELETE
+/api/comments/{commentId}
+[App] Delete a comment and its replies
+
+
+Parameters
+Cancel
+Name	Description
+commentId *
+string
+(path)
+64e3cd66-e092-426a-8c3b-3f26aa1cf826
+Execute
+Clear
+Responses
+Curl
+
+curl -X 'DELETE' \
+  'https://elusive-regional-harvey.ngrok-free.dev/api/comments/64e3cd66-e092-426a-8c3b-3f26aa1cf826' \
+  -H 'accept: */*' \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjFiN2UxM2NjLTY1NzctNGJiYS1hZDY1LTc3ODViYWQ5YjEyZSIsImVtYWlsIjoiY2lrb2o2NzMwMUBjb3N3ei5jb20iLCJyb2xlIjoiVkVORE9SIiwiaWF0IjoxNzY5NTc5MjgzLCJleHAiOjE3Njk2NjU2ODN9.rZVKYUPKwidDf2kJlldsQTUhEq9uz0TkUT9rUaPH-yA'
+Request URL
+https://elusive-regional-harvey.ngrok-free.dev/api/comments/64e3cd66-e092-426a-8c3b-3f26aa1cf826
+Server response
+Code	Details
+200	
+Response body
+Download
+{
+  "success": true,
+  "message": "Comment and replies deleted successfully"
+}
+Response headers
+ access-control-allow-credentials: true 
+ access-control-allow-origin: * 
+ content-length: 69 
+ content-type: application/json; charset=utf-8 
+ date: Thu,29 Jan 2026 05:21:41 GMT 
+ etag: W/"45-yvT5BSWFJv0OmrqnV0gIiGt0dxA" 
+ ngrok-agent-ips: 103.174.189.241 
+ vary: Origin 
+ x-powered-by: Express 
+Request duration
+290 ms
+Responses
+Code	Description	Links
+200	
+No links
+
+POST
+/api/comments/comment/{commentId}
+[App] Add a reply to a comment
+
+
+Parameters
+Cancel
+Name	Description
+commentId *
+string
+(path)
+64e3cd66-e092-426a-8c3b-3f26aa1cf826
+Request body
+
+application/json
+Edit Value
+Schema
+{
+  "content": "This is a great post!"
+}
+Execute
+Clear
+Responses
+Curl
+
+curl -X 'POST' \
+  'https://elusive-regional-harvey.ngrok-free.dev/api/comments/comment/64e3cd66-e092-426a-8c3b-3f26aa1cf826' \
+  -H 'accept: */*' \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjFiN2UxM2NjLTY1NzctNGJiYS1hZDY1LTc3ODViYWQ5YjEyZSIsImVtYWlsIjoiY2lrb2o2NzMwMUBjb3N3ei5jb20iLCJyb2xlIjoiVkVORE9SIiwiaWF0IjoxNzY5NTc5MjgzLCJleHAiOjE3Njk2NjU2ODN9.rZVKYUPKwidDf2kJlldsQTUhEq9uz0TkUT9rUaPH-yA' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "content": "This is a great post!"
+}'
+Request URL
+https://elusive-regional-harvey.ngrok-free.dev/api/comments/comment/64e3cd66-e092-426a-8c3b-3f26aa1cf826
+Server response
+Code	Details
+201	
+Response body
+Download
+{
+  "success": true,
+  "message": "Reply added successfully",
+  "data": {
+    "id": "2c069efd-846e-4a3d-b1f9-df209567e452",
+    "postId": "c6a2fd6f-7ec2-4491-9355-9ba7cb148f90",
+    "userId": "1b7e13cc-6577-4bba-ad65-7785bad9b12e",
+    "parentCommentId": "64e3cd66-e092-426a-8c3b-3f26aa1cf826",
+    "content": "This is a great post!",
+    "isDeleted": false,
+    "createdAt": "2026-01-29T05:21:20.895Z",
+    "updatedAt": "2026-01-29T05:21:20.895Z"
+  }
+}
+Response headers
+ access-control-allow-credentials: true 
+ access-control-allow-origin: * 
+ content-length: 389 
+ content-type: application/json; charset=utf-8 
+ date: Thu,29 Jan 2026 05:21:20 GMT 
+ etag: W/"185-W51iVR1l4WdG59SOYq1QRZ0gnfA" 
+ ngrok-agent-ips: 103.174.189.241 
+ vary: Origin 
+ x-powered-by: Express 
+Request duration
+449 ms
+Responses
+Code	Description	Links
+201	
+No links
+
+PATCH
+/api/comments/comment/{commentId}/edit
+[App] Edit a comment
+
+
+Parameters
+Cancel
+Name	Description
+commentId *
+string
+(path)
+64e3cd66-e092-426a-8c3b-3f26aa1cf826
+Request body
+
+application/json
+Edit Value
+Schema
+{
+  "content": "This is a great post!"
+}
+Execute
+Responses
+Code	Description	Links
+200	
+No links
+
+PATCH
+/api/comments/comment/{commentId}/like
+[App] Like or unlike a comment
+
+
+Parameters
+Cancel
+Name	Description
+commentId *
+string
+(path)
+64e3cd66-e092-426a-8c3b-3f26aa1cf826
+Execute
+Clear
+Responses
+Curl
+
+curl -X 'PATCH' \
+  'https://elusive-regional-harvey.ngrok-free.dev/api/comments/comment/64e3cd66-e092-426a-8c3b-3f26aa1cf826/like' \
+  -H 'accept: */*' \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjFiN2UxM2NjLTY1NzctNGJiYS1hZDY1LTc3ODViYWQ5YjEyZSIsImVtYWlsIjoiY2lrb2o2NzMwMUBjb3N3ei5jb20iLCJyb2xlIjoiVkVORE9SIiwiaWF0IjoxNzY5NTc5MjgzLCJleHAiOjE3Njk2NjU2ODN9.rZVKYUPKwidDf2kJlldsQTUhEq9uz0TkUT9rUaPH-yA'
+Request URL
+https://elusive-regional-harvey.ngrok-free.dev/api/comments/comment/64e3cd66-e092-426a-8c3b-3f26aa1cf826/like
+Server response
+Code	Details
+200	
+Response body
+Download
+{
+  "success": true,
+  "message": "Like added successfully",
+  "data": {
+    "likeCount": 1
+  }
+}
+Response headers
+ access-control-allow-credentials: true 
+ access-control-allow-origin: * 
+ content-length: 75 
+ content-type: application/json; charset=utf-8 
+ date: Thu,29 Jan 2026 05:21:00 GMT 
+ etag: W/"4b-aTlef268tvtcdERr7DO/KeX/R5s" 
+ ngrok-agent-ips: 103.174.189.241 
+ vary: Origin 
+ x-powered-by: Express 
+Request duration
+279 ms
+Responses
+Code	Description	Links
+200	
+No links
+
+POST
+/api/comments/post/{postId}
+[App] Add a comment to a post
+
+
+Parameters
+Cancel
+Name	Description
+postId *
+string
+(path)
+c6a2fd6f-7ec2-4491-9355-9ba7cb148f90
+Request body
+
+application/json
+Edit Value
+Schema
+{
+  "content": "This is a great post!"
+}
+Execute
+Clear
+Responses
+Curl
+
+curl -X 'POST' \
+  'https://elusive-regional-harvey.ngrok-free.dev/api/comments/post/c6a2fd6f-7ec2-4491-9355-9ba7cb148f90' \
+  -H 'accept: */*' \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjFiN2UxM2NjLTY1NzctNGJiYS1hZDY1LTc3ODViYWQ5YjEyZSIsImVtYWlsIjoiY2lrb2o2NzMwMUBjb3N3ei5jb20iLCJyb2xlIjoiVkVORE9SIiwiaWF0IjoxNzY5NTc5MjgzLCJleHAiOjE3Njk2NjU2ODN9.rZVKYUPKwidDf2kJlldsQTUhEq9uz0TkUT9rUaPH-yA' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "content": "This is a great post!"
+}'
+Request URL
+https://elusive-regional-harvey.ngrok-free.dev/api/comments/post/c6a2fd6f-7ec2-4491-9355-9ba7cb148f90
+Server response
+Code	Details
+201	
+Response body
+Download
+{
+  "success": true,
+  "message": "Comment added successfully",
+  "data": {
+    "id": "64e3cd66-e092-426a-8c3b-3f26aa1cf826",
+    "postId": "c6a2fd6f-7ec2-4491-9355-9ba7cb148f90",
+    "userId": "1b7e13cc-6577-4bba-ad65-7785bad9b12e",
+    "parentCommentId": null,
+    "content": "This is a great post!",
+    "isDeleted": false,
+    "createdAt": "2026-01-29T05:20:25.814Z",
+    "updatedAt": "2026-01-29T05:20:25.814Z",
+    "user": {
+      "id": "1b7e13cc-6577-4bba-ad65-7785bad9b12e",
+      "fullName": "Alex Debnath",
+      "image": "https://res.cloudinary.com/db0ecop7c/image/upload/v1769414650/pajsvndvdqe4mdj7hb7l.jpg"
+    }
+  }
+}
+Response headers
+ access-control-allow-credentials: true 
+ access-control-allow-origin: * 
+ content-length: 533 
+ content-type: application/json; charset=utf-8 
+ date: Thu,29 Jan 2026 05:20:25 GMT 
+ etag: W/"215-nTxDAoh2qnrunQJIazdHkgkzkxA" 
+ ngrok-agent-ips: 103.174.189.241 
+ vary: Origin 
+ x-powered-by: Express 
+Request duration
+290 ms
+Responses
+Code	Description	Links
+201	
+No links
+
+GET
+/api/comments/post/{postId}
+[App] Get comments for a post with cursor pagination
+
+
+Parameters
+Cancel
+Name	Description
+postId *
+string
+(path)
+c6a2fd6f-7ec2-4491-9355-9ba7cb148f90
+limit
+number
+(query)
+Number of parent comments to fetch per page (default: 10)
+
+limit
+cursor
+string
+(query)
+Cursor for pagination. Use the id of the last comment from previous page
+
+cursor
+Execute
+Clear
+Responses
+Curl
+
+curl -X 'GET' \
+  'https://elusive-regional-harvey.ngrok-free.dev/api/comments/post/c6a2fd6f-7ec2-4491-9355-9ba7cb148f90' \
+  -H 'accept: */*' \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjFiN2UxM2NjLTY1NzctNGJiYS1hZDY1LTc3ODViYWQ5YjEyZSIsImVtYWlsIjoiY2lrb2o2NzMwMUBjb3N3ei5jb20iLCJyb2xlIjoiVkVORE9SIiwiaWF0IjoxNzY5NTc5MjgzLCJleHAiOjE3Njk2NjU2ODN9.rZVKYUPKwidDf2kJlldsQTUhEq9uz0TkUT9rUaPH-yA'
+Request URL
+https://elusive-regional-harvey.ngrok-free.dev/api/comments/post/c6a2fd6f-7ec2-4491-9355-9ba7cb148f90
+Server response
+Code	Details
+200	
+Response body
+Download
+{
+  "success": true,
+  "message": "Comments fetched successfully",
+  "data": {
+    "comments": [
+      {
+        "id": "64e3cd66-e092-426a-8c3b-3f26aa1cf826",
+        "content": "This is a great post!",
+        "createdAt": "2026-01-29T05:20:25.814Z",
+        "author": {
+          "id": "1b7e13cc-6577-4bba-ad65-7785bad9b12e",
+          "fullName": "Alex Debnath",
+          "image": "https://res.cloudinary.com/db0ecop7c/image/upload/v1769414650/pajsvndvdqe4mdj7hb7l.jpg"
+        },
+        "replies": [],
+        "replyCount": 0,
+        "likeCount": 0,
+        "isLiked": false
+      },
+      {
+        "id": "25891ad9-070e-4cff-b36a-fcc69144bc6a",
+        "content": "just testing",
+        "createdAt": "2026-01-28T09:56:50.124Z",
+        "author": {
+          "id": "1b7e13cc-6577-4bba-ad65-7785bad9b12e",
+          "fullName": "Alex Debnath",
+          "image": "https://res.cloudinary.com/db0ecop7c/image/upload/v1769414650/pajsvndvdqe4mdj7hb7l.jpg"
+        },
+        "replies": [],
+        "replyCount": 0,
+        "likeCount": 1,
+        "isLiked": true
+      }
+    ],
+    "nextCursor": null
+  }
+}
+Response headers
+ access-control-allow-credentials: true 
+ access-control-allow-origin: * 
+ content-length: 798 
+ content-type: application/json; charset=utf-8 
+ date: Thu,29 Jan 2026 05:20:33 GMT 
+ etag: W/"31e-K3I4hllY0T8S/7/JZ7S5y+afAFo" 
+ ngrok-agent-ips: 103.174.189.241 
+ vary: Origin 
+ x-powered-by: Express 
+Request duration
+273 ms
+Responses
+Code	Description	Links
+200
+
+
+----
+
+
+Bookmark
+
+
+GET
+/api/bookmark
+[App] Get all bookmarks of the current user
+
+
+Fetches all bookmarks of the authenticated user. Supports filtering, cursor-based pagination, and limit.
+
+Parameters
+Try it out
+Name	Description
+filter
+string
+(query)
+Filter bookmarks by POST or REEL
+
+Available values : POST, REEL
+
+
+POST
+cursor
+string
+(query)
+Cursor for pagination
+
+cursor
+limit
+number
+(query)
+Number of items to return (max 50)
+
+Default value : 20
+
+20
+Responses
+Curl
+
+curl -X 'GET' \
+  'https://elusive-regional-harvey.ngrok-free.dev/api/bookmark?filter=POST&limit=20' \
+  -H 'accept: */*' \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjFiN2UxM2NjLTY1NzctNGJiYS1hZDY1LTc3ODViYWQ5YjEyZSIsImVtYWlsIjoiY2lrb2o2NzMwMUBjb3N3ei5jb20iLCJyb2xlIjoiVkVORE9SIiwiaWF0IjoxNzY5NTc5MjgzLCJleHAiOjE3Njk2NjU2ODN9.rZVKYUPKwidDf2kJlldsQTUhEq9uz0TkUT9rUaPH-yA'
+Request URL
+https://elusive-regional-harvey.ngrok-free.dev/api/bookmark?filter=POST&limit=20
+Server response
+Code	Details
+200	
+Response body
+Download
+{
+  "success": true,
+  "message": "Bookmarks fetched successfully",
+  "data": {
+    "items": [
+      {
+        "id": "e5306eab-fd5a-4515-ba46-f148aff30aab",
+        "type": "POST",
+        "createdAt": "2026-01-29T05:23:39.235Z",
+        "post": {
+          "id": "c6a2fd6f-7ec2-4491-9355-9ba7cb148f90",
+          "caption": "just chatting",
+          "media": [
+            "https://res.cloudinary.com/db0ecop7c/image/upload/v1769603818/posts/pam0vz5ivjfbbgitokbp.jpg",
+            "https://res.cloudinary.com/db0ecop7c/image/upload/v1769659112/posts/ftt9lg0g4cyqo8kinqgp.jpg"
+          ],
+          "createdAt": "2026-01-28T09:55:57.051Z"
+        },
+        "reel": null
+      }
+    ],
+    "nextCursor": null
+  }
+}
+Response headers
+ access-control-allow-credentials: true 
+ access-control-allow-origin: * 
+ content-length: 525 
+ content-type: application/json; charset=utf-8 
+ date: Thu,29 Jan 2026 05:24:03 GMT 
+ etag: W/"20d-w2rfiKhAeizY/KVPdhKOgTe7yJY" 
+ ngrok-agent-ips: 103.174.189.241 
+ vary: Origin 
+ x-powered-by: Express 
+Request duration
+202 ms
+Responses
+Code	Description	Links
+200	
+No links
+
+GET
+/api/bookmark/{bookmarkId}
+[App] Get a single bookmark
+
+
+Fetches details of a specific bookmark for the authenticated user by bookmark ID.
+
+Parameters
+Try it out
+Name	Description
+bookmarkId *
+string
+(path)
+ID of the bookmark to get
+
+e5306eab-fd5a-4515-ba46-f148aff30aab
+Responses
+Curl
+
+curl -X 'GET' \
+  'https://elusive-regional-harvey.ngrok-free.dev/api/bookmark/e5306eab-fd5a-4515-ba46-f148aff30aab' \
+  -H 'accept: */*' \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjFiN2UxM2NjLTY1NzctNGJiYS1hZDY1LTc3ODViYWQ5YjEyZSIsImVtYWlsIjoiY2lrb2o2NzMwMUBjb3N3ei5jb20iLCJyb2xlIjoiVkVORE9SIiwiaWF0IjoxNzY5NTc5MjgzLCJleHAiOjE3Njk2NjU2ODN9.rZVKYUPKwidDf2kJlldsQTUhEq9uz0TkUT9rUaPH-yA'
+Request URL
+https://elusive-regional-harvey.ngrok-free.dev/api/bookmark/e5306eab-fd5a-4515-ba46-f148aff30aab
+Server response
+Code	Details
+200	
+Response body
+Download
+{
+  "success": true,
+  "message": "Bookmark found",
+  "data": {
+    "id": "e5306eab-fd5a-4515-ba46-f148aff30aab",
+    "userId": "1b7e13cc-6577-4bba-ad65-7785bad9b12e",
+    "postId": "c6a2fd6f-7ec2-4491-9355-9ba7cb148f90",
+    "reelId": null,
+    "bookMarkType": "POST",
+    "isDeleted": false,
+    "createdAt": "2026-01-29T05:23:39.235Z",
+    "updatedAt": "2026-01-29T05:23:39.235Z",
+    "post": {
+      "id": "c6a2fd6f-7ec2-4491-9355-9ba7cb148f90",
+      "caption": "just chatting",
+      "media": [
+        "https://res.cloudinary.com/db0ecop7c/image/upload/v1769603818/posts/pam0vz5ivjfbbgitokbp.jpg",
+        "https://res.cloudinary.com/db0ecop7c/image/upload/v1769659112/posts/ftt9lg0g4cyqo8kinqgp.jpg"
+      ],
+      "createdAt": "2026-01-28T09:55:57.051Z"
+    },
+    "reel": null
+  }
+}
+Response headers
+ access-control-allow-credentials: true 
+ access-control-allow-origin: * 
+ content-length: 654 
+ content-type: application/json; charset=utf-8 
+ date: Thu,29 Jan 2026 05:24:14 GMT 
+ etag: W/"28e-e+5iqQJmiu6CkZD4rELozOqktzU" 
+ ngrok-agent-ips: 103.174.189.241 
+ vary: Origin 
+ x-powered-by: Express 
+Request duration
+243 ms
+Responses
+Code	Description	Links
+200	
+No links
+
+PATCH
+/api/bookmark/post/{postId}
+[App] Toggle bookmark for a post
+
+
+Adds a bookmark if the post is not bookmarked, removes it if already bookmarked.
+
+Parameters
+Try it out
+Name	Description
+postId *
+string
+(path)
+ID of the post to toggle bookmark for
+
+c6a2fd6f-7ec2-4491-9355-9ba7cb148f90
+Responses
+Curl
+
+curl -X 'PATCH' \
+  'https://elusive-regional-harvey.ngrok-free.dev/api/bookmark/post/c6a2fd6f-7ec2-4491-9355-9ba7cb148f90' \
+  -H 'accept: */*' \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjFiN2UxM2NjLTY1NzctNGJiYS1hZDY1LTc3ODViYWQ5YjEyZSIsImVtYWlsIjoiY2lrb2o2NzMwMUBjb3N3ei5jb20iLCJyb2xlIjoiVkVORE9SIiwiaWF0IjoxNzY5NTc5MjgzLCJleHAiOjE3Njk2NjU2ODN9.rZVKYUPKwidDf2kJlldsQTUhEq9uz0TkUT9rUaPH-yA'
+Request URL
+https://elusive-regional-harvey.ngrok-free.dev/api/bookmark/post/c6a2fd6f-7ec2-4491-9355-9ba7cb148f90
+Server response
+Code	Details
+200	
+Response body
+Download
+{
+  "success": true,
+  "message": "Post bookmarked successfully",
+  "data": {
+    "bookmarked": true
+  }
+}
+Response headers
+ access-control-allow-credentials: true 
+ access-control-allow-origin: * 
+ content-length: 84 
+ content-type: application/json; charset=utf-8 
+ date: Thu,29 Jan 2026 05:23:39 GMT 
+ etag: W/"54-5vT/E31grJ0X78+SuwrcuCHhnIY" 
+ ngrok-agent-ips: 103.174.189.241 
+ vary: Origin 
+ x-powered-by: Express 
+Request duration
+198 ms
+Responses
+Code	Description	Links
+200
+
+----
+
+
+Moments
+
+
+DELETE
+/api/moments/{momentId}
+Delete a moment
+
+
+Parameters
+Try it out
+Name	Description
+momentId *
+string
+(path)
+ID of the moment to delete
+
+momentId
+Responses
+Code	Description	Links
+200	
+Moment deleted successfully
+
+Media type
+
+application/json
+Controls Accept header.
+Example Value
+Schema
+{
+  "message": "Moment deleted successfully",
+  "success": true
+}
+No links
+
+PATCH
+/api/moments/hide/{momentId}
+Toggle hide/unhide a moment
+
+
+Parameters
+Try it out
+Name	Description
+momentId *
+string
+(path)
+ID of the moment to toggle hide/unhide
+
+momentId
+Responses
+Code	Description	Links
+200	
+Moment hidden or unhidden successfully
+
+Media type
+
+application/json
+Controls Accept header.
+Example Value
+Schema
+{
+  "message": "Moment is now hidden",
+  "success": true
+}
+No links
+
+GET
+/api/moments/my-moments
+Get the authenticated user's moments
+
+
+Parameters
+Cancel
+Name	Description
+cursor
+string
+(query)
+Cursor for pagination (moment ID)
+
+cursor
+limit
+number
+(query)
+Number of moments to fetch (max 50)
+
+limit
+Execute
+Clear
+Responses
+Curl
+
+curl -X 'GET' \
+  'https://elusive-regional-harvey.ngrok-free.dev/api/moments/my-moments' \
+  -H 'accept: application/json' \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjFiN2UxM2NjLTY1NzctNGJiYS1hZDY1LTc3ODViYWQ5YjEyZSIsImVtYWlsIjoiY2lrb2o2NzMwMUBjb3N3ei5jb20iLCJyb2xlIjoiVkVORE9SIiwiaWF0IjoxNzY5NTc5MjgzLCJleHAiOjE3Njk2NjU2ODN9.rZVKYUPKwidDf2kJlldsQTUhEq9uz0TkUT9rUaPH-yA'
+Request URL
+https://elusive-regional-harvey.ngrok-free.dev/api/moments/my-moments
+Server response
+Code	Details
+200	
+Response body
+Download
+{
+  "success": true,
+  "message": "Moments fetched successfully",
+  "data": {
+    "data": [],
+    "nextCursor": null
+  }
+}
+Response headers
+ access-control-allow-credentials: true 
+ access-control-allow-origin: * 
+ content-length: 94 
+ content-type: application/json; charset=utf-8 
+ date: Thu,29 Jan 2026 05:44:52 GMT 
+ etag: W/"5e-LH0syliFx1Nqd6u7jp8jDneyAY4" 
+ ngrok-agent-ips: 103.174.189.241 
+ vary: Origin 
+ x-powered-by: Express 
+Request duration
+551 ms
+Responses
+Code	Description	Links
+200	
+List of moments with story media and location
+
+Media type
+
+application/json
+Controls Accept header.
+Example Value
+Schema
+{
+  "data": [
+    {
+      "id": "1",
+      "story": {
+        "id": "story-1",
+        "media": "https://example.com/story.jpg",
+        "location": "New York, USA",
+        "createdAt": "2026-01-22T06:00:00.000Z",
+        "userId": "user-123"
+      }
+    },
+    {
+      "id": "2",
+      "story": {
+        "id": "story-2",
+        "media": "https://example.com/story2.mp4",
+        "location": null,
+        "createdAt": "2026-01-23T10:30:00.000Z",
+        "userId": "user-123"
+      }
+    }
+  ],
+  "nextCursor": "3"
+}
+No links
+
+GET
+/api/moments/user/{userId}
+Get another user's moments
+
+
+Parameters
+Cancel
+Name	Description
+userId *
+string
+(path)
+The ID of the user whose moments are being fetched
+
+userId
+cursor
+string
+(query)
+Cursor for pagination (moment ID)
+
+cursor
+limit
+number
+(query)
+Number of moments to fetch (max 50, default 20)
+
+limit
+Please correct the following validation errors and try again.
+For 'userId': Required field is not provided.
+Execute
+Responses
+Code	Description	Links
+200	
+List of moments with pagination info
+
+Media type
+
+application/json
+Controls Accept header.
+Example Value
+Schema
+{
+  "data": [
+    {
+      "id": "1",
+      "createdAt": "2026-01-22T06:00:00.000Z",
+      "story": {
+        "media": [
+          "https://example.com/image1.jpg"
+        ],
+        "location": "New York, USA"
+      }
+    }
+  ],
+  "nextCursor": "2"
+}
+
+server running now:
+
+https://elusive-regional-harvey.ngrok-free.dev/api
+
+https://elusive-regional-harvey.ngrok-free.dev/api/docs
+
+
+Hide
+HideContent
+
+
+POST
+/api/hide-content/toggle
+[App] Toggle hide content
+
+
+Hides or unhide a post or reel for the authenticated user. Admin-hidden content or deleted content cannot be hidden by the user. Use the same endpoint to toggle between hide and unhide.
+
+Parameters
+Cancel
+Reset
+No parameters
+
+Request body
+
+application/json
+Payload containing content ID and type (POST or REEL)
+
+Edit Value
+Schema
+{
+  "id": "15c6e007-3d92-466e-bc7a-88758faf9e66",
+  "contentType": "POST"
+}
+Execute
+Clear
+Responses
+Curl
+
+curl -X 'POST' \
+  'https://elusive-regional-harvey.ngrok-free.dev/api/hide-content/toggle' \
+  -H 'accept: application/json' \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjFiN2UxM2NjLTY1NzctNGJiYS1hZDY1LTc3ODViYWQ5YjEyZSIsImVtYWlsIjoiY2lrb2o2NzMwMUBjb3N3ei5jb20iLCJyb2xlIjoiVkVORE9SIiwiaWF0IjoxNzY5NjY2MjY2LCJleHAiOjE3Njk3NTI2NjZ9.yH_MzvL0hQfl5_GG4_1n8Le60zTq9g5kJkcvvmddCVY' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "id": "15c6e007-3d92-466e-bc7a-88758faf9e66",
+  "contentType": "POST"
+}'
+Request URL
+https://elusive-regional-harvey.ngrok-free.dev/api/hide-content/toggle
+Server response
+Code	Details
+201
+Undocumented
+Response body
+Download
+{
+  "success": true,
+  "message": "Post hidden successfully",
+  "data": {
+    "hidden": true
+  }
+}
+Response headers
+ access-control-allow-credentials: true 
+ access-control-allow-origin: * 
+ content-length: 76 
+ content-type: application/json; charset=utf-8 
+ date: Thu,29 Jan 2026 06:51:00 GMT 
+ etag: W/"4c-+hTDRMLa/m3GXFtwJPPEq6sffOg" 
+ ngrok-agent-ips: 103.174.189.241 
+ vary: Origin 
+ x-powered-by: Express 
+Request duration
+192 ms
+Responses
+Code	Description	Links
+200	
+Content hidden or unhidden successfully
+
+Media type
+
+application/json
+Controls Accept header.
+Example Value
+Schema
+{
+  "success": true,
+  "message": "Post hidden successfully"
+}
+No links
+400	
+Invalid content or cannot hide globally hidden content
+
+
+bro nothing is working.
+
+the visibility is not working.. right now everything is public.. nothing i do do much.. even i do friends, only me.. nothing fixes... everything is public... its not updated when i try to edit or update the post with some different visibility.. i dont know whats happening
+
+- the reel or story pagination is not working.. like if i add more story they are not shown in the ui.. i cant see my last story..
+
+- the story comment or delete functionality not there.
+
+- post comment delete functionality not there.
+
+i am sharing all of my api info with you again. save me bro.
+
+Comments
+
+
+DELETE
+/api/comments/{commentId}
+[App] Delete a comment and its replies
+
+
+Parameters
+Cancel
+Name	Description
+commentId *
+string
+(path)
+926decbf-8f27-4eaf-8e0c-05d8a5249a17
+Execute
+Clear
+Responses
+Curl
+
+curl -X 'DELETE' \
+  'https://elusive-regional-harvey.ngrok-free.dev/api/comments/926decbf-8f27-4eaf-8e0c-05d8a5249a17' \
+  -H 'accept: */*' \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjFiN2UxM2NjLTY1NzctNGJiYS1hZDY1LTc3ODViYWQ5YjEyZSIsImVtYWlsIjoiY2lrb2o2NzMwMUBjb3N3ei5jb20iLCJyb2xlIjoiVkVORE9SIiwiaWF0IjoxNzY5NjY2MjY2LCJleHAiOjE3Njk3NTI2NjZ9.yH_MzvL0hQfl5_GG4_1n8Le60zTq9g5kJkcvvmddCVY'
+Request URL
+https://elusive-regional-harvey.ngrok-free.dev/api/comments/926decbf-8f27-4eaf-8e0c-05d8a5249a17
+Server response
+Code	Details
+200	
+Response body
+Download
+{
+  "success": true,
+  "message": "Comment and replies deleted successfully"
+}
+Response headers
+ access-control-allow-credentials: true 
+ access-control-allow-origin: * 
+ content-length: 69 
+ content-type: application/json; charset=utf-8 
+ date: Thu,29 Jan 2026 09:04:01 GMT 
+ etag: W/"45-yvT5BSWFJv0OmrqnV0gIiGt0dxA" 
+ ngrok-agent-ips: 103.174.189.241 
+ vary: Origin 
+ x-powered-by: Express 
+Request duration
+291 ms
+Responses
+Code	Description	Links
+200	
+No links
+
+POST
+/api/comments/comment/{commentId}
+[App] Add a reply to a comment
+
+
+Parameters
+Cancel
+Name	Description
+commentId *
+string
+(path)
+926decbf-8f27-4eaf-8e0c-05d8a5249a17
+Request body
+
+application/json
+Edit Value
+Schema
+{
+  "content": "This is a great post!"
+}
+Execute
+Clear
+Responses
+Curl
+
+curl -X 'POST' \
+  'https://elusive-regional-harvey.ngrok-free.dev/api/comments/comment/926decbf-8f27-4eaf-8e0c-05d8a5249a17' \
+  -H 'accept: */*' \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjFiN2UxM2NjLTY1NzctNGJiYS1hZDY1LTc3ODViYWQ5YjEyZSIsImVtYWlsIjoiY2lrb2o2NzMwMUBjb3N3ei5jb20iLCJyb2xlIjoiVkVORE9SIiwiaWF0IjoxNzY5NjY2MjY2LCJleHAiOjE3Njk3NTI2NjZ9.yH_MzvL0hQfl5_GG4_1n8Le60zTq9g5kJkcvvmddCVY' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "content": "This is a great post!"
+}'
+Request URL
+https://elusive-regional-harvey.ngrok-free.dev/api/comments/comment/926decbf-8f27-4eaf-8e0c-05d8a5249a17
+Server response
+Code	Details
+201	
+Response body
+Download
+{
+  "success": true,
+  "message": "Reply added successfully",
+  "data": {
+    "id": "4114fb2e-44a1-4486-a88e-91a67465fb72",
+    "postId": "8580ed5c-0def-44b5-81cc-72b66f313835",
+    "userId": "1b7e13cc-6577-4bba-ad65-7785bad9b12e",
+    "parentCommentId": "926decbf-8f27-4eaf-8e0c-05d8a5249a17",
+    "content": "This is a great post!",
+    "isDeleted": false,
+    "createdAt": "2026-01-29T09:03:53.986Z",
+    "updatedAt": "2026-01-29T09:03:53.986Z"
+  }
+}
+Response headers
+ access-control-allow-credentials: true 
+ access-control-allow-origin: * 
+ content-length: 389 
+ content-type: application/json; charset=utf-8 
+ date: Thu,29 Jan 2026 09:03:53 GMT 
+ etag: W/"185-lGKdPUAib6S5Wa94VWB47Pypz9E" 
+ ngrok-agent-ips: 103.174.189.241 
+ vary: Origin 
+ x-powered-by: Express 
+Request duration
+380 ms
+Responses
+Code	Description	Links
+201	
+No links
+
+PATCH
+/api/comments/comment/{commentId}/edit
+[App] Edit a comment
+
+
+Parameters
+Cancel
+Name	Description
+commentId *
+string
+(path)
+926decbf-8f27-4eaf-8e0c-05d8a5249a17
+Request body
+
+application/json
+Edit Value
+Schema
+{
+  "content": "This is a great post!"
+}
+Execute
+Clear
+Responses
+Curl
+
+curl -X 'PATCH' \
+  'https://elusive-regional-harvey.ngrok-free.dev/api/comments/comment/926decbf-8f27-4eaf-8e0c-05d8a5249a17/edit' \
+  -H 'accept: */*' \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjFiN2UxM2NjLTY1NzctNGJiYS1hZDY1LTc3ODViYWQ5YjEyZSIsImVtYWlsIjoiY2lrb2o2NzMwMUBjb3N3ei5jb20iLCJyb2xlIjoiVkVORE9SIiwiaWF0IjoxNzY5NjY2MjY2LCJleHAiOjE3Njk3NTI2NjZ9.yH_MzvL0hQfl5_GG4_1n8Le60zTq9g5kJkcvvmddCVY' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "content": "This is a great post!"
+}'
+Request URL
+https://elusive-regional-harvey.ngrok-free.dev/api/comments/comment/926decbf-8f27-4eaf-8e0c-05d8a5249a17/edit
+Server response
+Code	Details
+200	
+Response body
+Download
+{
+  "success": true,
+  "message": "Comment updated successfully",
+  "data": {
+    "id": "926decbf-8f27-4eaf-8e0c-05d8a5249a17",
+    "postId": "8580ed5c-0def-44b5-81cc-72b66f313835",
+    "userId": "1b7e13cc-6577-4bba-ad65-7785bad9b12e",
+    "parentCommentId": null,
+    "content": "This is a great post!",
+    "isDeleted": false,
+    "createdAt": "2026-01-29T09:02:41.254Z",
+    "updatedAt": "2026-01-29T09:03:38.130Z"
+  }
+}
+Response headers
+ access-control-allow-credentials: true 
+ access-control-allow-origin: * 
+ content-length: 359 
+ content-type: application/json; charset=utf-8 
+ date: Thu,29 Jan 2026 09:03:38 GMT 
+ etag: W/"167-PtOjsm8UYTUXhesWMp7P6vpZYTo" 
+ ngrok-agent-ips: 103.174.189.241 
+ vary: Origin 
+ x-powered-by: Express 
+Request duration
+891 ms
+Responses
+Code	Description	Links
+200	
+No links
+
+PATCH
+/api/comments/comment/{commentId}/like
+[App] Like or unlike a comment
+
+
+Parameters
+Cancel
+Name	Description
+commentId *
+string
+(path)
+926decbf-8f27-4eaf-8e0c-05d8a5249a17
+Execute
+Clear
+Responses
+Curl
+
+curl -X 'PATCH' \
+  'https://elusive-regional-harvey.ngrok-free.dev/api/comments/comment/926decbf-8f27-4eaf-8e0c-05d8a5249a17/like' \
+  -H 'accept: */*' \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjFiN2UxM2NjLTY1NzctNGJiYS1hZDY1LTc3ODViYWQ5YjEyZSIsImVtYWlsIjoiY2lrb2o2NzMwMUBjb3N3ei5jb20iLCJyb2xlIjoiVkVORE9SIiwiaWF0IjoxNzY5NjY2MjY2LCJleHAiOjE3Njk3NTI2NjZ9.yH_MzvL0hQfl5_GG4_1n8Le60zTq9g5kJkcvvmddCVY'
+Request URL
+https://elusive-regional-harvey.ngrok-free.dev/api/comments/comment/926decbf-8f27-4eaf-8e0c-05d8a5249a17/like
+Server response
+Code	Details
+200	
+Response body
+Download
+{
+  "success": true,
+  "message": "Like added successfully",
+  "data": {
+    "likeCount": 1
+  }
+}
+Response headers
+ access-control-allow-credentials: true 
+ access-control-allow-origin: * 
+ content-length: 75 
+ content-type: application/json; charset=utf-8 
+ date: Thu,29 Jan 2026 09:03:23 GMT 
+ etag: W/"4b-aTlef268tvtcdERr7DO/KeX/R5s" 
+ ngrok-agent-ips: 103.174.189.241 
+ vary: Origin 
+ x-powered-by: Express 
+Request duration
+241 ms
+Responses
+Code	Description	Links
+200	
+No links
+
+POST
+/api/comments/post/{postId}
+[App] Add a comment to a post
+
+
+Parameters
+Cancel
+Name	Description
+postId *
+string
+(path)
+8580ed5c-0def-44b5-81cc-72b66f313835
+Request body
+
+application/json
+Edit Value
+Schema
+{
+  "content": "This is a great post!"
+}
+Execute
+Clear
+Responses
+Curl
+
+curl -X 'POST' \
+  'https://elusive-regional-harvey.ngrok-free.dev/api/comments/post/8580ed5c-0def-44b5-81cc-72b66f313835' \
+  -H 'accept: */*' \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjFiN2UxM2NjLTY1NzctNGJiYS1hZDY1LTc3ODViYWQ5YjEyZSIsImVtYWlsIjoiY2lrb2o2NzMwMUBjb3N3ei5jb20iLCJyb2xlIjoiVkVORE9SIiwiaWF0IjoxNzY5NjY2MjY2LCJleHAiOjE3Njk3NTI2NjZ9.yH_MzvL0hQfl5_GG4_1n8Le60zTq9g5kJkcvvmddCVY' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "content": "This is a great post!"
+}'
+Request URL
+https://elusive-regional-harvey.ngrok-free.dev/api/comments/post/8580ed5c-0def-44b5-81cc-72b66f313835
+Server response
+Code	Details
+201	
+Response body
+Download
+{
+  "success": true,
+  "message": "Comment added successfully",
+  "data": {
+    "id": "926decbf-8f27-4eaf-8e0c-05d8a5249a17",
+    "postId": "8580ed5c-0def-44b5-81cc-72b66f313835",
+    "userId": "1b7e13cc-6577-4bba-ad65-7785bad9b12e",
+    "parentCommentId": null,
+    "content": "This is a great post!",
+    "isDeleted": false,
+    "createdAt": "2026-01-29T09:02:41.254Z",
+    "updatedAt": "2026-01-29T09:02:41.254Z",
+    "user": {
+      "id": "1b7e13cc-6577-4bba-ad65-7785bad9b12e",
+      "fullName": "Alex Debnath",
+      "image": "https://res.cloudinary.com/db0ecop7c/image/upload/v1769414650/pajsvndvdqe4mdj7hb7l.jpg"
+    }
+  }
+}
+Response headers
+ access-control-allow-credentials: true 
+ access-control-allow-origin: * 
+ content-length: 533 
+ content-type: application/json; charset=utf-8 
+ date: Thu,29 Jan 2026 09:02:41 GMT 
+ etag: W/"215-l9p91Wl09SZh1t1UJXikz6+vcIY" 
+ ngrok-agent-ips: 103.174.189.241 
+ vary: Origin 
+ x-powered-by: Express 
+Request duration
+212 ms
+Responses
+Code	Description	Links
+201	
+No links
+
+GET
+/api/comments/post/{postId}
+[App] Get comments for a post with cursor pagination
+
+
+Parameters
+Cancel
+Name	Description
+postId *
+string
+(path)
+8580ed5c-0def-44b5-81cc-72b66f313835
+limit
+number
+(query)
+Number of parent comments to fetch per page (default: 10)
+
+limit
+cursor
+string
+(query)
+Cursor for pagination. Use the id of the last comment from previous page
+
+cursor
+Execute
+Clear
+Responses
+Curl
+
+curl -X 'GET' \
+  'https://elusive-regional-harvey.ngrok-free.dev/api/comments/post/8580ed5c-0def-44b5-81cc-72b66f313835' \
+  -H 'accept: */*' \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjFiN2UxM2NjLTY1NzctNGJiYS1hZDY1LTc3ODViYWQ5YjEyZSIsImVtYWlsIjoiY2lrb2o2NzMwMUBjb3N3ei5jb20iLCJyb2xlIjoiVkVORE9SIiwiaWF0IjoxNzY5NjY2MjY2LCJleHAiOjE3Njk3NTI2NjZ9.yH_MzvL0hQfl5_GG4_1n8Le60zTq9g5kJkcvvmddCVY'
+Request URL
+https://elusive-regional-harvey.ngrok-free.dev/api/comments/post/8580ed5c-0def-44b5-81cc-72b66f313835
+Server response
+Code	Details
+200	
+Response body
+Download
+{
+  "success": true,
+  "message": "Comments fetched successfully",
+  "data": {
+    "comments": [
+      {
+        "id": "926decbf-8f27-4eaf-8e0c-05d8a5249a17",
+        "content": "This is a great post!",
+        "createdAt": "2026-01-29T09:02:41.254Z",
+        "author": {
+          "id": "1b7e13cc-6577-4bba-ad65-7785bad9b12e",
+          "fullName": "Alex Debnath",
+          "image": "https://res.cloudinary.com/db0ecop7c/image/upload/v1769414650/pajsvndvdqe4mdj7hb7l.jpg"
+        },
+        "replies": [],
+        "replyCount": 0,
+        "likeCount": 0,
+        "isLiked": false
+      },
+      {
+        "id": "b5cb6180-b3da-4f91-a909-198b1acc2c81",
+        "content": "test",
+        "createdAt": "2026-01-29T08:59:33.371Z",
+        "author": {
+          "id": "1b7e13cc-6577-4bba-ad65-7785bad9b12e",
+          "fullName": "Alex Debnath",
+          "image": "https://res.cloudinary.com/db0ecop7c/image/upload/v1769414650/pajsvndvdqe4mdj7hb7l.jpg"
+        },
+        "replies": [],
+        "replyCount": 0,
+        "likeCount": 0,
+        "isLiked": false
+      }
+    ],
+    "nextCursor": null
+  }
+}
+Response headers
+ access-control-allow-credentials: true 
+ access-control-allow-origin: * 
+ content-length: 791 
+ content-type: application/json; charset=utf-8 
+ date: Thu,29 Jan 2026 09:03:08 GMT 
+ etag: W/"317-hKxukdVEluNUyPggiFsmBw1DjAs" 
+ ngrok-agent-ips: 103.174.189.241 
+ vary: Origin 
+ x-powered-by: Express 
+Request duration
+226 ms
+Responses
+Code	Description	Links
+200
+
+-
+
+functionality that needs to have:
+
+- delete a comment and its replies
+- add a reply to a comment
+- edit a comment
+- like or unlike a comment
+- add a comment to a post
+- get comments for a post with cursor pagination
+
+
+
+
+-----
+
+Community
+
+
+GET
+/api/community/{postId}
+[App] Get a single post
+
+
+Parameters
+Try it out
+Name	Description
+postId *
+string
+(path)
+c6a2fd6f-7ec2-4491-9355-9ba7cb148f90
+Responses
+Curl
+
+curl -X 'GET' \
+  'https://elusive-regional-harvey.ngrok-free.dev/api/community/c6a2fd6f-7ec2-4491-9355-9ba7cb148f90' \
+  -H 'accept: */*' \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjFiN2UxM2NjLTY1NzctNGJiYS1hZDY1LTc3ODViYWQ5YjEyZSIsImVtYWlsIjoiY2lrb2o2NzMwMUBjb3N3ei5jb20iLCJyb2xlIjoiVkVORE9SIiwiaWF0IjoxNzY5NjY2MjY2LCJleHAiOjE3Njk3NTI2NjZ9.yH_MzvL0hQfl5_GG4_1n8Le60zTq9g5kJkcvvmddCVY'
+Request URL
+https://elusive-regional-harvey.ngrok-free.dev/api/community/c6a2fd6f-7ec2-4491-9355-9ba7cb148f90
+Server response
+Code	Details
+404
+Undocumented
+Error: response status is 404
+
+Response body
+Download
+{
+  "success": false,
+  "message": "Post not found",
+  "meta": {
+    "statusCode": 404,
+    "error": "NotFoundException"
+  }
+}
+Response headers
+ access-control-allow-credentials: true 
+ access-control-allow-origin: * 
+ content-length: 98 
+ content-type: application/json; charset=utf-8 
+ date: Thu,29 Jan 2026 09:01:05 GMT 
+ etag: W/"62-q6k/wuBdMftOINj3+xcqylprYVI" 
+ ngrok-agent-ips: 103.174.189.241 
+ vary: Origin 
+ x-powered-by: Express 
+Responses
+Code	Description	Links
+200	
+No links
+
+GET
+/api/community/{postId}/liked-by
+[App] Get users who liked a post
+
+
+
+GET
+/api/community/all
+[App] Get all posts with cursor pagination
+
+
+Parameters
+Try it out
+Name	Description
+limit
+number
+(query)
+Number of posts to fetch (max 50, default 20)
+
+limit
+cursor
+string
+(query)
+Cursor for pagination (post id)
+
+cursor
+Responses
+Curl
+
+curl -X 'GET' \
+  'https://elusive-regional-harvey.ngrok-free.dev/api/community/all' \
+  -H 'accept: */*' \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjFiN2UxM2NjLTY1NzctNGJiYS1hZDY1LTc3ODViYWQ5YjEyZSIsImVtYWlsIjoiY2lrb2o2NzMwMUBjb3N3ei5jb20iLCJyb2xlIjoiVkVORE9SIiwiaWF0IjoxNzY5NjY2MjY2LCJleHAiOjE3Njk3NTI2NjZ9.yH_MzvL0hQfl5_GG4_1n8Le60zTq9g5kJkcvvmddCVY'
+Request URL
+https://elusive-regional-harvey.ngrok-free.dev/api/community/all
+Server response
+Code	Details
+200	
+Response body
+Download
+{
+  "success": true,
+  "message": "Posts fetched successfully",
+  "data": {
+    "items": [
+      {
+        "id": "8580ed5c-0def-44b5-81cc-72b66f313835",
+        "caption": "tesfsfsf",
+        "location": null,
+        "media": [
+          "https://res.cloudinary.com/db0ecop7c/image/upload/v1769677167/posts/qpwuzmtatxntyr3oywrd.jpg"
+        ],
+        "createdAt": "2026-01-29T08:59:21.154Z",
+        "user": {
+          "id": "1b7e13cc-6577-4bba-ad65-7785bad9b12e",
+          "fullName": "Alex Debnath",
+          "image": "https://res.cloudinary.com/db0ecop7c/image/upload/v1769414650/pajsvndvdqe4mdj7hb7l.jpg",
+          "userName": "alex-debnath-837fc1"
+        },
+        "isLiked": true,
+        "isSaved": false,
+        "likeCount": 1,
+        "commentCount": 1
+      },
+      {
+        "id": "b38eb3c7-4b80-4ae5-af48-fa2a81499005",
+        "caption": "testing",
+        "location": "",
+        "media": [
+          "https://res.cloudinary.com/db0ecop7c/image/upload/v1769677010/posts/tvr3jgaj1sk4utmk41ge.jpg"
+        ],
+        "createdAt": "2026-01-29T08:56:45.238Z",
+        "user": {
+          "id": "1b7e13cc-6577-4bba-ad65-7785bad9b12e",
+          "fullName": "Alex Debnath",
+          "image": "https://res.cloudinary.com/db0ecop7c/image/upload/v1769414650/pajsvndvdqe4mdj7hb7l.jpg",
+          "userName": "alex-debnath-837fc1"
+        },
+        "isLiked": true,
+        "isSaved": true,
+        "likeCount": 1,
+        "commentCount": 0
+      },
+      {
+        "id": "16778e5b-afbd-4808-8516-d3a86f5698e1",
+        "caption": "Enjoying the sunset",
+        "location": "Seoul, Korea",
+        "media": [
+          "https://res.cloudinary.com/db0ecop7c/image/upload/v1769677296/posts/zmuh52hzpijr4nsfsm8l.jpg"
+        ],
+        "createdAt": "2026-01-29T09:01:29.915Z",
+        "user": {
+          "id": "1b7e13cc-6577-4bba-ad65-7785bad9b12e",
+          "fullName": "Alex Debnath",
+          "image": "https://res.cloudinary.com/db0ecop7c/image/upload/v1769414650/pajsvndvdqe4mdj7hb7l.jpg",
+          "userName": "alex-debnath-837fc1"
+        },
+        "isLiked": false,
+        "isSaved": false,
+        "likeCount": 0,
+        "commentCount": 0
+      }
+    ],
+    "nextCursor": null
+  }
+}
+Response headers
+ access-control-allow-credentials: true 
+ access-control-allow-origin: * 
+ content-length: 1604 
+ content-type: application/json; charset=utf-8 
+ date: Thu,29 Jan 2026 09:01:36 GMT 
+ etag: W/"644-Dduu0Zpn4vqDB+Wv4vi+cVhQQbw" 
+ ngrok-agent-ips: 103.174.189.241 
+ vary: Origin 
+ x-powered-by: Express 
+Request duration
+406 ms
+Responses
+Code	Description	Links
+200	
+No links
+
+POST
+/api/community/create-post
+[App] Create a new post with media
+
+
+Parameters
+Cancel
+Reset
+No parameters
+
+Request body
+
+multipart/form-data
+Create post with optional caption and location
+
+caption
+string
+Post caption
+
+Enjoying the sunset
+Send empty value
+location
+string
+Post location
+
+Seoul, Korea
+Send empty value
+visibility *
+string
+Post visibility
+
+
+PUBLIC
+isCommentAllowed
+boolean
+Whether comments are allowed on the post
+
+
+true
+Send empty value
+isShareToStory
+boolean
+Whether to share the post to your story
+
+
+false
+Send empty value
+files *
+array<string>
+Images or videos to upload
+
+oscar-sutton-yihlaRCCvd4-unsplash.jpg-
+Add string item
+Execute
+Clear
+Responses
+Curl
+
+curl -X 'POST' \
+  'https://elusive-regional-harvey.ngrok-free.dev/api/community/create-post' \
+  -H 'accept: */*' \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjFiN2UxM2NjLTY1NzctNGJiYS1hZDY1LTc3ODViYWQ5YjEyZSIsImVtYWlsIjoiY2lrb2o2NzMwMUBjb3N3ei5jb20iLCJyb2xlIjoiVkVORE9SIiwiaWF0IjoxNzY5NjY2MjY2LCJleHAiOjE3Njk3NTI2NjZ9.yH_MzvL0hQfl5_GG4_1n8Le60zTq9g5kJkcvvmddCVY' \
+  -H 'Content-Type: multipart/form-data' \
+  -F 'caption=Enjoying the sunset' \
+  -F 'location=Seoul, Korea' \
+  -F 'visibility=PUBLIC' \
+  -F 'isCommentAllowed=true' \
+  -F 'isShareToStory=false' \
+  -F 'files=@oscar-sutton-yihlaRCCvd4-unsplash.jpg;type=image/jpeg'
+Request URL
+https://elusive-regional-harvey.ngrok-free.dev/api/community/create-post
+Server response
+Code	Details
+201	
+Response body
+Download
+{
+  "success": true,
+  "message": "Post created successfully",
+  "data": {
+    "media": [
+      "https://res.cloudinary.com/db0ecop7c/image/upload/v1769677296/posts/zmuh52hzpijr4nsfsm8l.jpg"
+    ]
+  }
+}
+Response headers
+ access-control-allow-credentials: true 
+ access-control-allow-origin: * 
+ content-length: 168 
+ content-type: application/json; charset=utf-8 
+ date: Thu,29 Jan 2026 09:01:29 GMT 
+ etag: W/"a8-EynLOSo6LJkiLPNyQGXIyq/QNt8" 
+ ngrok-agent-ips: 103.174.189.241 
+ vary: Origin 
+ x-powered-by: Express 
+Request duration
+11671 ms
+Responses
+Code	Description	Links
+201	
+No links
+
+DELETE
+/api/community/delete-post/{postId}
+[App] Delete a post, only creator can delete
+
+
+Parameters
+Cancel
+Name	Description
+postId *
+string
+(path)
+postId
+Execute
+Responses
+Code	Description	Links
+200	
+No links
+
+PATCH
+/api/community/edit-post/{postId}
+[App] Edit a post, only creator can edit
+
+
+Parameters
+Cancel
+Reset
+Name	Description
+postId *
+string
+(path)
+8580ed5c-0def-44b5-81cc-72b66f313835
+Request body
+
+multipart/form-data
+caption
+string
+Post caption
+
+Enjoying the sunset
+Send empty value
+location
+string
+Post location
+
+Seoul, Korea
+Send empty value
+visibility
+string
+Post visibility
+
+
+PUBLIC
+Send empty value
+files
+array<string>
+New images or videos to upload
+
+oscar-sutton-yihlaRCCvd4-unsplash.jpg-
+Add string item
+Send empty value
+removedMediaLinks
+array<string>
+Existing media links to remove from the post
+
+string
+-
+Add string item
+Send empty value
+isCommentAllowed
+boolean
+Whether comments are allowed on the post
+
+
+true
+Send empty value
+Execute
+Clear
+Responses
+Curl
+
+curl -X 'PATCH' \
+  'https://elusive-regional-harvey.ngrok-free.dev/api/community/edit-post/8580ed5c-0def-44b5-81cc-72b66f313835' \
+  -H 'accept: */*' \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjFiN2UxM2NjLTY1NzctNGJiYS1hZDY1LTc3ODViYWQ5YjEyZSIsImVtYWlsIjoiY2lrb2o2NzMwMUBjb3N3ei5jb20iLCJyb2xlIjoiVkVORE9SIiwiaWF0IjoxNzY5NjY2MjY2LCJleHAiOjE3Njk3NTI2NjZ9.yH_MzvL0hQfl5_GG4_1n8Le60zTq9g5kJkcvvmddCVY' \
+  -H 'Content-Type: multipart/form-data' \
+  -F 'caption=Enjoying the sunset' \
+  -F 'location=Seoul, Korea' \
+  -F 'visibility=PUBLIC' \
+  -F 'files=@oscar-sutton-yihlaRCCvd4-unsplash.jpg;type=image/jpeg' \
+  -F 'removedMediaLinks=string' \
+  -F 'isCommentAllowed=true'
+Request URL
+https://elusive-regional-harvey.ngrok-free.dev/api/community/edit-post/8580ed5c-0def-44b5-81cc-72b66f313835
+Server response
+Code	Details
+200	
+Response body
+Download
+{
+  "success": true,
+  "message": "Post updated successfully",
+  "data": {
+    "id": "8580ed5c-0def-44b5-81cc-72b66f313835",
+    "userId": "1b7e13cc-6577-4bba-ad65-7785bad9b12e",
+    "caption": "Enjoying the sunset",
+    "location": "Seoul, Korea",
+    "media": [
+      "https://res.cloudinary.com/db0ecop7c/image/upload/v1769677167/posts/qpwuzmtatxntyr3oywrd.jpg",
+      "https://res.cloudinary.com/db0ecop7c/image/upload/v1769677667/posts/pcohhl7afhpgwpnn6fnu.jpg"
+    ],
+    "visibility": "PUBLIC",
+    "trendingScore": 4,
+    "createdAt": "2026-01-29T08:59:21.154Z",
+    "updatedAt": "2026-01-29T09:07:42.393Z",
+    "isCommentAllowed": true,
+    "isHidden": false,
+    "isDeleted": false
+  }
+}
+Response headers
+ access-control-allow-credentials: true 
+ access-control-allow-origin: * 
+ content-length: 590 
+ content-type: application/json; charset=utf-8 
+ date: Thu,29 Jan 2026 09:07:42 GMT 
+ etag: W/"24e-NAs+X/8DzCh64ePiVw/TYljJTFM" 
+ ngrok-agent-ips: 103.174.189.241 
+ vary: Origin 
+ x-powered-by: Express 
+Request duration
+11373 ms
+Responses
+Code	Description	Links
+200	
+No links
+
+PATCH
+/api/community/toggle-like/{postId}
+[App] Toggle like on a post, returns like count
+
+
+Parameters
+Cancel
+Name	Description
+postId *
+string
+(path)
+8580ed5c-0def-44b5-81cc-72b66f313835
+Execute
+Clear
+Responses
+Curl
+
+curl -X 'PATCH' \
+  'https://elusive-regional-harvey.ngrok-free.dev/api/community/toggle-like/8580ed5c-0def-44b5-81cc-72b66f313835' \
+  -H 'accept: */*' \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjFiN2UxM2NjLTY1NzctNGJiYS1hZDY1LTc3ODViYWQ5YjEyZSIsImVtYWlsIjoiY2lrb2o2NzMwMUBjb3N3ei5jb20iLCJyb2xlIjoiVkVORE9SIiwiaWF0IjoxNzY5NjY2MjY2LCJleHAiOjE3Njk3NTI2NjZ9.yH_MzvL0hQfl5_GG4_1n8Le60zTq9g5kJkcvvmddCVY'
+Request URL
+https://elusive-regional-harvey.ngrok-free.dev/api/community/toggle-like/8580ed5c-0def-44b5-81cc-72b66f313835
+Server response
+Code	Details
+200	
+Response body
+Download
+{
+  "success": true,
+  "message": "Like removed successfully",
+  "data": {
+    "likeCount": 0
+  }
+}
+Response headers
+ access-control-allow-credentials: true 
+ access-control-allow-origin: * 
+ content-length: 77 
+ content-type: application/json; charset=utf-8 
+ date: Thu,29 Jan 2026 09:07:48 GMT 
+ etag: W/"4d-hFhL4WXhBJXP0R+GyCdlynkQPHc" 
+ ngrok-agent-ips: 103.174.189.241 
+ vary: Origin 
+ x-powered-by: Express 
+Request duration
+250 ms
+Responses
+Code	Description	Links
+200
+
+GET
+/api/community/{postId}/liked-by
+[App] Get users who liked a post
+
+
+Parameters
+Cancel
+Name	Description
+postId *
+string
+(path)
+16778e5b-afbd-4808-8516-d3a86f5698e1
+Execute
+Clear
+Responses
+Curl
+
+curl -X 'GET' \
+  'https://elusive-regional-harvey.ngrok-free.dev/api/community/16778e5b-afbd-4808-8516-d3a86f5698e1/liked-by' \
+  -H 'accept: */*' \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjFiN2UxM2NjLTY1NzctNGJiYS1hZDY1LTc3ODViYWQ5YjEyZSIsImVtYWlsIjoiY2lrb2o2NzMwMUBjb3N3ei5jb20iLCJyb2xlIjoiVkVORE9SIiwiaWF0IjoxNzY5NjY2MjY2LCJleHAiOjE3Njk3NTI2NjZ9.yH_MzvL0hQfl5_GG4_1n8Le60zTq9g5kJkcvvmddCVY'
+Request URL
+https://elusive-regional-harvey.ngrok-free.dev/api/community/16778e5b-afbd-4808-8516-d3a86f5698e1/liked-by
+Server response
+Code	Details
+200	
+Response body
+Download
+{
+  "success": true,
+  "message": "Post liked by fetched successfully",
+  "data": {
+    "likedBy": []
+  }
+}
+Response headers
+ access-control-allow-credentials: true 
+ access-control-allow-origin: * 
+ content-length: 85 
+ content-type: application/json; charset=utf-8 
+ date: Thu,29 Jan 2026 09:09:34 GMT 
+ etag: W/"55-xjnWSkwgZ+vEaXK/mLgKCoOz8NU" 
+ ngrok-agent-ips: 103.174.189.241 
+ vary: Origin 
+ x-powered-by: Express 
+Request duration
+241 ms
+Responses
+Code	Description	Links
+200
+
+- functionality
+
+- get a single post
+- get users who liked a post
+- get all posts with cursor pagination
+- create a new post with media
+- delete a post, only creator can delete
+- edit a post, only creator can edit
+- toggle like on a post, returns like count
+
+----
+
+Story
+
+
+POST
+/api/story
+Add a new story
+
+
+Parameters
+Cancel
+Reset
+No parameters
+
+Request body
+
+multipart/form-data
+Add a story with an image, optional location, and visibility
+
+file *
+string($binary)
+The story image file to upload (JPEG, PNG, or MP4)
+
+oscar-sutton-yihlaRCCvd4-unsplash.jpg
+location
+string
+Optional location for the story, e.g., "New York City"
+
+New York City
+Send empty value
+visibility
+string
+Visibility of the story. PUBLIC = anyone can see, FRIENDS = only friends, PRIVATE = only you
+
+
+PUBLIC
+Send empty value
+Execute
+Clear
+Responses
+Curl
+
+curl -X 'POST' \
+  'https://elusive-regional-harvey.ngrok-free.dev/api/story' \
+  -H 'accept: */*' \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjFiN2UxM2NjLTY1NzctNGJiYS1hZDY1LTc3ODViYWQ5YjEyZSIsImVtYWlsIjoiY2lrb2o2NzMwMUBjb3N3ei5jb20iLCJyb2xlIjoiVkVORE9SIiwiaWF0IjoxNzY5NjY2MjY2LCJleHAiOjE3Njk3NTI2NjZ9.yH_MzvL0hQfl5_GG4_1n8Le60zTq9g5kJkcvvmddCVY' \
+  -H 'Content-Type: multipart/form-data' \
+  -F 'file=@oscar-sutton-yihlaRCCvd4-unsplash.jpg;type=image/jpeg' \
+  -F 'location=New York City' \
+  -F 'visibility=PUBLIC'
+Request URL
+https://elusive-regional-harvey.ngrok-free.dev/api/story
+Server response
+Code	Details
+201	
+Response body
+Download
+{
+  "success": true,
+  "message": "Story added successfully",
+  "data": {
+    "id": "96f5cb10-da29-458f-b49c-5da94e8b7ab5",
+    "userId": "1b7e13cc-6577-4bba-ad65-7785bad9b12e",
+    "media": "https://res.cloudinary.com/db0ecop7c/image/upload/v1769678006/stories/pxmt8fc8mfrwiouhteal.jpg",
+    "location": "New York City",
+    "viewCount": 0,
+    "isPublished": true,
+    "visibility": "PUBLIC",
+    "isDeleted": false,
+    "trendingScore": 0,
+    "likeCount": 0,
+    "createdAt": "2026-01-29T09:13:20.100Z",
+    "expiresAt": "2026-01-30T09:13:20.099Z"
+  }
+}
+Response headers
+ access-control-allow-credentials: true 
+ access-control-allow-origin: * 
+ content-length: 469 
+ content-type: application/json; charset=utf-8 
+ date: Thu,29 Jan 2026 09:13:20 GMT 
+ etag: W/"1d5-0hucAPKi8WeWkQz3QuN88G7537Y" 
+ ngrok-agent-ips: 103.174.189.241 
+ vary: Origin 
+ x-powered-by: Express 
+Request duration
+7590 ms
+Responses
+Code	Description	Links
+201	
+No links
+
+GET
+/api/story
+Fetch stories with pagination
+
+
+Parameters
+Cancel
+Name	Description
+limit
+number
+(query)
+Number of stories to fetch (default 20, max 50)
+
+limit
+cursor
+string
+(query)
+Cursor ID for pagination
+
+cursor
+Execute
+Clear
+Responses
+Curl
+
+curl -X 'GET' \
+  'https://elusive-regional-harvey.ngrok-free.dev/api/story' \
+  -H 'accept: */*' \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjFiN2UxM2NjLTY1NzctNGJiYS1hZDY1LTc3ODViYWQ5YjEyZSIsImVtYWlsIjoiY2lrb2o2NzMwMUBjb3N3ei5jb20iLCJyb2xlIjoiVkVORE9SIiwiaWF0IjoxNzY5NjY2MjY2LCJleHAiOjE3Njk3NTI2NjZ9.yH_MzvL0hQfl5_GG4_1n8Le60zTq9g5kJkcvvmddCVY'
+Request URL
+https://elusive-regional-harvey.ngrok-free.dev/api/story
+Server response
+Code	Details
+200	
+Response body
+Download
+{
+  "success": true,
+  "message": "Stories fetched successfully",
+  "data": {
+    "items": [
+      {
+        "id": "4cf343db-068c-498c-8aae-2892a937392a",
+        "media": "https://res.cloudinary.com/db0ecop7c/image/upload/v1769672669/stories/exn5ofoq6gbcrcu1lx2x.jpg",
+        "location": null,
+        "createdAt": "2026-01-29T07:44:24.325Z",
+        "expiresAt": "2026-01-30T07:44:24.323Z",
+        "user": {
+          "id": "1b7e13cc-6577-4bba-ad65-7785bad9b12e",
+          "fullName": "Alex Debnath",
+          "image": "https://res.cloudinary.com/db0ecop7c/image/upload/v1769414650/pajsvndvdqe4mdj7hb7l.jpg"
+        },
+        "remainingHours": 22.539193333333333,
+        "likeCount": 1,
+        "viewCount": 1,
+        "isLiked": true,
+        "isViewed": true
+      },
+      {
+        "id": "a57f2e93-6b9f-47aa-a5b0-df43f4286c61",
+        "media": "https://res.cloudinary.com/db0ecop7c/image/upload/v1769664345/stories/ry713i5nqsl7xzdneidu.jpg",
+        "location": "New York City",
+        "createdAt": "2026-01-29T05:25:40.009Z",
+        "expiresAt": "2026-01-30T05:25:40.007Z",
+        "user": {
+          "id": "1b7e13cc-6577-4bba-ad65-7785bad9b12e",
+          "fullName": "Alex Debnath",
+          "image": "https://res.cloudinary.com/db0ecop7c/image/upload/v1769414650/pajsvndvdqe4mdj7hb7l.jpg"
+        },
+        "remainingHours": 20.226883333333333,
+        "likeCount": 1,
+        "viewCount": 1,
+        "isLiked": true,
+        "isViewed": true
+      },
+      {
+        "id": "dc232013-cc3f-486a-adc4-5a8f0f3acf31",
+        "media": "https://res.cloudinary.com/db0ecop7c/image/upload/v1769659184/stories/lhnom2xnyf6lg37v2kq3.jpg",
+        "location": null,
+        "createdAt": "2026-01-29T03:59:38.768Z",
+        "expiresAt": "2026-01-30T03:59:38.766Z",
+        "user": {
+          "id": "1b7e13cc-6577-4bba-ad65-7785bad9b12e",
+          "fullName": "Alex Debnath",
+          "image": "https://res.cloudinary.com/db0ecop7c/image/upload/v1769414650/pajsvndvdqe4mdj7hb7l.jpg"
+        },
+        "remainingHours": 18.793205277777776,
+        "likeCount": 1,
+        "viewCount": 1,
+        "isLiked": true,
+        "isViewed": true
+      },
+      {
+        "id": "e31c3aa7-f7e5-4284-ac48-d718c596f317",
+        "media": "https://res.cloudinary.com/db0ecop7c/image/upload/v1769604206/stories/ftrndbdp82kufn3tz72i.jpg",
+        "location": null,
+        "createdAt": "2026-01-28T12:43:22.033Z",
+        "expiresAt": "2026-01-29T12:43:22.031Z",
+        "user": {
+          "id": "1b7e13cc-6577-4bba-ad65-7785bad9b12e",
+          "fullName": "Alex Debnath",
+          "image": "https://res.cloudinary.com/db0ecop7c/image/upload/v1769414650/pajsvndvdqe4mdj7hb7l.jpg"
+        },
+        "remainingHours": 3.52189,
+        "likeCount": 1,
+        "viewCount": 1,
+        "isLiked": true,
+        "isViewed": true
+      },
+      {
+        "id": "66429fd0-a0f2-4ea9-9201-efcd89369d97",
+        "media": "https://res.cloudinary.com/db0ecop7c/image/upload/v1769594362/stories/kx7p5njxco0ja42kagod.jpg",
+        "location": null,
+        "createdAt": "2026-01-28T09:59:17.263Z",
+        "expiresAt": "2026-01-29T09:59:17.256Z",
+        "user": {
+          "id": "1b7e13cc-6577-4bba-ad65-7785bad9b12e",
+          "fullName": "Alex Debnath",
+          "image": "https://res.cloudinary.com/db0ecop7c/image/upload/v1769414650/pajsvndvdqe4mdj7hb7l.jpg"
+        },
+        "remainingHours": 0.7872302777777778,
+        "likeCount": 1,
+        "viewCount": 1,
+        "isLiked": true,
+        "isViewed": true
+      },
+      {
+        "id": "af727e15-cc09-481f-bc60-40b9b4d55eb2",
+        "media": "https://res.cloudinary.com/db0ecop7c/image/upload/v1769675220/stories/whz6i5khbplznxbvkftb.jpg",
+        "location": null,
+        "createdAt": "2026-01-29T08:26:53.788Z",
+        "expiresAt": "2026-01-30T08:26:53.786Z",
+        "user": {
+          "id": "1b7e13cc-6577-4bba-ad65-7785bad9b12e",
+          "fullName": "Alex Debnath",
+          "image": "https://res.cloudinary.com/db0ecop7c/image/upload/v1769414650/pajsvndvdqe4mdj7hb7l.jpg"
+        },
+        "remainingHours": 23.2473775,
+        "likeCount": 0,
+        "viewCount": 1,
+        "isLiked": false,
+        "isViewed": true
+      },
+      {
+        "id": "16914c75-f586-4b4d-a446-8ecf5a5ae9e2",
+        "media": "https://res.cloudinary.com/db0ecop7c/image/upload/v1769672890/stories/p0ui4shz8gbi6zfqwhed.jpg",
+        "location": null,
+        "createdAt": "2026-01-29T07:48:04.832Z",
+        "expiresAt": "2026-01-30T07:48:04.830Z",
+        "user": {
+          "id": "1b7e13cc-6577-4bba-ad65-7785bad9b12e",
+          "fullName": "Alex Debnath",
+          "image": "https://res.cloudinary.com/db0ecop7c/image/upload/v1769414650/pajsvndvdqe4mdj7hb7l.jpg"
+        },
+        "remainingHours": 22.600445277777776,
+        "likeCount": 0,
+        "viewCount": 1,
+        "isLiked": false,
+        "isViewed": true
+      },
+      {
+        "id": "56285ceb-07e2-4e31-bc37-77f35eb5c2d6",
+        "media": "https://res.cloudinary.com/db0ecop7c/image/upload/v1769594192/stories/rvt8dgeewzyspttymdzg.jpg",
+        "location": "testing",
+        "createdAt": "2026-01-28T09:56:27.276Z",
+        "expiresAt": "2026-01-29T09:56:27.275Z",
+        "user": {
+          "id": "1b7e13cc-6577-4bba-ad65-7785bad9b12e",
+          "fullName": "Alex Debnath",
+          "image": "https://res.cloudinary.com/db0ecop7c/image/upload/v1769414650/pajsvndvdqe4mdj7hb7l.jpg"
+        },
+        "remainingHours": 0.7400133333333333,
+        "likeCount": 0,
+        "viewCount": 1,
+        "isLiked": false,
+        "isViewed": true
+      },
+      {
+        "id": "a98a6eea-cdec-4bba-912c-5aec4674164d",
+        "media": "https://res.cloudinary.com/db0ecop7c/image/upload/v1769677925/stories/wg9goigns2ieqr1jbtbq.jpg",
+        "location": "New York City",
+        "createdAt": "2026-01-29T09:11:58.751Z",
+        "expiresAt": "2026-01-30T09:11:58.749Z",
+        "user": {
+          "id": "1b7e13cc-6577-4bba-ad65-7785bad9b12e",
+          "fullName": "Alex Debnath",
+          "image": "https://res.cloudinary.com/db0ecop7c/image/upload/v1769414650/pajsvndvdqe4mdj7hb7l.jpg"
+        },
+        "remainingHours": 23.99875611111111,
+        "likeCount": 0,
+        "viewCount": 0,
+        "isLiked": false,
+        "isViewed": false
+      },
+      {
+        "id": "33994ac9-5802-42d6-849d-d3920408b4c0",
+        "media": "https://res.cloudinary.com/db0ecop7c/image/upload/v1769677207/stories/plh4i7uq0r84v0traxec.jpg",
+        "location": null,
+        "createdAt": "2026-01-29T09:00:01.212Z",
+        "expiresAt": "2026-01-30T09:00:01.211Z",
+        "user": {
+          "id": "1b7e13cc-6577-4bba-ad65-7785bad9b12e",
+          "fullName": "Alex Debnath",
+          "image": "https://res.cloudinary.com/db0ecop7c/image/upload/v1769414650/pajsvndvdqe4mdj7hb7l.jpg"
+        },
+        "remainingHours": 23.79944,
+        "likeCount": 1,
+        "viewCount": 1,
+        "isLiked": true,
+        "isViewed": true
+      }
+    ],
+    "nextCursor": null
+  }
+}
+Response headers
+ access-control-allow-credentials: true 
+ access-control-allow-origin: * 
+ content-length: 5256 
+ content-type: application/json; charset=utf-8 
+ date: Thu,29 Jan 2026 09:12:03 GMT 
+ etag: W/"1488-NuxUB8ATyIVF7AIN0xfvvl7AoO8" 
+ ngrok-agent-ips: 103.174.189.241 
+ vary: Origin 
+ x-powered-by: Express 
+Request duration
+247 ms
+Responses
+Code	Description	Links
+200	
+No links
+
+DELETE
+/api/story/{id}
+Delete a story
+
+
+
+PATCH
+/api/story/like/{id}
+Toggle the like status of a story
+
+
+Parameters
+Cancel
+Name	Description
+id *
+string
+(path)
+The ID of the story to toggle the like status
+
+4cf343db-068c-498c-8aae-2892a937392a
+Execute
+Clear
+Responses
+Curl
+
+curl -X 'PATCH' \
+  'https://elusive-regional-harvey.ngrok-free.dev/api/story/like/4cf343db-068c-498c-8aae-2892a937392a' \
+  -H 'accept: */*' \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjFiN2UxM2NjLTY1NzctNGJiYS1hZDY1LTc3ODViYWQ5YjEyZSIsImVtYWlsIjoiY2lrb2o2NzMwMUBjb3N3ei5jb20iLCJyb2xlIjoiVkVORE9SIiwiaWF0IjoxNzY5NjY2MjY2LCJleHAiOjE3Njk3NTI2NjZ9.yH_MzvL0hQfl5_GG4_1n8Le60zTq9g5kJkcvvmddCVY'
+Request URL
+https://elusive-regional-harvey.ngrok-free.dev/api/story/like/4cf343db-068c-498c-8aae-2892a937392a
+Server response
+Code	Details
+200	
+Response body
+Download
+{
+  "success": true,
+  "message": "Story like removed successfully",
+  "data": {
+    "likeCount": 0
+  }
+}
+Response headers
+ access-control-allow-credentials: true 
+ access-control-allow-origin: * 
+ content-length: 83 
+ content-type: application/json; charset=utf-8 
+ date: Thu,29 Jan 2026 09:12:22 GMT 
+ etag: W/"53-ImjDywYECMuyii2KhO57nQH6xLw" 
+ ngrok-agent-ips: 103.174.189.241 
+ vary: Origin 
+ x-powered-by: Express 
+Request duration
+226 ms
+Responses
+Code	Description	Links
+200	
+No links
+
+GET
+/api/story/me
+Get my stories with cursor pagination
+
+
+Parameters
+Cancel
+Name	Description
+limit
+number
+(query)
+Number of stories to fetch (max 50)
+
+limit
+cursor
+string
+(query)
+ID of the last story from previous page for pagination
+
+cursor
+Execute
+Clear
+Responses
+Curl
+
+curl -X 'GET' \
+  'https://elusive-regional-harvey.ngrok-free.dev/api/story/me' \
+  -H 'accept: */*' \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjFiN2UxM2NjLTY1NzctNGJiYS1hZDY1LTc3ODViYWQ5YjEyZSIsImVtYWlsIjoiY2lrb2o2NzMwMUBjb3N3ei5jb20iLCJyb2xlIjoiVkVORE9SIiwiaWF0IjoxNzY5NjY2MjY2LCJleHAiOjE3Njk3NTI2NjZ9.yH_MzvL0hQfl5_GG4_1n8Le60zTq9g5kJkcvvmddCVY'
+Request URL
+https://elusive-regional-harvey.ngrok-free.dev/api/story/me
+Server response
+Code	Details
+200	
+Response body
+Download
+{
+  "success": true,
+  "message": "My stories fetched successfully",
+  "data": {
+    "items": [
+      {
+        "id": "a98a6eea-cdec-4bba-912c-5aec4674164d",
+        "media": "https://res.cloudinary.com/db0ecop7c/image/upload/v1769677925/stories/wg9goigns2ieqr1jbtbq.jpg",
+        "location": "New York City",
+        "createdAt": "2026-01-29T09:11:58.751Z",
+        "likeCount": 0,
+        "viewCount": 0,
+        "visibility": "PUBLIC",
+        "expiresAt": "2026-01-30T09:11:58.749Z",
+        "storyReplies": [],
+        "remainingHours": 23.991507777777777
+      },
+      {
+        "id": "33994ac9-5802-42d6-849d-d3920408b4c0",
+        "media": "https://res.cloudinary.com/db0ecop7c/image/upload/v1769677207/stories/plh4i7uq0r84v0traxec.jpg",
+        "location": null,
+        "createdAt": "2026-01-29T09:00:01.212Z",
+        "likeCount": 1,
+        "viewCount": 1,
+        "visibility": "FRIENDS",
+        "expiresAt": "2026-01-30T09:00:01.211Z",
+        "storyReplies": [],
+        "remainingHours": 23.792191666666668
+      },
+      {
+        "id": "af727e15-cc09-481f-bc60-40b9b4d55eb2",
+        "media": "https://res.cloudinary.com/db0ecop7c/image/upload/v1769675220/stories/whz6i5khbplznxbvkftb.jpg",
+        "location": null,
+        "createdAt": "2026-01-29T08:26:53.788Z",
+        "likeCount": 0,
+        "viewCount": 1,
+        "visibility": "FRIENDS",
+        "expiresAt": "2026-01-30T08:26:53.786Z",
+        "storyReplies": [
+          {
+            "id": "d1ec7589-2214-40dc-871b-c37ca60b1ed8",
+            "comment": "tesfsf",
+            "createdAt": "2026-01-29T08:28:07.800Z",
+            "user": {
+              "id": "1b7e13cc-6577-4bba-ad65-7785bad9b12e",
+              "fullName": "Alex Debnath",
+              "image": "https://res.cloudinary.com/db0ecop7c/image/upload/v1769414650/pajsvndvdqe4mdj7hb7l.jpg"
+            }
+          }
+        ],
+        "remainingHours": 23.240129166666666
+      },
+      {
+        "id": "16914c75-f586-4b4d-a446-8ecf5a5ae9e2",
+        "media": "https://res.cloudinary.com/db0ecop7c/image/upload/v1769672890/stories/p0ui4shz8gbi6zfqwhed.jpg",
+        "location": null,
+        "createdAt": "2026-01-29T07:48:04.832Z",
+        "likeCount": 0,
+        "viewCount": 1,
+        "visibility": "PUBLIC",
+        "expiresAt": "2026-01-30T07:48:04.830Z",
+        "storyReplies": [],
+        "remainingHours": 22.593196944444443
+      },
+      {
+        "id": "4cf343db-068c-498c-8aae-2892a937392a",
+        "media": "https://res.cloudinary.com/db0ecop7c/image/upload/v1769672669/stories/exn5ofoq6gbcrcu1lx2x.jpg",
+        "location": null,
+        "createdAt": "2026-01-29T07:44:24.325Z",
+        "likeCount": 0,
+        "viewCount": 1,
+        "visibility": "FRIENDS",
+        "expiresAt": "2026-01-30T07:44:24.323Z",
+        "storyReplies": [
+          {
+            "id": "12040c74-85bb-4435-a351-9153df15014e",
+            "comment": "tst",
+            "createdAt": "2026-01-29T07:44:30.980Z",
+            "user": {
+              "id": "1b7e13cc-6577-4bba-ad65-7785bad9b12e",
+              "fullName": "Alex Debnath",
+              "image": "https://res.cloudinary.com/db0ecop7c/image/upload/v1769414650/pajsvndvdqe4mdj7hb7l.jpg"
+            }
+          }
+        ],
+        "remainingHours": 22.531945
+      },
+      {
+        "id": "a57f2e93-6b9f-47aa-a5b0-df43f4286c61",
+        "media": "https://res.cloudinary.com/db0ecop7c/image/upload/v1769664345/stories/ry713i5nqsl7xzdneidu.jpg",
+        "location": "New York City",
+        "createdAt": "2026-01-29T05:25:40.009Z",
+        "likeCount": 1,
+        "viewCount": 1,
+        "visibility": "PUBLIC",
+        "expiresAt": "2026-01-30T05:25:40.007Z",
+        "storyReplies": [
+          {
+            "id": "9e1e477c-88bb-4c8c-8cfc-92cc962f5615",
+            "comment": "nice",
+            "createdAt": "2026-01-29T06:27:49.804Z",
+            "user": {
+              "id": "1b7e13cc-6577-4bba-ad65-7785bad9b12e",
+              "fullName": "Alex Debnath",
+              "image": "https://res.cloudinary.com/db0ecop7c/image/upload/v1769414650/pajsvndvdqe4mdj7hb7l.jpg"
+            }
+          }
+        ],
+        "remainingHours": 20.219635
+      },
+      {
+        "id": "dc232013-cc3f-486a-adc4-5a8f0f3acf31",
+        "media": "https://res.cloudinary.com/db0ecop7c/image/upload/v1769659184/stories/lhnom2xnyf6lg37v2kq3.jpg",
+        "location": null,
+        "createdAt": "2026-01-29T03:59:38.768Z",
+        "likeCount": 1,
+        "viewCount": 1,
+        "visibility": "PUBLIC",
+        "expiresAt": "2026-01-30T03:59:38.766Z",
+        "storyReplies": [
+          {
+            "id": "9cb1bb30-cbae-4f4c-8f88-1d47f83dd0c4",
+            "comment": "hello",
+            "createdAt": "2026-01-29T03:59:49.027Z",
+            "user": {
+              "id": "1b7e13cc-6577-4bba-ad65-7785bad9b12e",
+              "fullName": "Alex Debnath",
+              "image": "https://res.cloudinary.com/db0ecop7c/image/upload/v1769414650/pajsvndvdqe4mdj7hb7l.jpg"
+            }
+          }
+        ],
+        "remainingHours": 18.785956944444443
+      },
+      {
+        "id": "e31c3aa7-f7e5-4284-ac48-d718c596f317",
+        "media": "https://res.cloudinary.com/db0ecop7c/image/upload/v1769604206/stories/ftrndbdp82kufn3tz72i.jpg",
+        "location": null,
+        "createdAt": "2026-01-28T12:43:22.033Z",
+        "likeCount": 1,
+        "viewCount": 1,
+        "visibility": "PUBLIC",
+        "expiresAt": "2026-01-29T12:43:22.031Z",
+        "storyReplies": [
+          {
+            "id": "cd5ebbaf-f61e-4c4d-85c0-cb14c3814eb4",
+            "comment": "wtf",
+            "createdAt": "2026-01-28T12:43:30.729Z",
+            "user": {
+              "id": "1b7e13cc-6577-4bba-ad65-7785bad9b12e",
+              "fullName": "Alex Debnath",
+              "image": "https://res.cloudinary.com/db0ecop7c/image/upload/v1769414650/pajsvndvdqe4mdj7hb7l.jpg"
+            }
+          }
+        ],
+        "remainingHours": 3.514641666666667
+      },
+      {
+        "id": "66429fd0-a0f2-4ea9-9201-efcd89369d97",
+        "media": "https://res.cloudinary.com/db0ecop7c/image/upload/v1769594362/stories/kx7p5njxco0ja42kagod.jpg",
+        "location": null,
+        "createdAt": "2026-01-28T09:59:17.263Z",
+        "likeCount": 1,
+        "viewCount": 1,
+        "visibility": "FRIENDS",
+        "expiresAt": "2026-01-29T09:59:17.256Z",
+        "storyReplies": [
+          {
+            "id": "908f396b-de5f-4b92-971f-eb68f58d6018",
+            "comment": "testng",
+            "createdAt": "2026-01-28T10:22:53.208Z",
+            "user": {
+              "id": "1b7e13cc-6577-4bba-ad65-7785bad9b12e",
+              "fullName": "Alex Debnath",
+              "image": "https://res.cloudinary.com/db0ecop7c/image/upload/v1769414650/pajsvndvdqe4mdj7hb7l.jpg"
+            }
+          },
+          {
+            "id": "ccdba69c-6f56-4dac-b41b-f71f52483b0d",
+            "comment": "test test test",
+            "createdAt": "2026-01-28T11:44:55.067Z",
+            "user": {
+              "id": "1b7e13cc-6577-4bba-ad65-7785bad9b12e",
+              "fullName": "Alex Debnath",
+              "image": "https://res.cloudinary.com/db0ecop7c/image/upload/v1769414650/pajsvndvdqe4mdj7hb7l.jpg"
+            }
+          },
+          {
+            "id": "f26d1eac-1acc-4949-96ca-ba23376d6af2",
+            "comment": "testing comment",
+            "createdAt": "2026-01-29T07:04:48.476Z",
+            "user": {
+              "id": "1b7e13cc-6577-4bba-ad65-7785bad9b12e",
+              "fullName": "Alex Debnath",
+              "image": "https://res.cloudinary.com/db0ecop7c/image/upload/v1769414650/pajsvndvdqe4mdj7hb7l.jpg"
+            }
+          }
+        ],
+        "remainingHours": 0.7799819444444445
+      },
+      {
+        "id": "56285ceb-07e2-4e31-bc37-77f35eb5c2d6",
+        "media": "https://res.cloudinary.com/db0ecop7c/image/upload/v1769594192/stories/rvt8dgeewzyspttymdzg.jpg",
+        "location": "testing",
+        "createdAt": "2026-01-28T09:56:27.276Z",
+        "likeCount": 0,
+        "viewCount": 1,
+        "visibility": "PUBLIC",
+        "expiresAt": "2026-01-29T09:56:27.275Z",
+        "storyReplies": [],
+        "remainingHours": 0.732765
+      }
+    ],
+    "nextCursor": null
+  }
+}
+Response headers
+ access-control-allow-credentials: true 
+ access-control-allow-origin: * 
+ content-length: 5831 
+ content-type: application/json; charset=utf-8 
+ date: Thu,29 Jan 2026 09:12:29 GMT 
+ etag: W/"16c7-t16VYYl8vX5DYEQT70lIm9c6jlM" 
+ ngrok-agent-ips: 103.174.189.241 
+ vary: Origin 
+ x-powered-by: Express 
+Request duration
+234 ms
+Responses
+Code	Description	Links
+200	
+No links
+
+PATCH
+/api/story/published/{id}
+Toggle the published status of a story
+
+
+Parameters
+Cancel
+Name	Description
+id *
+string
+(path)
+The ID of the story to toggle
+
+4cf343db-068c-498c-8aae-2892a937392a
+Execute
+Clear
+Responses
+Curl
+
+curl -X 'PATCH' \
+  'https://elusive-regional-harvey.ngrok-free.dev/api/story/published/4cf343db-068c-498c-8aae-2892a937392a' \
+  -H 'accept: */*' \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjFiN2UxM2NjLTY1NzctNGJiYS1hZDY1LTc3ODViYWQ5YjEyZSIsImVtYWlsIjoiY2lrb2o2NzMwMUBjb3N3ei5jb20iLCJyb2xlIjoiVkVORE9SIiwiaWF0IjoxNzY5NjY2MjY2LCJleHAiOjE3Njk3NTI2NjZ9.yH_MzvL0hQfl5_GG4_1n8Le60zTq9g5kJkcvvmddCVY'
+Request URL
+https://elusive-regional-harvey.ngrok-free.dev/api/story/published/4cf343db-068c-498c-8aae-2892a937392a
+Server response
+Code	Details
+200	
+Response body
+Download
+{
+  "success": true,
+  "message": "Story has been unpublished successfully",
+  "data": {
+    "id": "4cf343db-068c-498c-8aae-2892a937392a",
+    "userId": "1b7e13cc-6577-4bba-ad65-7785bad9b12e",
+    "media": "https://res.cloudinary.com/db0ecop7c/image/upload/v1769672669/stories/exn5ofoq6gbcrcu1lx2x.jpg",
+    "location": null,
+    "viewCount": 1,
+    "isPublished": false,
+    "visibility": "FRIENDS",
+    "isDeleted": false,
+    "trendingScore": 1,
+    "likeCount": 0,
+    "createdAt": "2026-01-29T07:44:24.325Z",
+    "expiresAt": "2026-01-30T07:44:24.323Z"
+  }
+}
+Response headers
+ access-control-allow-credentials: true 
+ access-control-allow-origin: * 
+ content-length: 475 
+ content-type: application/json; charset=utf-8 
+ date: Thu,29 Jan 2026 09:12:36 GMT 
+ etag: W/"1db-TRZRtNW/U+40fYWHPM1qSsobvn8" 
+ ngrok-agent-ips: 103.174.189.241 
+ vary: Origin 
+ x-powered-by: Express 
+Request duration
+251 ms
+Responses
+Code	Description	Links
+200	
+No links
+
+POST
+/api/story/reply/{id}
+Reply to a story
+
+
+Parameters
+Cancel
+Name	Description
+id *
+string
+(path)
+The ID of the story to reply to
+
+96f5cb10-da29-458f-b49c-5da94e8b7ab5
+Request body
+
+application/json
+Edit Value
+Schema
+{
+  "comment": "comment"
+}
+Execute
+Clear
+Responses
+Curl
+
+curl -X 'POST' \
+  'https://elusive-regional-harvey.ngrok-free.dev/api/story/reply/96f5cb10-da29-458f-b49c-5da94e8b7ab5' \
+  -H 'accept: */*' \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjFiN2UxM2NjLTY1NzctNGJiYS1hZDY1LTc3ODViYWQ5YjEyZSIsImVtYWlsIjoiY2lrb2o2NzMwMUBjb3N3ei5jb20iLCJyb2xlIjoiVkVORE9SIiwiaWF0IjoxNzY5NjY2MjY2LCJleHAiOjE3Njk3NTI2NjZ9.yH_MzvL0hQfl5_GG4_1n8Le60zTq9g5kJkcvvmddCVY' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "comment": "comment"
+}'
+Request URL
+https://elusive-regional-harvey.ngrok-free.dev/api/story/reply/96f5cb10-da29-458f-b49c-5da94e8b7ab5
+Server response
+Code	Details
+201	
+Response body
+Download
+{
+  "success": true,
+  "message": "Reply added successfully"
+}
+Response headers
+ access-control-allow-credentials: true 
+ access-control-allow-origin: * 
+ content-length: 53 
+ content-type: application/json; charset=utf-8 
+ date: Thu,29 Jan 2026 09:13:40 GMT 
+ etag: W/"35-J2t2Rncst9pQGT7vfRq/aYZpxhI" 
+ ngrok-agent-ips: 103.174.189.241 
+ vary: Origin 
+ x-powered-by: Express 
+Request duration
+279 ms
+Responses
+Code	Description	Links
+201	
+No links
+
+PATCH
+/api/story/view/{id}
+Increment the view count of a story
+
+
+Parameters
+Cancel
+Name	Description
+id *
+string
+(path)
+The ID of the story to increment the view count
+
+96f5cb10-da29-458f-b49c-5da94e8b7ab5
+Execute
+Clear
+Responses
+Curl
+
+curl -X 'PATCH' \
+  'https://elusive-regional-harvey.ngrok-free.dev/api/story/view/96f5cb10-da29-458f-b49c-5da94e8b7ab5' \
+  -H 'accept: */*' \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjFiN2UxM2NjLTY1NzctNGJiYS1hZDY1LTc3ODViYWQ5YjEyZSIsImVtYWlsIjoiY2lrb2o2NzMwMUBjb3N3ei5jb20iLCJyb2xlIjoiVkVORE9SIiwiaWF0IjoxNzY5NjY2MjY2LCJleHAiOjE3Njk3NTI2NjZ9.yH_MzvL0hQfl5_GG4_1n8Le60zTq9g5kJkcvvmddCVY'
+Request URL
+https://elusive-regional-harvey.ngrok-free.dev/api/story/view/96f5cb10-da29-458f-b49c-5da94e8b7ab5
+Server response
+Code	Details
+200	
+Response body
+Download
+{
+  "success": true,
+  "message": "Story view count incremented successfully",
+  "data": {
+    "viewCount": 1
+  }
+}
+Response headers
+ access-control-allow-credentials: true 
+ access-control-allow-origin: * 
+ content-length: 93 
+ content-type: application/json; charset=utf-8 
+ date: Thu,29 Jan 2026 09:13:50 GMT 
+ etag: W/"5d-grY+/jBrvEW99DX3o4WHRZYaAug" 
+ ngrok-agent-ips: 103.174.189.241 
+ vary: Origin 
+ x-powered-by: Express 
+Request duration
+278 ms
+Responses
+Code	Description	Links
+200	
+No links
+
+PATCH
+/api/story/visibility/{id}
+Change the visibility of a story
+
+
+Parameters
+Cancel
+Name	Description
+id *
+string
+(path)
+The ID of the story
+
+96f5cb10-da29-458f-b49c-5da94e8b7ab5
+Request body
+
+application/json
+Edit Value
+Schema
+{
+  "visibility": "PUBLIC"
+}
+Execute
+Clear
+Responses
+Curl
+
+curl -X 'PATCH' \
+  'https://elusive-regional-harvey.ngrok-free.dev/api/story/visibility/96f5cb10-da29-458f-b49c-5da94e8b7ab5' \
+  -H 'accept: */*' \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjFiN2UxM2NjLTY1NzctNGJiYS1hZDY1LTc3ODViYWQ5YjEyZSIsImVtYWlsIjoiY2lrb2o2NzMwMUBjb3N3ei5jb20iLCJyb2xlIjoiVkVORE9SIiwiaWF0IjoxNzY5NjY2MjY2LCJleHAiOjE3Njk3NTI2NjZ9.yH_MzvL0hQfl5_GG4_1n8Le60zTq9g5kJkcvvmddCVY' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "visibility": "PUBLIC"
+}'
+Request URL
+https://elusive-regional-harvey.ngrok-free.dev/api/story/visibility/96f5cb10-da29-458f-b49c-5da94e8b7ab5
+Server response
+Code	Details
+200	
+Response body
+Download
+{
+  "success": true,
+  "message": "Story visibility changed successfully",
+  "data": {
+    "id": "96f5cb10-da29-458f-b49c-5da94e8b7ab5",
+    "userId": "1b7e13cc-6577-4bba-ad65-7785bad9b12e",
+    "media": "https://res.cloudinary.com/db0ecop7c/image/upload/v1769678006/stories/pxmt8fc8mfrwiouhteal.jpg",
+    "location": "New York City",
+    "viewCount": 1,
+    "isPublished": true,
+    "visibility": "PUBLIC",
+    "isDeleted": false,
+    "trendingScore": 0,
+    "likeCount": 0,
+    "createdAt": "2026-01-29T09:13:20.100Z",
+    "expiresAt": "2026-01-30T09:13:20.099Z"
+  }
+}
+Response headers
+ access-control-allow-credentials: true 
+ access-control-allow-origin: * 
+ content-length: 482 
+ content-type: application/json; charset=utf-8 
+ date: Thu,29 Jan 2026 09:13:57 GMT 
+ etag: W/"1e2-+WGqcYuOo3u3Jg8jNhC+YtFL7EY" 
+ ngrok-agent-ips: 103.174.189.241 
+ vary: Origin 
+ x-powered-by: Express 
+Request duration
+279 ms
+Responses
+Code	Description	Links
+200
+
+DELETE
+/api/story/{id}
+Delete a story
+
+
+Parameters
+Cancel
+Name	Description
+id *
+string
+(path)
+The ID of the story to delete
+
+96f5cb10-da29-458f-b49c-5da94e8b7ab5
+Execute
+Clear
+Responses
+Curl
+
+curl -X 'DELETE' \
+  'https://elusive-regional-harvey.ngrok-free.dev/api/story/96f5cb10-da29-458f-b49c-5da94e8b7ab5' \
+  -H 'accept: application/json' \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjFiN2UxM2NjLTY1NzctNGJiYS1hZDY1LTc3ODViYWQ5YjEyZSIsImVtYWlsIjoiY2lrb2o2NzMwMUBjb3N3ei5jb20iLCJyb2xlIjoiVkVORE9SIiwiaWF0IjoxNzY5NjY2MjY2LCJleHAiOjE3Njk3NTI2NjZ9.yH_MzvL0hQfl5_GG4_1n8Le60zTq9g5kJkcvvmddCVY'
+Request URL
+https://elusive-regional-harvey.ngrok-free.dev/api/story/96f5cb10-da29-458f-b49c-5da94e8b7ab5
+Server response
+Code	Details
+200	
+Response body
+Download
+{
+  "success": true,
+  "message": "Story deleted successfully",
+  "data": {
+    "id": "96f5cb10-da29-458f-b49c-5da94e8b7ab5",
+    "userId": "1b7e13cc-6577-4bba-ad65-7785bad9b12e",
+    "media": "https://res.cloudinary.com/db0ecop7c/image/upload/v1769678006/stories/pxmt8fc8mfrwiouhteal.jpg",
+    "location": "New York City",
+    "viewCount": 1,
+    "isPublished": true,
+    "visibility": "PUBLIC",
+    "isDeleted": true,
+    "trendingScore": 0,
+    "likeCount": 0,
+    "createdAt": "2026-01-29T09:13:20.100Z",
+    "expiresAt": "2026-01-30T09:13:20.099Z"
+  }
+}
+Response headers
+ access-control-allow-credentials: true 
+ access-control-allow-origin: * 
+ content-length: 470 
+ content-type: application/json; charset=utf-8 
+ date: Thu,29 Jan 2026 09:16:29 GMT 
+ etag: W/"1d6-GJwykD1OfXMoWzCsdOqs/FDmOlU" 
+ ngrok-agent-ips: 103.174.189.241 
+ vary: Origin 
+ x-powered-by: Express 
+Request duration
+350 ms
+Responses
+Code	Description	Links
+200	
+Story deleted successfully
+
+Media type
+
+application/json
+Controls Accept header.
+Example Value
+Schema
+{
+  "success": true,
+  "message": "Story deleted successfully",
+  "data": {
+    "id": "story-id",
+    "userId": "user-id",
+    "isDeleted": true,
+    "expiresAt": "2026-01-11T12:00:00.000Z"
+  }
+}
+No links
+400	
+Story not found or already deleted / Story has expired
+
+No links
+403	
+You are not the owner of this story
+
+functionalities:
+
+- add a new story
+- fetch stories with pagination
+- delete a story
+- toggle the like status of a story
+- get my stories with curso pagination
+- toggle the published status of a story|
+- reply to a story
+- increment the view count of a story
+- change the visibility of a story
+
+

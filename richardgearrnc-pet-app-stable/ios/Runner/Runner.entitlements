@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<!-- Universal Links: Associated Domains -->
+	<!-- TODO: Replace 'example.com' with your domain -->
+	<!-- Requires apple-app-site-association file hosted at: https://example.com/.well-known/apple-app-site-association -->
+	<!-- See: https://developer.apple.com/documentation/xcode/supporting-associated-domains -->
+	<key>com.apple.developer.associated-domains</key>
+	<array>
+		<string>applinks:example.com</string>
+		<string>applinks:www.example.com</string>
+	</array>
+</dict>
+</plist>

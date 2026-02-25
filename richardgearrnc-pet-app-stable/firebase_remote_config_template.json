@@ -1,0 +1,250 @@
+{
+  "conditions": [],
+  "parameters": {
+    "maintenance_mode": {
+      "defaultValue": {
+        "value": "false"
+      },
+      "description": "Whether the app is in maintenance mode. Show a maintenance screen when true.",
+      "valueType": "BOOLEAN"
+    },
+    "force_update_enabled": {
+      "defaultValue": {
+        "value": "false"
+      },
+      "description": "Whether to force users to update. Blocks app usage until updated.",
+      "valueType": "BOOLEAN"
+    },
+    "min_app_version": {
+      "defaultValue": {
+        "value": "1.0.0"
+      },
+      "description": "Minimum required app version (e.g., '1.2.0'). Used with force_update_enabled.",
+      "valueType": "STRING"
+    },
+    "update_message": {
+      "defaultValue": {
+        "value": "Please update to the latest version for the best experience."
+      },
+      "description": "Custom message for the update dialog shown to users.",
+      "valueType": "STRING"
+    },
+    "update_url": {
+      "defaultValue": {
+        "value": ""
+      },
+      "description": "URL to redirect users for app update (App Store/Play Store link).",
+      "valueType": "STRING"
+    },
+    "new_feature_enabled": {
+      "defaultValue": {
+        "value": "false"
+      },
+      "description": "Whether a new feature is enabled for A/B testing or gradual rollout.",
+      "valueType": "BOOLEAN"
+    },
+    "beta_features_enabled": {
+      "defaultValue": {
+        "value": "false"
+      },
+      "description": "Whether beta/experimental features are available.",
+      "valueType": "BOOLEAN"
+    },
+    "dark_mode_enabled": {
+      "defaultValue": {
+        "value": "false"
+      },
+      "description": "Whether dark mode is available to users.",
+      "valueType": "BOOLEAN"
+    },
+    "push_notifications_enabled": {
+      "defaultValue": {
+        "value": "true"
+      },
+      "description": "Whether push notifications are enabled app-wide.",
+      "valueType": "BOOLEAN"
+    },
+    "iap_enabled": {
+      "defaultValue": {
+        "value": "true"
+      },
+      "description": "Whether in-app purchases are enabled.",
+      "valueType": "BOOLEAN"
+    },
+    "social_login_enabled": {
+      "defaultValue": {
+        "value": "true"
+      },
+      "description": "Whether social login (Google, Facebook, etc.) is enabled.",
+      "valueType": "BOOLEAN"
+    },
+    "biometric_login_enabled": {
+      "defaultValue": {
+        "value": "true"
+      },
+      "description": "Whether biometric authentication (Face ID, Touch ID) is enabled.",
+      "valueType": "BOOLEAN"
+    },
+    "api_version": {
+      "defaultValue": {
+        "value": "v1"
+      },
+      "description": "API version being used (e.g., 'v1', 'v2'). Useful for A/B testing different API versions.",
+      "valueType": "STRING"
+    },
+    "api_base_url": {
+      "defaultValue": {
+        "value": "https://api.example.com"
+      },
+      "description": "Base URL for API endpoints. Can change for staging/testing.",
+      "valueType": "STRING"
+    },
+    "max_api_retries": {
+      "defaultValue": {
+        "value": "3"
+      },
+      "description": "Maximum number of times to retry failed API requests.",
+      "valueType": "NUMBER"
+    },
+    "api_timeout_seconds": {
+      "defaultValue": {
+        "value": "30"
+      },
+      "description": "Timeout duration in seconds for API requests.",
+      "valueType": "NUMBER"
+    },
+    "show_ads": {
+      "defaultValue": {
+        "value": "false"
+      },
+      "description": "Whether to show advertisements in the app.",
+      "valueType": "BOOLEAN"
+    },
+    "show_promotion": {
+      "defaultValue": {
+        "value": "false"
+      },
+      "description": "Whether to show a promotional banner in the app.",
+      "valueType": "BOOLEAN"
+    },
+    "promotion_message": {
+      "defaultValue": {
+        "value": ""
+      },
+      "description": "Text content for the promotional banner.",
+      "valueType": "STRING"
+    },
+    "promotion_url": {
+      "defaultValue": {
+        "value": ""
+      },
+      "description": "URL to open when user taps on the promotional banner.",
+      "valueType": "STRING"
+    },
+    "home_layout_variant": {
+      "defaultValue": {
+        "value": "classic"
+      },
+      "description": "Variant for A/B testing different home screen layouts (e.g., 'classic', 'modern', 'minimal').",
+      "valueType": "STRING"
+    },
+    "onboarding_variant": {
+      "defaultValue": {
+        "value": "default"
+      },
+      "description": "Variant for A/B testing different onboarding flows.",
+      "valueType": "STRING"
+    },
+    "max_upload_size_mb": {
+      "defaultValue": {
+        "value": "10"
+      },
+      "description": "Maximum file size allowed for uploads in megabytes.",
+      "valueType": "NUMBER"
+    },
+    "max_items_per_page": {
+      "defaultValue": {
+        "value": "20"
+      },
+      "description": "Maximum number of items to display per page for pagination.",
+      "valueType": "NUMBER"
+    },
+    "max_search_results": {
+      "defaultValue": {
+        "value": "50"
+      },
+      "description": "Maximum number of search results to display.",
+      "valueType": "NUMBER"
+    },
+    "free_tier_item_limit": {
+      "defaultValue": {
+        "value": "5"
+      },
+      "description": "Maximum items allowed for free tier users.",
+      "valueType": "NUMBER"
+    },
+    "experiment_group": {
+      "defaultValue": {
+        "value": "control"
+      },
+      "description": "User's assigned experiment group (e.g., 'control', 'variant_a', 'variant_b').",
+      "valueType": "STRING"
+    },
+    "checkout_flow_variant": {
+      "defaultValue": {
+        "value": "standard"
+      },
+      "description": "Variant for A/B testing different checkout flows.",
+      "valueType": "STRING"
+    },
+    "pricing_variant": {
+      "defaultValue": {
+        "value": "standard"
+      },
+      "description": "Variant for A/B testing different pricing strategies.",
+      "valueType": "STRING"
+    },
+    "support_email": {
+      "defaultValue": {
+        "value": "support@example.com"
+      },
+      "description": "Email address for support inquiries.",
+      "valueType": "STRING"
+    },
+    "support_url": {
+      "defaultValue": {
+        "value": ""
+      },
+      "description": "URL to support page or help center.",
+      "valueType": "STRING"
+    },
+    "privacy_policy_url": {
+      "defaultValue": {
+        "value": ""
+      },
+      "description": "URL to privacy policy documentation.",
+      "valueType": "STRING"
+    },
+    "terms_of_service_url": {
+      "defaultValue": {
+        "value": ""
+      },
+      "description": "URL to terms of service documentation.",
+      "valueType": "STRING"
+    },
+    "cache_duration_minutes": {
+      "defaultValue": {
+        "value": "60"
+      },
+      "description": "Duration in minutes for how long to cache data locally.",
+      "valueType": "NUMBER"
+    },
+    "offline_mode_enabled": {
+      "defaultValue": {
+        "value": "true"
+      },
+      "description": "Whether offline mode (using cached data) is enabled.",
+      "valueType": "BOOLEAN"
+    }
+  }
+}

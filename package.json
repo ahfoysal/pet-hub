@@ -1,0 +1,11 @@
+{
+  "name": "petzy-monorepo",
+  "version": "1.0.0",
+  "description": "Unified management for Petzy projects",
+  "scripts": {
+    "start": "node run-all.js",
+    "build": "bash build-all.sh"
+  },
+  "author": "",
+  "license": "ISC"
+}

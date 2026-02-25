@@ -1,0 +1,1064 @@
+{
+  "@@locale": "en",
+  "@@last_modified": "2026-01-07T00:00:00.000Z",
+
+  "appTitle": "Flutter Boilerplate",
+  "@appTitle": {
+    "description": "The title of the application"
+  },
+
+  "welcomeMessage": "Welcome to the app!",
+  "@welcomeMessage": {
+    "description": "Welcome message shown on the home screen"
+  },
+
+  "login": "Login",
+  "@login": {
+    "description": "Login button text"
+  },
+
+  "logout": "Logout",
+  "@logout": {
+    "description": "Logout button text"
+  },
+
+  "email": "Email",
+  "@email": {
+    "description": "Email input label"
+  },
+
+  "password": "Password",
+  "@password": {
+    "description": "Password input label"
+  },
+
+  "forgotPassword": "Forgot Password?",
+  "@forgotPassword": {
+    "description": "Forgot password link text"
+  },
+
+  "signUp": "Sign Up",
+  "@signUp": {
+    "description": "Sign up button text"
+  },
+
+  "settings": "Settings",
+  "@settings": {
+    "description": "Settings screen title"
+  },
+
+  "profile": "Profile",
+  "@profile": {
+    "description": "Profile screen title"
+  },
+
+  "home": "Home",
+  "@home": {
+    "description": "Home navigation label"
+  },
+
+  "darkMode": "Dark Mode",
+  "@darkMode": {
+    "description": "Dark mode toggle label"
+  },
+
+  "language": "Language",
+  "@language": {
+    "description": "Language selection label"
+  },
+
+  "notifications": "Notifications",
+  "@notifications": {
+    "description": "Notifications settings label"
+  },
+
+  "biometricAuthentication": "Biometric Authentication",
+  "@biometricAuthentication": {
+    "description": "Biometric auth toggle label"
+  },
+
+  "biometricPromptTitle": "Authenticate",
+  "@biometricPromptTitle": {
+    "description": "Title shown in biometric prompt"
+  },
+
+  "biometricPromptSubtitle": "Verify your identity to continue",
+  "@biometricPromptSubtitle": {
+    "description": "Subtitle shown in biometric prompt"
+  },
+
+  "biometricPromptCancel": "Cancel",
+  "@biometricPromptCancel": {
+    "description": "Cancel button in biometric prompt"
+  },
+
+  "errorGeneric": "Something went wrong. Please try again.",
+  "@errorGeneric": {
+    "description": "Generic error message"
+  },
+
+  "errorNetwork": "Network error. Please check your connection.",
+  "@errorNetwork": {
+    "description": "Network error message"
+  },
+
+  "errorTimeout": "Request timed out. Please try again.",
+  "@errorTimeout": {
+    "description": "Timeout error message"
+  },
+
+  "errorUnauthorized": "Session expired. Please login again.",
+  "@errorUnauthorized": {
+    "description": "Unauthorized error message"
+  },
+
+  "retry": "Retry",
+  "@retry": {
+    "description": "Retry button text"
+  },
+
+  "cancel": "Cancel",
+  "@cancel": {
+    "description": "Cancel button text"
+  },
+
+  "confirm": "Confirm",
+  "@confirm": {
+    "description": "Confirm button text"
+  },
+
+  "save": "Save",
+  "@save": {
+    "description": "Save button text"
+  },
+
+  "delete": "Delete",
+  "@delete": {
+    "description": "Delete button text"
+  },
+
+  "edit": "Edit",
+  "@edit": {
+    "description": "Edit button text"
+  },
+
+  "loading": "Loading...",
+  "@loading": {
+    "description": "Loading indicator text"
+  },
+
+  "noData": "No data available",
+  "@noData": {
+    "description": "Empty state message"
+  },
+
+  "searchHint": "Search...",
+  "@searchHint": {
+    "description": "Search input hint text"
+  },
+
+  "version": "Version {version}",
+  "@version": {
+    "description": "App version display text",
+    "placeholders": {
+      "version": {
+        "type": "String",
+        "example": "1.0.0"
+      }
+    }
+  },
+
+  "itemCount": "{count, plural, =0{No items} =1{1 item} other{{count} items}}",
+  "@itemCount": {
+    "description": "Item count with pluralization",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "compact"
+      }
+    }
+  },
+
+  "lastUpdated": "Last updated: {date}",
+  "@lastUpdated": {
+    "description": "Last updated timestamp",
+    "placeholders": {
+      "date": {
+        "type": "DateTime",
+        "format": "yMMMd"
+      }
+    }
+  },
+
+  "onboardingTitle1": "Welcome",
+  "@onboardingTitle1": {
+    "description": "First onboarding screen title"
+  },
+
+  "onboardingDescription1": "Discover amazing features and get started with our app.",
+  "@onboardingDescription1": {
+    "description": "First onboarding screen description"
+  },
+
+  "onboardingTitle2": "Explore",
+  "@onboardingTitle2": {
+    "description": "Second onboarding screen title"
+  },
+
+  "onboardingDescription2": "Browse through a wide variety of content tailored for you.",
+  "@onboardingDescription2": {
+    "description": "Second onboarding screen description"
+  },
+
+  "onboardingTitle3": "Get Started",
+  "@onboardingTitle3": {
+    "description": "Third onboarding screen title"
+  },
+
+  "onboardingDescription3": "Create your account and start your journey.",
+  "@onboardingDescription3": {
+    "description": "Third onboarding screen description"
+  },
+
+  "skip": "Skip",
+  "@skip": {
+    "description": "Skip button text"
+  },
+
+  "next": "Next",
+  "@next": {
+    "description": "Next button text"
+  },
+
+  "getStarted": "Get Started",
+  "@getStarted": {
+    "description": "Get started button text"
+  },
+
+  "offlineModeEnabled": "Offline mode enabled",
+  "@offlineModeEnabled": {
+    "description": "Message shown when offline mode is active"
+  },
+
+  "backOnline": "You're back online",
+  "@backOnline": {
+    "description": "Message shown when connection is restored"
+  },
+
+  "badgeCount": "Badge Count",
+  "@badgeCount": {
+    "description": "Badge count settings label"
+  },
+
+  "notificationCountLabel": "{count, plural, =0{No notifications} =1{1 notification} other{{count} notifications}}",
+  "@notificationCountLabel": {
+    "description": "Notification count label with pluralization",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "compact"
+      }
+    }
+  },
+
+  "addOne": "Add 1",
+  "@addOne": {
+    "description": "Add 1 notification button text"
+  },
+
+  "addFive": "Add 5",
+  "@addFive": {
+    "description": "Add 5 notifications button text"
+  },
+
+  "clear": "Clear",
+  "@clear": {
+    "description": "Clear badge button text"
+  },
+
+  "badgeCountDescription": "Tap the menu to manage badge count. This demonstrates how to track notification count across app restarts.",
+  "@badgeCountDescription": {
+    "description": "Badge count feature description"
+  },
+
+  "badgeIncremented": "Badge incremented",
+  "@badgeIncremented": {
+    "description": "Success message when badge is incremented"
+  },
+
+  "badgeCleared": "Badge cleared",
+  "@badgeCleared": {
+    "description": "Success message when badge is cleared"
+  },
+
+  "notificationsAddedFormat": "Added {count} notifications",
+  "@notificationsAddedFormat": {
+    "description": "Success message when notifications are added",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "compact"
+      }
+    }
+  },
+
+  "failedFormat": "Failed: {error}",
+  "@failedFormat": {
+    "description": "Error message format",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "Network error"
+      }
+    }
+  },
+
+  "theme": "Theme",
+  "@theme": {
+    "description": "Theme settings label"
+  },
+
+  "packageName": "Package Name",
+  "@packageName": {
+    "description": "App package name label"
+  },
+
+  "termsOfService": "Terms of Service",
+  "@termsOfService": {
+    "description": "Terms of Service link text"
+  },
+
+  "privacyPolicy": "Privacy Policy",
+  "@privacyPolicy": {
+    "description": "Privacy Policy link text"
+  },
+
+  "openSourceLicenses": "Open Source Licenses",
+  "@openSourceLicenses": {
+    "description": "Open source licenses link text"
+  },
+
+  "chooseTheme": "Choose Theme",
+  "@chooseTheme": {
+    "description": "Theme selection dialog title"
+  },
+
+  "lightMode": "Light",
+  "@lightMode": {
+    "description": "Light theme option"
+  },
+
+  "darkModeOption": "Dark",
+  "@darkModeOption": {
+    "description": "Dark theme option"
+  },
+
+  "systemDefault": "System default",
+  "@systemDefault": {
+    "description": "System default theme option"
+  },
+
+  "welcomeBack": "Welcome Back",
+  "@welcomeBack": {
+    "description": "Login page welcome message"
+  },
+
+  "signInToContinue": "Sign in to continue",
+  "@signInToContinue": {
+    "description": "Login page subtitle"
+  },
+
+  "notificationsDeepLinking": "Notifications & Deep Linking",
+  "@notificationsDeepLinking": {
+    "description": "Notification demo section title"
+  },
+
+  "sendNotificationInstruction": "Send a notification that routes to Settings when tapped.",
+  "@sendNotificationInstruction": {
+    "description": "Notification demo instruction text"
+  },
+
+  "badgeCountUnavailable": "Badge count unavailable",
+  "@badgeCountUnavailable": {
+    "description": "Error message when badge count cannot be loaded"
+  },
+
+  "badgeCountLabel": "Badge Count: {count}",
+  "@badgeCountLabel": {
+    "description": "Badge count display label",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "5"
+      }
+    }
+  },
+
+  "appearance": "Appearance",
+  "@appearance": {
+    "description": "Appearance settings section"
+  },
+
+  "about": "About",
+  "@about": {
+    "description": "About app section"
+  },
+
+  "legal": "Legal",
+  "@legal": {
+    "description": "Legal section in settings"
+  },
+
+  "versionLabel": "Version",
+  "@versionLabel": {
+    "description": "Version label in settings (without version number)"
+  },
+
+  "language": "Language",
+  "@language": {
+    "description": "Language settings label"
+  },
+
+  "chooseLanguage": "Choose Language",
+  "@chooseLanguage": {
+    "description": "Language selection dialog title"
+  },
+
+  "english": "English",
+  "@english": {
+    "description": "English language option"
+  },
+
+  "bengali": "Bengali (বাংলা)",
+  "@bengali": {
+    "description": "Bengali language option"
+  },
+
+  "featureShowcase": "Feature Showcase",
+  "@featureShowcase": {
+    "description": "Feature showcase widget title"
+  },
+
+  "featureShowcaseDescription": "Explore the boilerplate's built-in utilities and components.",
+  "@featureShowcaseDescription": {
+    "description": "Feature showcase description"
+  },
+
+  "feedbackDemo": "Feedback Service",
+  "@feedbackDemo": {
+    "description": "Feedback service demo title"
+  },
+
+  "feedbackDemoDescription": "Show different types of snackbar messages.",
+  "@feedbackDemoDescription": {
+    "description": "Feedback demo description"
+  },
+
+  "success": "Success",
+  "@success": {
+    "description": "Success button label"
+  },
+
+  "error": "Error",
+  "@error": {
+    "description": "Error button label"
+  },
+
+  "info": "Info",
+  "@info": {
+    "description": "Info button label"
+  },
+
+  "dialogDemo": "Dialogs",
+  "@dialogDemo": {
+    "description": "Dialog demo title"
+  },
+
+  "dialogDemoDescription": "Show confirmation dialogs using AppDialogs.",
+  "@dialogDemoDescription": {
+    "description": "Dialog demo description"
+  },
+
+  "showDialog": "Show Dialog",
+  "@showDialog": {
+    "description": "Show dialog button label"
+  },
+
+  "navigationDemo": "Type-Safe Navigation",
+  "@navigationDemo": {
+    "description": "Navigation demo title"
+  },
+
+  "navigationDemoDescription": "Navigate using AppRoute enum for compile-time safety.",
+  "@navigationDemoDescription": {
+    "description": "Navigation demo description"
+  },
+
+  "goToSettings": "Go to Settings",
+  "@goToSettings": {
+    "description": "Navigate to settings button label"
+  },
+
+  "notificationsEnabled": "Notifications Enabled",
+  "@notificationsEnabled": {
+    "description": "Notifications toggle label"
+  },
+
+  "notificationsEnabledDescription": "Enable or disable push notifications for this app.",
+  "@notificationsEnabledDescription": {
+    "description": "Notifications settings description"
+  },
+
+  "notificationDemo": "Notifications",
+  "@notificationDemo": {
+    "description": "Notification demo title"
+  },
+
+  "notificationDemoDescription": "Send local notifications with scheduling support.",
+  "@notificationDemoDescription": {
+    "description": "Notification demo description"
+  },
+
+  "basicNotification": "Send Notification",
+  "@basicNotification": {
+    "description": "Send basic notification button label"
+  },
+
+  "confirmLogout": "Are you sure you want to sign out?",
+  "@confirmLogout": {
+    "description": "Logout confirmation message"
+  },
+
+  "logoutFailed": "Failed to sign out. Please try again.",
+  "@logoutFailed": {
+    "description": "Error message when logout fails"
+  },
+
+  "youAreAllSet": "You're all set!",
+  "@youAreAllSet": {
+    "description": "Welcome message on home page"
+  },
+
+  "startBuilding": "Start building your amazing app.",
+  "@startBuilding": {
+    "description": "Welcome card description"
+  },
+
+  "notificationTitle": "Hello!",
+  "@notificationTitle": {
+    "description": "Title for the basic notification demo"
+  },
+
+  "notificationBody": "This is a basic notification from the boilerplate.",
+  "@notificationBody": {
+    "description": "Body text for the basic notification demo"
+  },
+
+  "dialogConfirmTitle": "Confirm Action",
+  "@dialogConfirmTitle": {
+    "description": "Title for the dialog confirmation demo"
+  },
+
+  "dialogConfirmMessage": "This demonstrates the AppDialogs.confirm() helper.",
+  "@dialogConfirmMessage": {
+    "description": "Message text for the dialog confirmation demo"
+  },
+
+  "dialogConfirmButton": "Got it",
+  "@dialogConfirmButton": {
+    "description": "Confirm button text in the dialog demo"
+  },
+
+  "dialogConfirmed": "Dialog confirmed!",
+  "@dialogConfirmed": {
+    "description": "Snackbar message when dialog is confirmed"
+  },
+
+  "emailRequired": "Email is required",
+  "@emailRequired": {
+    "description": "Validation error message for empty email field"
+  },
+
+  "emailInvalid": "Please enter a valid email",
+  "@emailInvalid": {
+    "description": "Validation error message for invalid email format"
+  },
+
+  "passwordRequired": "Password is required",
+  "@passwordRequired": {
+    "description": "Validation error message for empty password field"
+  },
+
+  "passwordWeak": "Password must be 8+ chars with uppercase, lowercase, number & special char",
+  "@passwordWeak": {
+    "description": "Validation error message for weak password"
+  },
+
+  "onboardingWelcomeTitle": "Welcome",
+  "@onboardingWelcomeTitle": {
+    "description": "Title for first onboarding page"
+  },
+
+  "onboardingWelcomeDescription": "Welcome to Flutter Boilerplate. A production-ready template for your next app.",
+  "@onboardingWelcomeDescription": {
+    "description": "Description for first onboarding page"
+  },
+
+  "onboardingArchitectureTitle": "Modern Architecture",
+  "@onboardingArchitectureTitle": {
+    "description": "Title for second onboarding page"
+  },
+
+  "onboardingArchitectureDescription": "Built with Riverpod, GoRouter, and clean architecture principles.",
+  "@onboardingArchitectureDescription": {
+    "description": "Description for second onboarding page"
+  },
+
+  "onboardingReadyTitle": "Ready to Ship",
+  "@onboardingReadyTitle": {
+    "description": "Title for third onboarding page"
+  },
+
+  "onboardingReadyDescription": "Everything you need to build and ship your app faster.",
+  "@onboardingReadyDescription": {
+    "description": "Description for third onboarding page"
+  },
+
+  "onboardingSkip": "Skip",
+  "@onboardingSkip": {
+    "description": "Skip button text in onboarding"
+  },
+
+  "onboardingBack": "Back",
+  "@onboardingBack": {
+    "description": "Back button text in onboarding"
+  },
+
+  "onboardingNext": "Next",
+  "@onboardingNext": {
+    "description": "Next button text in onboarding"
+  },
+
+  "onboardingGetStarted": "Get Started",
+  "@onboardingGetStarted": {
+    "description": "Get started button text (final onboarding page)"
+  },
+
+  "notificationsEnabled": "Notifications enabled",
+  "@notificationsEnabled": {
+    "description": "Feedback message when notifications are enabled"
+  },
+
+  "notificationsDisabled": "Notifications disabled",
+  "@notificationsDisabled": {
+    "description": "Feedback message when notifications are disabled"
+  },
+
+  "signInToUnlock": "Sign in to unlock exclusive features",
+  "@signInToUnlock": {
+    "description": "Sign-in prompt message on home screen for unauthenticated users"
+  },
+
+  "loginToExplore": "Login To Explore",
+  "@loginToExplore": {
+    "description": "Login page hero title"
+  },
+
+  "phoneNumber": "Phone Number",
+  "@phoneNumber": {
+    "description": "Phone number input label"
+  },
+
+  "phoneNumberRequired": "Phone number is required",
+  "@phoneNumberRequired": {
+    "description": "Validation error when phone number is empty"
+  },
+
+  "phoneNumberInvalid": "Please enter a valid phone number",
+  "@phoneNumberInvalid": {
+    "description": "Validation error when phone number is invalid"
+  },
+
+  "or": "Or",
+  "@or": {
+    "description": "Separator text between login options"
+  },
+
+  "google": "Google",
+  "@google": {
+    "description": "Google sign-in button text"
+  },
+
+  "phoneInputHint": "(000) 000-0000",
+  "@phoneInputHint": {
+    "description": "Phone number input hint text"
+  },
+
+  "googleSignInComingSoon": "Google Sign-In coming soon",
+  "@googleSignInComingSoon": {
+    "description": "Placeholder message for Google Sign-In feature"
+  },
+
+  "googleSignInFailed": "Google Sign-In failed. Please try again.",
+  "@googleSignInFailed": {
+    "description": "Error message when Google Sign-In fails"
+  },
+
+  "enterVerificationCode": "Enter verification code",
+  "@enterVerificationCode": {
+    "description": "OTP page title"
+  },
+
+  "enterCodeSentToPhoneNumber": "Enter the code sent to your phone number",
+  "@enterCodeSentToPhoneNumber": {
+    "description": "OTP page subtitle instruction"
+  },
+
+  "verifyCode": "Verify Code",
+  "@verifyCode": {
+    "description": "OTP verification button text"
+  },
+
+  "otpCodeInvalid": "Invalid verification code. Please try again.",
+  "@otpCodeInvalid": {
+    "description": "Error message for invalid OTP code"
+  },
+
+  "didNotReceiveCode": "Didn't receive the code?",
+  "@didNotReceiveCode": {
+    "description": "Text shown when user didn't receive OTP code"
+  },
+
+  "resendCode": "Resend Code",
+  "@resendCode": {
+    "description": "Button text to resend OTP code"
+  },
+
+  "resendCodeIn": "Resend code in {seconds}s",
+  "@resendCodeIn": {
+    "description": "Text showing countdown timer for resend button",
+    "placeholders": {
+      "seconds": {
+        "type": "int",
+        "example": "60"
+      }
+    }
+  },
+
+  "codeSentSuccessfully": "Code sent successfully!",
+  "@codeSentSuccessfully": {
+    "description": "Success message when OTP code is resent"
+  },
+
+  "authErrorInvalidCredentials": "Invalid email or password. Please try again.",
+  "@authErrorInvalidCredentials": {
+    "description": "Error message for invalid login credentials"
+  },
+
+  "authErrorSessionExpired": "Session expired. Please login again.",
+  "@authErrorSessionExpired": {
+    "description": "Error message for expired session"
+  },
+
+  "authErrorNoSession": "No active session. Please login.",
+  "@authErrorNoSession": {
+    "description": "Error message when there is no active session"
+  },
+
+  "authErrorGoogleSignInFailed": "Google Sign-In failed. Please try again.",
+  "@authErrorGoogleSignInFailed": {
+    "description": "Error message for failed Google authentication"
+  },
+
+  "authErrorGoogleSignInCancelled": "Google Sign-In was cancelled.",
+  "@authErrorGoogleSignInCancelled": {
+    "description": "Message when user cancels Google Sign-In"
+  },
+
+  "authErrorNetworkError": "Network error. Please check your connection.",
+  "@authErrorNetworkError": {
+    "description": "Error message for network failures"
+  },
+
+  "authErrorTimeout": "Request timed out. Please try again.",
+  "@authErrorTimeout": {
+    "description": "Error message for request timeout"
+  },
+
+  "authErrorUnauthorized": "Unauthorized access. Please login again.",
+  "@authErrorUnauthorized": {
+    "description": "Error message for 401 Unauthorized responses"
+  },
+
+  "authErrorPhoneInvalid": "Invalid phone number format.",
+  "@authErrorPhoneInvalid": {
+    "description": "Error message for invalid phone number"
+  },
+
+  "authErrorOTPInvalid": "Invalid OTP code. Please try again.",
+  "@authErrorOTPInvalid": {
+    "description": "Error message for invalid OTP code"
+  },
+
+  "authErrorOTPExpired": "OTP code has expired. Please request a new one.",
+  "@authErrorOTPExpired": {
+    "description": "Error message for expired OTP code"
+  },
+
+  "authErrorOTPRateLimitExceeded": "Too many resend attempts. Please wait before trying again.",
+  "@authErrorOTPRateLimitExceeded": {
+    "description": "Error message when OTP resend rate limit is exceeded"
+  },
+
+  "authErrorCacheFailure": "Failed to save authentication data. Please try again.",
+  "@authErrorCacheFailure": {
+    "description": "Error message when token storage fails"
+  },
+
+  "authErrorValidation": "Validation error: {error}",
+  "@authErrorValidation": {
+    "description": "Generic validation error message",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "Email is required"
+      }
+    }
+  },
+
+  "updateRequired": "Update Required",
+  "@updateRequired": {
+    "description": "Title for force update page"
+  },
+
+  "updateRequiredDescription": "A new version of the app is available. Please update to continue using the app.",
+  "@updateRequiredDescription": {
+    "description": "Description for force update page"
+  },
+
+  "updateNow": "Update Now",
+  "@updateNow": {
+    "description": "Button text to update the app"
+  },
+
+  "pageNotFound": "Page Not Found",
+  "@pageNotFound": {
+    "description": "Error message when a route is not found"
+  },
+
+  "goHome": "Go Home",
+  "@goHome": {
+    "description": "Button text to navigate to home page"
+  },
+
+  "bookings": "Bookings",
+  "@bookings": {
+    "description": "Bookings page title and navigation label"
+  },
+
+  "messages": "Messages",
+  "@messages": {
+    "description": "Messages page title and navigation label"
+  },
+
+  "shorts": "Shorts",
+  "@shorts": {
+    "description": "Shorts page title and navigation label"
+  },
+
+  "searchMessages": "Search messages...",
+  "@searchMessages": {
+    "description": "Placeholder text for message search field"
+  },
+
+  "signInToUnlock": "Sign in to unlock all features",
+  "@signInToUnlock": {
+    "description": "Message shown to unauthenticated users on home page"
+  },
+
+  "confirmLogout": "Are you sure you want to logout?",
+  "@confirmLogout": {
+    "description": "Confirmation message for logout action"
+  },
+
+  "logoutFailed": "Failed to logout. Please try again.",
+  "@logoutFailed": {
+    "description": "Error message when logout fails"
+  },
+
+  "cancel": "Cancel",
+  "@cancel": {
+    "description": "Cancel button text"
+  },
+
+  "petSchoolProfile": "Pet School Profile",
+  "@petSchoolProfile": {
+    "description": "Pet school profile page title"
+  },
+
+  "editProfile": "Edit Profile",
+  "@editProfile": {
+    "description": "Edit profile button text"
+  },
+
+  "contactInformation": "Contact Information",
+  "@contactInformation": {
+    "description": "Contact information section title"
+  },
+
+  "schoolInformation": "School Information",
+  "@schoolInformation": {
+    "description": "School information section title"
+  },
+
+  "description": "Description",
+  "@description": {
+    "description": "Description label"
+  },
+
+  "status": "Status",
+  "@status": {
+    "description": "Status label"
+  },
+
+  "memberSince": "Member Since",
+  "@memberSince": {
+    "description": "Member since label"
+  },
+
+  "addressInformation": "Address Information",
+  "@addressInformation": {
+    "description": "Address information section title"
+  },
+
+  "streetAddress": "Street Address",
+  "@streetAddress": {
+    "description": "Street address label"
+  },
+
+  "city": "City",
+  "@city": {
+    "description": "City label"
+  },
+
+  "country": "Country",
+  "@country": {
+    "description": "Country label"
+  },
+
+  "postalCode": "Postal Code",
+  "@postalCode": {
+    "description": "Postal code label"
+  },
+
+  "noAddress": "No address provided",
+  "@noAddress": {
+    "description": "Message shown when no address is available"
+  },
+
+  "active": "Active",
+  "@active": {
+    "description": "Active status text"
+  },
+
+  "inactive": "Inactive",
+  "@inactive": {
+    "description": "Inactive status text"
+  },
+
+  "pending": "Pending",
+  "@pending": {
+    "description": "Pending status text"
+  },
+
+  "rating": "Rating",
+  "@rating": {
+    "description": "Rating label"
+  },
+
+  "reviews": "Reviews",
+  "@reviews": {
+    "description": "Reviews label"
+  },
+
+  "verified": "Verified",
+  "@verified": {
+    "description": "Verified status text"
+  },
+
+  "courses": "Courses",
+  "@courses": {
+    "description": "Courses page title"
+  },
+
+  "noCourses": "No courses available",
+  "@noCourses": {
+    "description": "Message shown when no courses are available"
+  },
+
+  "off": "OFF",
+  "@off": {
+    "description": "Discount off text"
+  },
+
+  "weeks": "weeks",
+  "@weeks": {
+    "description": "Weeks duration text"
+  },
+
+  "price": "Price",
+  "@price": {
+    "description": "Price label"
+  },
+
+  "viewDetails": "View Details",
+  "@viewDetails": {
+    "description": "View details button text"
+  },
+
+  "beginner": "Beginner",
+  "@beginner": {
+    "description": "Beginner level text"
+  },
+
+  "intermediate": "Intermediate",
+  "@intermediate": {
+    "description": "Intermediate level text"
+  },
+
+  "advanced": "Advanced",
+  "@advanced": {
+    "description": "Advanced level text"
+  },
+
+  "duration": "Duration",
+  "@duration": {
+    "description": "Duration label"
+  },
+
+  "seatsAvailable": "Seats Available",
+  "@seatsAvailable": {
+    "description": "Seats available label"
+  },
+
+  "overview": "Overview",
+  "@overview": {
+    "description": "Overview section title"
+  },
+
+  "aboutTrainer": "About Trainer",
+  "@aboutTrainer": {
+    "description": "About trainer section title"
+  },
+
+  "noPostsFound": "No posts found",
+  "@noPostsFound": {
+    "description": "Message shown when no posts are available in the feed"
+  },
+
+  "unknownError": "An unknown error occurred",
+  "@unknownError": {
+    "description": "Generic error message"
+  }
+}
+

@@ -1,0 +1,178 @@
+@import "tailwindcss";
+
+.font-arimo {
+  font-family: var(--font-arimo), sans-serif;
+}
+.font-nunito {
+  font-family: var(--font-nunito), sans-serif;
+}
+
+@theme {
+  --color-primary: #ff868a;
+  --breakpoint-xs: 20rem;
+}
+
+/* Light mode */
+:root {
+  --background: #f2f4f8;
+  --foreground: #171717;
+  --primary: #ff868a;
+  --primary-foreground: #ffffff;
+  --secondary: #828282;
+  --secondary-foreground: #ffffff;
+  --accent: #f58220;
+  --accent-foreground: #ffffff;
+  --muted: #f1f5f9;
+  --muted-foreground: #282828;
+  --card: #ffffff80;
+  --card-border: #e5e7eb;
+  --card-foreground: #171717;
+  --border: #e2e8f0;
+  --input: #e2e8f0;
+  --radius: 0.5rem;
+  --gradient-start: #00e5ff;
+  --gradient-end: #9c27b0;
+}
+
+/* Dark mode */
+/* .dark {
+  --background: #0a0a0a;
+  --foreground: #edededda;
+  --primary: #9c27b0;
+  --primary-foreground: #ffffff;
+  --secondary: #94a3b8;
+  --secondary-foreground: #ffffff;
+  --accent: #f58220;
+  --accent-foreground: #ffffff;
+  --muted: #1e293b;
+  --muted-foreground: #94a3b8;
+  --card: #1e1e1e;
+  --card-foreground: #ededed;
+  --border: #334155;
+  --input: #334155;
+} */
+
+/* Map variables to Tailwind classes via CSS custom properties */
+.bg-primary {
+  background-color: var(--primary);
+}
+.bg-step {
+  background-color: var(--step);
+}
+.bg-primary-foreground {
+  background-color: var(--primary-foreground);
+}
+.bg-secondary {
+  background-color: var(--secondary);
+}
+.bg-secondary-foreground {
+  background-color: var(--secondary-foreground);
+}
+.bg-accent {
+  background-color: var(--accent);
+}
+.bg-accent-foreground {
+  background-color: var(--accent-foreground);
+}
+.bg-muted {
+  background-color: var(--muted);
+}
+.bg-card {
+  background-color: var(--card);
+}
+
+.text-primary {
+  color: var(--primary);
+}
+.text-primary-foreground {
+  color: var(--primary-foreground);
+}
+.text-secondary {
+  color: var(--secondary);
+}
+.text-secondary-foreground {
+  color: var(--secondary-foreground);
+}
+.text-accent {
+  color: var(--accent);
+}
+.text-accent-foreground {
+  color: var(--accent-foreground);
+}
+.text-muted-foreground {
+  color: var(--muted-foreground);
+}
+.text-card-foreground {
+  color: var(--card-foreground);
+}
+
+.border {
+  border-color: var(--border);
+}
+
+.border-primary {
+  border-color: var(--primary);
+}
+
+.bg-gradient-primary {
+  background: linear-gradient(
+    90deg,
+    var(--gradient-start),
+    var(--gradient-end)
+  );
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-geist-sans, Arial, Helvetica, sans-serif);
+}
+
+/* * {
+  border-color: hsl(var(--border));
+} */
+
+input:focus, button:focus, textarea:focus, select:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.fadeIn {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.scrollbar-hide {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+  -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(64%) sepia(39%) saturate(507%) hue-rotate(315deg);
+}
+
+/* Phone Input */
+.PhoneInputInput {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.PhoneInputInput:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}

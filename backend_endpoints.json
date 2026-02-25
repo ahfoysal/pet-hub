@@ -1,0 +1,1422 @@
+[
+  {
+    "method": "GET",
+    "path": "/)\n  getHello() {\n    return this.appService.getHello(",
+    "file": "app.controller.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/address",
+    "file": "address.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/address",
+    "file": "address.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/address/:addressId",
+    "file": "address.controller.ts"
+  },
+  {
+    "method": "PATCH",
+    "path": "/address/:addressId",
+    "file": "address.controller.ts"
+  },
+  {
+    "method": "DELETE",
+    "path": "/address/:addressId",
+    "file": "address.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/admin-dashboard-overview/hotels",
+    "file": "admin-dashboard-overview.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/admin-dashboard-overview/kyc/recent",
+    "file": "admin-dashboard-overview.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/admin-dashboard-overview/pet-owners",
+    "file": "admin-dashboard-overview.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/admin-dashboard-overview/pet-sitter",
+    "file": "admin-dashboard-overview.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/admin-dashboard-overview/roles/count",
+    "file": "admin-dashboard-overview.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/admin-dashboard-overview/schools",
+    "file": "admin-dashboard-overview.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/admin-dashboard-overview/vendors",
+    "file": "admin-dashboard-overview.controller.ts"
+  },
+  {
+    "method": "PATCH",
+    "path": "/admin/ban-user",
+    "file": "admin.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/admin/banned-users",
+    "file": "admin.controller.ts"
+  },
+  {
+    "method": "PATCH",
+    "path": "/admin/reactivate-user/:userId",
+    "file": "admin.controller.ts"
+  },
+  {
+    "method": "PATCH",
+    "path": "/admin/suspend-user",
+    "file": "admin.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/admin/suspend-users",
+    "file": "admin.controller.ts"
+  },
+  {
+    "method": "PATCH",
+    "path": "/auth/change-role",
+    "file": "auth.controller.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/auth/firebase-token",
+    "file": "auth.controller.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/auth/forgot-password",
+    "file": "auth.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/auth/google/callback",
+    "file": "auth.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/auth/google/login",
+    "file": "auth.controller.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/auth/login",
+    "file": "auth.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/auth/me",
+    "file": "auth.controller.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/auth/pet-owner-signup",
+    "file": "auth.controller.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/auth/refresh-token",
+    "file": "auth.controller.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/auth/resend-otp",
+    "file": "auth.controller.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/auth/reset-password",
+    "file": "auth.controller.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/auth/send-otp",
+    "file": "auth.controller.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/auth/set-role",
+    "file": "auth.controller.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/auth/signup",
+    "file": "auth.controller.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/auth/users/exists/email",
+    "file": "auth.controller.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/auth/users/exists/phone",
+    "file": "auth.controller.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/auth/verify-email",
+    "file": "auth.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/booking/:id",
+    "file": "booking.controller.ts"
+  },
+  {
+    "method": "PATCH",
+    "path": "/booking/:id/cancel",
+    "file": "booking.controller.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/booking/create",
+    "file": "booking.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/booking/hotel-bookings",
+    "file": "booking.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/booking/my-bookings",
+    "file": "booking.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/bookmark",
+    "file": "bookmark.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/bookmark/:bookmarkId",
+    "file": "bookmark.controller.ts"
+  },
+  {
+    "method": "PATCH",
+    "path": "/bookmark/post/:postId",
+    "file": "bookmark.controller.ts"
+  },
+  {
+    "method": "PATCH",
+    "path": "/bookmark/reel/:reelId",
+    "file": "bookmark.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/cart",
+    "file": "cart.controller.ts"
+  },
+  {
+    "method": "DELETE",
+    "path": "/cart/clear",
+    "file": "cart.controller.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/cart/items",
+    "file": "cart.controller.ts"
+  },
+  {
+    "method": "PATCH",
+    "path": "/cart/items/:id",
+    "file": "cart.controller.ts"
+  },
+  {
+    "method": "DELETE",
+    "path": "/cart/items/:id",
+    "file": "cart.controller.ts"
+  },
+  {
+    "method": "PATCH",
+    "path": "/chat/change-owner/:communityId",
+    "file": "chat.controller.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/chat/community",
+    "file": "chat.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/chat/community/:communityId",
+    "file": "chat.controller.ts"
+  },
+  {
+    "method": "PATCH",
+    "path": "/chat/community/:communityId/add-people",
+    "file": "chat.controller.ts"
+  },
+  {
+    "method": "PATCH",
+    "path": "/chat/community/:communityId/details",
+    "file": "chat.controller.ts"
+  },
+  {
+    "method": "PATCH",
+    "path": "/chat/community/:communityId/image",
+    "file": "chat.controller.ts"
+  },
+  {
+    "method": "PATCH",
+    "path": "/chat/community/:communityId/leave",
+    "file": "chat.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/chat/community/:communityId/message",
+    "file": "chat.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/chat/community/:communityId/participants",
+    "file": "chat.controller.ts"
+  },
+  {
+    "method": "PATCH",
+    "path": "/chat/community/:communityId/remove-people",
+    "file": "chat.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/chat/community/me",
+    "file": "chat.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/chat/one-to-one/conversation/:otherUserId",
+    "file": "chat.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/chat/one-to-one/my-conversations",
+    "file": "chat.controller.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/chat/upload",
+    "file": "chat.controller.ts"
+  },
+  {
+    "method": "DELETE",
+    "path": "/comments/:commentId",
+    "file": "comments.controller.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/comments/comment/:commentId",
+    "file": "comments.controller.ts"
+  },
+  {
+    "method": "PATCH",
+    "path": "/comments/comment/:commentId/edit",
+    "file": "comments.controller.ts"
+  },
+  {
+    "method": "PATCH",
+    "path": "/comments/comment/:commentId/like",
+    "file": "comments.controller.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/comments/post/:postId",
+    "file": "comments.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/comments/post/:postId",
+    "file": "comments.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/community/:postId",
+    "file": "community.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/community/:postId/liked-by",
+    "file": "community.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/community/all",
+    "file": "community.controller.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/community/create-post",
+    "file": "community.controller.ts"
+  },
+  {
+    "method": "DELETE",
+    "path": "/community/delete-post/:postId",
+    "file": "community.controller.ts"
+  },
+  {
+    "method": "PATCH",
+    "path": "/community/edit-post/:postId",
+    "file": "community.controller.ts"
+  },
+  {
+    "method": "PATCH",
+    "path": "/community/toggle-like/:postId",
+    "file": "community.controller.ts"
+  },
+  {
+    "method": "PATCH",
+    "path": "/course/:courseId",
+    "file": "course.controller.ts"
+  },
+  {
+    "method": "DELETE",
+    "path": "/course/:courseId",
+    "file": "course.controller.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/course/admission/)\n  enroll(@Body(",
+    "file": "admission.controller.ts"
+  },
+  {
+    "method": "PATCH",
+    "path": "/course/admission/:id/respond",
+    "file": "admission.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/course/admission/requests",
+    "file": "admission.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/course/admission/requests/:id",
+    "file": "admission.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/course/all",
+    "file": "course.controller.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/course/create",
+    "file": "course.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/course/details/:courseId",
+    "file": "course.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/course/enrolled",
+    "file": "course.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/course/my-courses",
+    "file": "course.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/course/next-schedules",
+    "file": "course.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/food",
+    "file": "food.controller.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/food/)\n  create(\n    @Body(",
+    "file": "food.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/food/:id",
+    "file": "food.controller.ts"
+  },
+  {
+    "method": "PATCH",
+    "path": "/food/:id",
+    "file": "food.controller.ts"
+  },
+  {
+    "method": "DELETE",
+    "path": "/food/:id",
+    "file": "food.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/food/my-foods",
+    "file": "food.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/friendship/friends",
+    "file": "friendship.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/friendship/mutual/:userId",
+    "file": "friendship.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/friendship/profile/:userId",
+    "file": "friendship.controller.ts"
+  },
+  {
+    "method": "PATCH",
+    "path": "/friendship/request/accept/:id",
+    "file": "friendship.controller.ts"
+  },
+  {
+    "method": "PATCH",
+    "path": "/friendship/request/reject/:id",
+    "file": "friendship.controller.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/friendship/request/send/:id",
+    "file": "friendship.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/friendship/requests/pending",
+    "file": "friendship.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/friendship/suggestions",
+    "file": "friendship.controller.ts"
+  },
+  {
+    "method": "PATCH",
+    "path": "/friendship/unfriend/:id",
+    "file": "friendship.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/health",
+    "file": "app.controller.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/hide-content/toggle",
+    "file": "hide-content.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/kyc/)\n  async getAllKyc() {\n    const result = await this.kycService.getAllKyc(",
+    "file": "kyc.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/kyc/:id",
+    "file": "kyc.controller.ts"
+  },
+  {
+    "method": "PATCH",
+    "path": "/kyc/approval/:id",
+    "file": "kyc.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/kyc/my-kyc",
+    "file": "kyc.controller.ts"
+  },
+  {
+    "method": "PATCH",
+    "path": "/kyc/rejection/:id",
+    "file": "kyc.controller.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/kyc/submit",
+    "file": "kyc.controller.ts"
+  },
+  {
+    "method": "DELETE",
+    "path": "/moments/:momentId",
+    "file": "moments.controller.ts"
+  },
+  {
+    "method": "PATCH",
+    "path": "/moments/hide/:momentId",
+    "file": "moments.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/moments/my-moments",
+    "file": "moments.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/moments/user/:userId",
+    "file": "moments.controller.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/order",
+    "file": "order.controller.ts"
+  },
+  {
+    "method": "PATCH",
+    "path": "/order/:id/status",
+    "file": "order.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/order/owner",
+    "file": "order.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/order/vendor",
+    "file": "order.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/pet-hotel/)\n  getAllHotels() {\n    return this.petHotelService.getAllHotels(",
+    "file": "pet-hotel.controller.ts"
+  },
+  {
+    "method": "PATCH",
+    "path": "/pet-hotel/address",
+    "file": "pet-hotel.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/pet-hotel/address/:id",
+    "file": "pet-hotel.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/pet-hotel/dashboard",
+    "file": "dashboard.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/pet-hotel/profile",
+    "file": "pet-hotel.controller.ts"
+  },
+  {
+    "method": "PUT",
+    "path": "/pet-hotel/profile",
+    "file": "pet-hotel.controller.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/pet-hotel/profile-setup",
+    "file": "pet-hotel.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/pet-owner-summary/bookings/history",
+    "file": "pet-owner-summary.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/pet-owner-summary/bookings/recent",
+    "file": "pet-owner-summary.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/pet-owner-summary/bookings/summary",
+    "file": "pet-owner-summary.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/pet-owner-summary/pet-sitter/history/:id",
+    "file": "pet-owner-summary.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/pet-owner-summary/pet-sitters/top",
+    "file": "pet-owner-summary.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/pet-owner-summary/top/services-packages",
+    "file": "pet-owner-summary.controller.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/pet-owner/profile-setup",
+    "file": "pet-owner.controller.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/pet-profile",
+    "file": "pet-profile.controller.ts"
+  },
+  {
+    "method": "DELETE",
+    "path": "/pet-profile/:id",
+    "file": "pet-profile.controller.ts"
+  },
+  {
+    "method": "PATCH",
+    "path": "/pet-profile/:id",
+    "file": "pet-profile.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/pet-profile/:petId",
+    "file": "pet-profile.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/pet-profile/my-pets",
+    "file": "pet-profile.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/pet-profile/my-pets/:petId",
+    "file": "pet-profile.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/pet-profile/pets-by-owner/:ownerId",
+    "file": "pet-profile.controller.ts"
+  },
+  {
+    "method": "PATCH",
+    "path": "/pet-school/address/:id",
+    "file": "pet-school.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/pet-school/dashboard",
+    "file": "dashboard.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/pet-school/dashboard/stats",
+    "file": "dashboard.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/pet-school/profile",
+    "file": "pet-school.controller.ts"
+  },
+  {
+    "method": "PATCH",
+    "path": "/pet-school/profile",
+    "file": "pet-school.controller.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/pet-school/profile-setup",
+    "file": "pet-school.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/pet-school/students",
+    "file": "pet-school.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/pet-sitter",
+    "file": "pet-sitter.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/pet-sitter-booking/:id",
+    "file": "pet-sitter-booking.controller.ts"
+  },
+  {
+    "method": "PATCH",
+    "path": "/pet-sitter-booking/:id/cancel",
+    "file": "pet-sitter-booking.controller.ts"
+  },
+  {
+    "method": "PATCH",
+    "path": "/pet-sitter-booking/:id/complete",
+    "file": "pet-sitter-booking.controller.ts"
+  },
+  {
+    "method": "PATCH",
+    "path": "/pet-sitter-booking/:id/confirm",
+    "file": "pet-sitter-booking.controller.ts"
+  },
+  {
+    "method": "PATCH",
+    "path": "/pet-sitter-booking/:id/in-progress",
+    "file": "pet-sitter-booking.controller.ts"
+  },
+  {
+    "method": "PATCH",
+    "path": "/pet-sitter-booking/:id/request-to-complete",
+    "file": "pet-sitter-booking.controller.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/pet-sitter-booking/create",
+    "file": "pet-sitter-booking.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/pet-sitter-booking/pet-owner/my-bookings",
+    "file": "pet-sitter-booking.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/pet-sitter-booking/pet-sitter/my-bookings",
+    "file": "pet-sitter-booking.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/pet-sitter-booking/pet/:petId",
+    "file": "pet-sitter-booking.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/pet-sitter-dashboard/bookings/recent",
+    "file": "pet-sitter-dashboard.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/pet-sitter-dashboard/bookings/stats",
+    "file": "pet-sitter-dashboard.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/pet-sitter-dashboard/bookings/trends",
+    "file": "pet-sitter-dashboard.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/pet-sitter-dashboard/bookings/upcoming",
+    "file": "pet-sitter-dashboard.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/pet-sitter-dashboard/client/history/:id",
+    "file": "pet-sitter-dashboard.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/pet-sitter-dashboard/clients",
+    "file": "pet-sitter-dashboard.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/pet-sitter-dashboard/customers/top",
+    "file": "pet-sitter-dashboard.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/pet-sitter-dashboard/overview",
+    "file": "pet-sitter-dashboard.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/pet-sitter-dashboard/performance/low/packages",
+    "file": "pet-sitter-dashboard.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/pet-sitter-dashboard/performance/low/services",
+    "file": "pet-sitter-dashboard.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/pet-sitter-dashboard/performance/top/packages",
+    "file": "pet-sitter-dashboard.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/pet-sitter-dashboard/performance/top/services",
+    "file": "pet-sitter-dashboard.controller.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/pet-sitter-package",
+    "file": "pet-sitter-package.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/pet-sitter-package",
+    "file": "pet-sitter-package.controller.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/pet-sitter-package-review/:id",
+    "file": "pet-sitter-package-review.controller.ts"
+  },
+  {
+    "method": "PATCH",
+    "path": "/pet-sitter-package-review/:id",
+    "file": "pet-sitter-package-review.controller.ts"
+  },
+  {
+    "method": "DELETE",
+    "path": "/pet-sitter-package-review/:id",
+    "file": "pet-sitter-package-review.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/pet-sitter-package-review/:id",
+    "file": "pet-sitter-package-review.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/pet-sitter-package-review/package/:id",
+    "file": "pet-sitter-package-review.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/pet-sitter-package-review/received",
+    "file": "pet-sitter-package-review.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/pet-sitter-package-review/submitted",
+    "file": "pet-sitter-package-review.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/pet-sitter-package/:id",
+    "file": "pet-sitter-package.controller.ts"
+  },
+  {
+    "method": "PATCH",
+    "path": "/pet-sitter-package/:id",
+    "file": "pet-sitter-package.controller.ts"
+  },
+  {
+    "method": "DELETE",
+    "path": "/pet-sitter-package/:id",
+    "file": "pet-sitter-package.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/pet-sitter-package/me",
+    "file": "pet-sitter-package.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/pet-sitter-package/pet-sitter/:petSitterId",
+    "file": "pet-sitter-package.controller.ts"
+  },
+  {
+    "method": "PATCH",
+    "path": "/pet-sitter-package/toggle/:id",
+    "file": "pet-sitter-package.controller.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/pet-sitter-reviews/:id",
+    "file": "pet-sitter-review.controller.ts"
+  },
+  {
+    "method": "PATCH",
+    "path": "/pet-sitter-reviews/:id",
+    "file": "pet-sitter-review.controller.ts"
+  },
+  {
+    "method": "DELETE",
+    "path": "/pet-sitter-reviews/:id",
+    "file": "pet-sitter-review.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/pet-sitter-reviews/:id",
+    "file": "pet-sitter-review.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/pet-sitter-reviews/pet-sitter/:id",
+    "file": "pet-sitter-review.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/pet-sitter-reviews/received",
+    "file": "pet-sitter-review.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/pet-sitter-reviews/submitted",
+    "file": "pet-sitter-review.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/pet-sitter/:id",
+    "file": "pet-sitter.controller.ts"
+  },
+  {
+    "method": "PATCH",
+    "path": "/pet-sitter/:id",
+    "file": "pet-sitter.controller.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/pet-sitter/create",
+    "file": "pet-sitter.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/pet-sitter/me",
+    "file": "pet-sitter.controller.ts"
+  },
+  {
+    "method": "PATCH",
+    "path": "/pet-sitter/update-profile",
+    "file": "pet-sitter.controller.ts"
+  },
+  {
+    "method": "PATCH",
+    "path": "/platform-settings",
+    "file": "platform-settings.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/platform-settings",
+    "file": "platform-settings.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/platform-settings/history",
+    "file": "platform-settings.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/product",
+    "file": "product.controller.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/product-review/:productId",
+    "file": "product-review.controller.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/product/)\n  async create(\n    @Body(",
+    "file": "product.controller.ts"
+  },
+  {
+    "method": "PATCH",
+    "path": "/product/:id",
+    "file": "product.controller.ts"
+  },
+  {
+    "method": "DELETE",
+    "path": "/product/:id",
+    "file": "product.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/product/my-products",
+    "file": "product.controller.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/reel",
+    "file": "reel.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/reel",
+    "file": "reel.controller.ts"
+  },
+  {
+    "method": "PATCH",
+    "path": "/reel/:reelId",
+    "file": "reel.controller.ts"
+  },
+  {
+    "method": "DELETE",
+    "path": "/reel/:reelId",
+    "file": "reel.controller.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/reel/:reelId/comment",
+    "file": "reel.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/reel/:reelId/comments",
+    "file": "reel.controller.ts"
+  },
+  {
+    "method": "PATCH",
+    "path": "/reel/:reelId/like",
+    "file": "reel.controller.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/reports/)\n  @UseGuards(AuthGuard",
+    "file": "report.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/reports/)\n  @UseGuards(AuthGuard)\n  @Roles(Role.ADMIN",
+    "file": "report.controller.ts"
+  },
+  {
+    "method": "PATCH",
+    "path": "/reports/:reportId",
+    "file": "report.controller.ts"
+  },
+  {
+    "method": "DELETE",
+    "path": "/reports/:reportId",
+    "file": "report.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/reports/:reportId",
+    "file": "report.controller.ts"
+  },
+  {
+    "method": "PATCH",
+    "path": "/reports/:reportId/take-action",
+    "file": "report.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/reports/my-reports/:reportId",
+    "file": "report.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/reports/my-submitted-reports",
+    "file": "report.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/reports/reports-against-me",
+    "file": "report.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/room-availability/check/:roomId/:checkIn/:checkOut",
+    "file": "room-availability.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/room-availability/search",
+    "file": "room-availability.controller.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/room/)\n  create(\n    @Body(",
+    "file": "room.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/room/:hotelId",
+    "file": "room.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/room/all",
+    "file": "room.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/room/details/:roomId",
+    "file": "room.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/room/me",
+    "file": "room.controller.ts"
+  },
+  {
+    "method": "DELETE",
+    "path": "/room/remove/:roomId",
+    "file": "room.controller.ts"
+  },
+  {
+    "method": "PATCH",
+    "path": "/room/update/:roomId",
+    "file": "room.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/saved-pet-sitter",
+    "file": "saved-pet-sitter.controller.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/saved-pet-sitter/:petSitterId",
+    "file": "saved-pet-sitter.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/service-review/:reviewId",
+    "file": "service-review.controller.ts"
+  },
+  {
+    "method": "DELETE",
+    "path": "/service-review/:reviewId",
+    "file": "service-review.controller.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/service-review/:serviceId",
+    "file": "service-review.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/service-review/pet-sitter/:petSitterId",
+    "file": "service-review.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/service-review/received",
+    "file": "service-review.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/service-review/service/:serviceId",
+    "file": "service-review.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/service-review/submitted",
+    "file": "service-review.controller.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/services",
+    "file": "service.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/services",
+    "file": "service.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/services/:id",
+    "file": "service.controller.ts"
+  },
+  {
+    "method": "DELETE",
+    "path": "/services/:id",
+    "file": "service.controller.ts"
+  },
+  {
+    "method": "PATCH",
+    "path": "/services/:id",
+    "file": "service.controller.ts"
+  },
+  {
+    "method": "PATCH",
+    "path": "/services/:id/toggle-availability",
+    "file": "service.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/services/me",
+    "file": "service.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/services/pet-sitter/:petSitterId",
+    "file": "service.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/services/tags",
+    "file": "service.controller.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/story",
+    "file": "story.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/story/)\n  @UseGuards(AuthGuard",
+    "file": "story.controller.ts"
+  },
+  {
+    "method": "DELETE",
+    "path": "/story/:id",
+    "file": "story.controller.ts"
+  },
+  {
+    "method": "PATCH",
+    "path": "/story/like/:id",
+    "file": "story.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/story/me",
+    "file": "story.controller.ts"
+  },
+  {
+    "method": "PATCH",
+    "path": "/story/published/:id",
+    "file": "story.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/story/replies/:storyId",
+    "file": "story.controller.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/story/reply/:id",
+    "file": "story.controller.ts"
+  },
+  {
+    "method": "PATCH",
+    "path": "/story/view/:id",
+    "file": "story.controller.ts"
+  },
+  {
+    "method": "PATCH",
+    "path": "/story/visibility/:id",
+    "file": "story.controller.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/trainer/)\n  createTrainer(\n    @Body(",
+    "file": "trainer.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/trainer/:trainerId",
+    "file": "trainer.controller.ts"
+  },
+  {
+    "method": "PATCH",
+    "path": "/trainer/:trainerId",
+    "file": "trainer.controller.ts"
+  },
+  {
+    "method": "DELETE",
+    "path": "/trainer/:trainerId",
+    "file": "trainer.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/trainer/my-trainers",
+    "file": "trainer.controller.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/user-block/block/:userId",
+    "file": "user-block.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/user-block/my-blocked-users",
+    "file": "user-block.controller.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/user-block/unblock/:userId",
+    "file": "user-block.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/user-mute",
+    "file": "user-mute.controller.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/user-mute/mute/:id",
+    "file": "user-mute.controller.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/user-mute/unmute/:id",
+    "file": "user-mute.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/user-notification-settings",
+    "file": "user-notification-settings.controller.ts"
+  },
+  {
+    "method": "PATCH",
+    "path": "/user-notification-settings",
+    "file": "user-notification-settings.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/user/)\n  findAll() {\n    return this.userService.findAll(",
+    "file": "user.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/user/:id",
+    "file": "user.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/user/profile/:id",
+    "file": "user.controller.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/variant/)\n  async create(\n    @Body() dto: CreateVariantDto,\n    @UploadedFiles() files: Express.Multer.File[]\n  ) {\n    return await this.variantService.create(dto, files",
+    "file": "variant.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/variant/:productId/:variantId",
+    "file": "variant.controller.ts"
+  },
+  {
+    "method": "PATCH",
+    "path": "/variant/:variantId",
+    "file": "variant.controller.ts"
+  },
+  {
+    "method": "PATCH",
+    "path": "/vendor/address/:id",
+    "file": "vendor.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/vendor/dashboard",
+    "file": "dashboard.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/vendor/dashboard/inventory",
+    "file": "dashboard.controller.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/vendor/profile",
+    "file": "vendor.controller.ts"
+  },
+  {
+    "method": "PUT",
+    "path": "/vendor/profile",
+    "file": "vendor.controller.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/vendor/profile-setup",
+    "file": "vendor.controller.ts"
+  }
+]

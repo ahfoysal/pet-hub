@@ -1,0 +1,24 @@
+# Localization configuration file
+# See: https://docs.flutter.dev/ui/accessibility-and-internationalization/internationalization
+
+# The directory where the template and translated arb files are located.
+arb-dir: lib/l10n
+
+# The template arb file that serves as the basis for code generation.
+template-arb-file: app_en.arb
+
+# The Dart class name to use for the generated localizations class.
+output-class: AppLocalizations
+
+# The Dart file name for the generated localizations class.
+output-localization-file: app_localizations.dart
+
+# Output directory for generated files
+output-dir: lib/l10n/generated
+
+# Generate null-safe code.
+nullable-getter: false
+
+# Prefer the device locale if no match is found for the user's preferred locale.
+preferred-supported-locales:
+  - en
