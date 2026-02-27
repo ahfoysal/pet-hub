@@ -420,7 +420,7 @@ export class PetSitterDashboardService {
   async getBookingTrends(userId: string) {
     const petSitter = await this.getActivePetSitter(userId);
     
-    const trends = [];
+    const trends: { name: string; totalBookings: number; revenue: number }[] = [];
     const now = new Date();
     
     for (let i = 14; i >= 0; i--) {
