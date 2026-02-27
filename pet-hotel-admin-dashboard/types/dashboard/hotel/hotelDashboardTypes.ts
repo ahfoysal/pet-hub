@@ -1,7 +1,15 @@
 // Hotel dashboard stats & charts types
 
+export interface StatValue {
+  value: number;
+  growth: string;
+}
+
 export interface DashboardStats {
-  totalActiveBookings: number;
+  totalBookings: StatValue;
+  activeBookings: StatValue;
+  completedBookings: StatValue;
+  upcomingCheckins: StatValue;
   avgOccupancyRate: number;
   avgStayDurationDays: number;
   totalRevenue: number;

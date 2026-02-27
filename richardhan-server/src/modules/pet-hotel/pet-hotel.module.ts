@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { AnalyticsModule } from './analytics/analytics.module';
+import { HotelReviewModule } from "./review/hotel-review.module";
 import { FinanceModule } from './finance/finance.module';
 import { FoodModule } from './food/food.module';
 import { PetHotelController } from './pet-hotel.controller';
@@ -22,6 +23,7 @@ import { HotelSettingsModule } from './hotel-settings/hotel-settings.module';
     HotelSettingsModule,
     AnalyticsModule,
     FinanceModule,
+    HotelReviewModule,
   ],
 })
 export class PetHotelModule {}

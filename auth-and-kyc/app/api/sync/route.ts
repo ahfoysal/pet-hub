@@ -1,33 +1,34 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "../auth/[...nextauth]/route";
 
-export async function GET(request: NextRequest) {
-  const callbackUrl = request.nextUrl.searchParams.get("callbackUrl");
-  const token =
-    request.cookies.get("next-auth.session-token")?.value ||
-    request.cookies.get("__Secure-next-auth.session-token")?.value;
+export async function GET(req: NextRequest) {
+  const searchParams = req.nextUrl.searchParams;
+  const callbackUrl = searchParams.get("callbackUrl");
 
-  console.log("Sync API: Token presence check:", token ? "Token Found" : "Token MISSING");
-  if (!token) {
-    console.log("Sync API: All cookies for debugging:");
-    request.cookies.getAll().forEach(c => console.log(`Cookie: ${c.name}`));
+  // Verify the user has a valid session established on the current domain (.lvh.me)
+  const session = await getServerSession(authOptions);
+
+  if (!session) {
+    // If no session is found, force the user back to the login page
+    console.warn("API Sync: No session found, redirecting to login.");
+    return NextResponse.redirect(new URL("/", req.url));
   }
 
-  if (!callbackUrl) {
-    return NextResponse.redirect(new URL("/", request.url));
+  if (callbackUrl && callbackUrl.startsWith("http")) {
+    // By passing through this route, NextAuth's internal logic will have correctly
+    // set the 'next-auth.session-token' cookie on the client.
+    // Now we can safely redirect the user to their subdomain dashboard.
+    console.log("API Sync: Session found, redirecting to", callbackUrl);
+    
+    // We optionally add a cache-busting timestamp so the destination router doesn't use a cached unauthenticated state
+    const separator = callbackUrl.includes("?") ? "&" : "?";
+    const finalUrl = `${callbackUrl}${separator}sst=${Date.now()}`;
+    
+    return NextResponse.redirect(finalUrl);
   }
 
-  try {
-    const redirectUrl = new URL(callbackUrl, request.url);
-    if (token) {
-      console.log("Sync API: Appending sync_token to redirectUrl");
-      redirectUrl.searchParams.set("sync_token", token);
-    } else {
-      console.warn("Sync API: Redirecting WITHOUT sync_token (Session likely lost)");
-    }
-
-    return NextResponse.redirect(redirectUrl);
-  } catch (error) {
-    console.error("Failed to construct redirect URL:", error);
-    return NextResponse.redirect(new URL("/", request.url));
-  }
+  // Fallback redirect if no valid callbackUrl is provided
+  console.log("API Sync: No valid callbackUrl, redirecting to home.");
+  return NextResponse.redirect(new URL("/", req.url));
 }

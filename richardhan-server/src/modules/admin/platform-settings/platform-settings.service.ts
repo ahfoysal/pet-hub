@@ -35,7 +35,7 @@ export class PlatformSettingsService {
           id: this.SETTINGS_ID,
           ...rest,
           providerCategoryLevels: providerCategoryLevels
-            ? { create: providerCategoryLevels }
+            ? { create: providerCategoryLevels as any }
             : undefined,
         },
       });
@@ -113,7 +113,7 @@ export class PlatformSettingsService {
             name: lvl.name,
             bookingThreshold: lvl.bookingThreshold,
             benefits: lvl.benefits,
-          })),
+          })) as any,
         });
       }
     });

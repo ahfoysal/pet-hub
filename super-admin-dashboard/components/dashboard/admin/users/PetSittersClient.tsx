@@ -19,17 +19,22 @@ import {
 } from "@/redux/features/api/dashboard/admin/dashboard/adminDashboardApi";
 import { PetSitterItem } from "@/types/dashboard/admin/dashboard/adminDashboardType";
 import UserDetailsModal from "./UserDetailsModal";
+import TablePagination from "./TablePagination";
 
 export default function PetSittersClient() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedUser, setSelectedUser] = useState<PetSitterItem | null>(null);
   const [activeTab, setActiveTab] = useState<"ALL" | "PENDING_KYC">("ALL");
+  const [page, setPage] = useState(1);
+  const itemsPerPage = 20;
 
   const { data: rolesCount } = useGetRolesCountQuery();
-  const { data: financeData } = useGetFinanceStatsQuery();
+  const { data: financeData, isLoading: isFinanceLoading } = useGetFinanceStatsQuery();
   const { data, isLoading, isError } = useGetPetSittersQuery({
     search: searchTerm,
-    limit: 20,
+    limit: itemsPerPage,
+    page,
+    // Add filtering by status if backend supports it, otherwise filter on frontend
   });
 
   const sitters = data?.data?.items || [];
@@ -259,23 +264,16 @@ export default function PetSittersClient() {
           </table>
         </div>
 
-        {/* Pagination placeholder matching the design */}
-        <div className="border-t border-[#e2e8f0] px-6 py-4 flex items-center justify-between bg-white h-17">
-          <p className="font-['Inter',sans-serif] text-sm text-[#475569]">
-             Showing 1 to {filteredSitters.length} of {filteredSitters.length} entries
-          </p>
-          <div className="flex items-center gap-1">
-            <button className="px-3 py-1 rounded w-8 h-8 flex items-center justify-center border border-[#e2e8f0] text-gray-400 cursor-not-allowed">
-              {"<"}
-            </button>
-            <button className="px-3 py-1 bg-red-500 text-white rounded w-8 h-8 flex items-center justify-center">
-              1
-            </button>
-             <button className="px-3 py-1 rounded w-8 h-8 flex items-center justify-center border border-[#e2e8f0] text-gray-400 cursor-not-allowed" disabled>
-              {">"}
-            </button>
-          </div>
-        </div>
+        {/* Pagination */}
+        {!isLoading && !isError && filteredSitters.length > 0 && (
+          <TablePagination
+            currentPage={page}
+            totalPages={Math.ceil((data?.data?.totalCount || 0) / itemsPerPage)}
+            onPageChange={(p) => setPage(p)}
+            totalItems={data?.data?.totalCount || 0}
+            itemsPerPage={itemsPerPage}
+          />
+        )}
       </div>
 
        <UserDetailsModal

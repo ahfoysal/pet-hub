@@ -102,7 +102,7 @@ export default function SitterPackagesPage() {
             My Packages
           </h1>
           <p className="text-[16px] font-normal text-[#4a5565] leading-[24px]">
-            Manage your hotel rooms and availability
+            Manage your sitter packages and availability
           </p>
         </div>
         <button

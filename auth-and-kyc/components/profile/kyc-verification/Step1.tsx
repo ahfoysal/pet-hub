@@ -29,6 +29,41 @@ export default function Step1({ formData, updateFormData }: StepProps) {
           onChange={(e) => updateFormData({ fullName: e.target.value })}
         />
 
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <Input
+            id="dateOfBirth"
+            label="Date of Birth *"
+            type="date"
+            value={formData.dateOfBirth}
+            labelClass="text-[#101828] font-arimo text-[16px]"
+            className="rounded-[14px] bg-[#f9fafb] border-[#e5e7eb] focus:ring-1 focus:ring-[#ff6900] h-[50px] px-4 w-full"
+            onChange={(e) => updateFormData({ dateOfBirth: e.target.value })}
+          />
+
+          <div className="space-y-2">
+            <label className="text-[#101828] font-arimo text-[16px]">Identification Type *</label>
+            <select
+              value={formData.identificationType}
+              onChange={(e) => updateFormData({ identificationType: e.target.value })}
+              className="w-full h-[50px] px-4 rounded-[14px] bg-[#f9fafb] border border-[#e5e7eb] focus:ring-1 focus:ring-[#ff6900] outline-none font-arimo text-[#101828]"
+            >
+              <option value="NID">National ID (NID)</option>
+              <option value="PASSPORT">Passport</option>
+              <option value="DRIVING_LICENSE">Driving License</option>
+            </select>
+          </div>
+        </div>
+
+        <Input
+          id="identificationNumber"
+          label="Identification Number *"
+          placeholder="Enter your ID number"
+          value={formData.identificationNumber}
+          labelClass="text-[#101828] font-arimo text-[16px]"
+          className="rounded-[14px] bg-[#f9fafb] border-[#e5e7eb] focus:ring-1 focus:ring-[#ff6900] h-[50px] px-4"
+          onChange={(e) => updateFormData({ identificationNumber: e.target.value })}
+        />
+
         <Input
           id="phoneNumber"
           label="Phone Number *"
@@ -57,9 +92,11 @@ export default function Step1({ formData, updateFormData }: StepProps) {
               <p className="text-[#6a7282] text-[14px]">Upload the front side of your National ID card for verification.</p>
             </div>
             <FileUpload
+              label="Front of Identification"
               acceptedTypes="image/png, image/jpeg, application/pdf"
               maxSizeMB={10}
               onFileSelect={(file) => updateFormData({ identificationFrontImage: file })}
+              initialFile={formData.identificationFrontImage}
               className="rounded-[14px] bg-white border-2 border-[#d1d5dc] border-dashed hover:border-[#ff6900] transition-all min-h-[176px]"
               preview={true}
               uploadIconColor="#ff6900"
@@ -73,9 +110,11 @@ export default function Step1({ formData, updateFormData }: StepProps) {
               <p className="text-[#6a7282] text-[14px]">Upload the back side of your National ID. All personal data is securely encrypted.</p>
             </div>
             <FileUpload
+              label="Back of Identification"
               acceptedTypes="image/png, image/jpeg, application/pdf"
               maxSizeMB={10}
               onFileSelect={(file) => updateFormData({ identificationBackImage: file })}
+              initialFile={formData.identificationBackImage}
               className="rounded-[14px] bg-white border-2 border-[#d1d5dc] border-dashed hover:border-[#ff6900] transition-all min-h-[176px]"
               preview={true}
               uploadIconColor="#ff6900"

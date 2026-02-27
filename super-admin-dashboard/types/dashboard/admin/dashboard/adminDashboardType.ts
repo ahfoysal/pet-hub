@@ -20,12 +20,34 @@ export interface RecentKycResponse {
   data: RecentKycItem[];
 }
 
+export interface DashboardStatItem {
+  count: number;
+  trend: number;
+}
+
 export interface DashboardStats {
-  activeProviders: number;
-  petOwners: number;
-  kycPending: number;
-  payoutPending: number;
-  openReports: number;
+  activeProviders: DashboardStatItem;
+  petOwners: DashboardStatItem;
+  kycPending: DashboardStatItem;
+  payoutPending: DashboardStatItem;
+  openReports: DashboardStatItem;
+}
+
+export interface OverviewStatsResponse {
+  success: boolean;
+  message: string;
+  data: DashboardStats;
+}
+
+export interface MonthlyRevenueItem {
+  month: string;
+  revenue: number;
+}
+
+export interface MonthlyRevenueResponse {
+  success: boolean;
+  message: string;
+  data: MonthlyRevenueItem[];
 }
 
 export interface BookingTrend {
@@ -78,6 +100,7 @@ export interface PetOwnersResponse {
   data: {
     items: PetOwnerItem[];
     nextCursor: string | null;
+    totalCount: number;
   };
 }
 
@@ -87,6 +110,7 @@ export interface PetSittersResponse {
   data: {
     items: PetSitterItem[];
     nextCursor: string | null;
+    totalCount: number;
   };
 }
 
@@ -110,6 +134,7 @@ export interface PetSchoolsResponse {
   data: {
     items: PetSchoolItem[];
     nextCursor: string | null;
+    totalCount: number;
   };
 }
 
@@ -134,6 +159,7 @@ export interface PetHotelsResponse {
   data: {
     items: PetHotelItem[];
     nextCursor: string | null;
+    totalCount: number;
   };
 }
 
@@ -158,6 +184,7 @@ export interface PetVendorsResponse {
   data: {
     items: PetVendorItem[];
     nextCursor: string | null;
+    totalCount: number;
   };
 }
 
@@ -169,6 +196,13 @@ export interface FinanceStatsResponse {
     totalPlatformFees: number;
     activeUsers: number;
     totalBookings: number;
+    totalRevenue30Days?: number;
+    pendingPayoutsAmount?: number;
+    pendingPayoutsCount?: number;
+    failedTransactionsCount?: number;
+    releasedThisMonth?: number;
+    onHold?: number;
+    totalTransactions?: number;
   };
 }
 

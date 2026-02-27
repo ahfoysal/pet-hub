@@ -71,7 +71,7 @@ export default function DashboardSidebar() {
         lg:translate-x-0 ${isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"}
         lg:relative`}
       >
-        <div className="flex flex-col h-full py-[40px] px-[32px]">
+        <div className="flex flex-col h-full py-[40px]  px-[32px] pt-[110px]">
           {/* Navigation */}
           <nav className="flex-1 space-y-[14px] overflow-y-auto">
             {visibleItems.length > 0 ? (

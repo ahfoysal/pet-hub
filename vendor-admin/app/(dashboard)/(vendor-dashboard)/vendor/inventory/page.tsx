@@ -23,23 +23,33 @@ export default function VendorInventoryPage() {
     );
   }
 
+  if (isError) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[400px] space-y-4">
+        <p className="text-red-500 font-medium">Failed to load inventory data.</p>
+        <button 
+          onClick={() => window.location.reload()}
+          className="px-4 py-2 bg-[#ff7176] text-white rounded-lg hover:bg-[#ff5a60] transition-colors"
+        >
+          Try Again
+        </button>
+      </div>
+    );
+  }
+
   // Use Figma mock numbers as fallbacks to ensure it matches perfectly
-  const stats = (response?.data?.stats as any) || {
-    totalCategories: 10,
-    totalUnitsSold: 6371,
-    totalRevenue: 299606.29,
-    totalSpend: 203732.28,
-    totalStock: 934,
-    avgProductRating: 4.6,
+  // Use dynamic stats from backend with reasonable defaults
+  const stats = {
+    totalCategories: response?.data?.stats?.totalProducts ?? 0,
+    totalUnitsSold: response?.data?.stats?.totalUnitsSold ?? 0,
+    totalRevenue: response?.data?.stats?.totalRevenue ?? 0,
+    totalSpend: response?.data?.stats?.totalPayouts ?? 0,
+    totalStock: response?.data?.stats?.totalStock ?? 0,
+    avgProductRating: response?.data?.stats?.averageRating ?? 0,
   };
 
-  const bestSellingMock = [
-    { name: "Dental Chew Sticks - 30 Pack", sold: 1567, revenue: 25066.33, image: "https://avatar.iran.liara.run/public/food1" },
-    { name: "Premium Dog Food - Chicken & Rice", sold: 1243, revenue: 57157.57, image: "https://avatar.iran.liara.run/public/food2" },
-    { name: "Interactive Cat Toy Bundle", sold: 892, revenue: 22291.08, image: "https://avatar.iran.liara.run/public/toy1" },
-    { name: "Cat Litter - Odor Control", sold: 734, revenue: 14672.66, image: "https://avatar.iran.liara.run/public/litter" },
-    { name: "Orthopedic Dog Bed - Large", sold: 567, revenue: 51022.33, image: "https://avatar.iran.liara.run/public/bed" },
-  ];
+  const bestSellingProducts = response?.data?.bestSellingProducts || [];
+  const detailedList = response?.data?.detailedList || [];
 
   return (
     <div className="space-y-[24px] font-arimo pb-10">
@@ -81,7 +91,7 @@ export default function VendorInventoryPage() {
           </div>
           <div className="mt-[16px]">
             <p className="text-[14px] text-[#4a5565] mb-1">Total Units Sold</p>
-            <h2 className="text-[24px] font-bold text-[#0a0a0a]">{stats.totalUnitsSold.toLocaleString()}</h2>
+            <h2 className="text-[24px] font-bold text-[#0a0a0a]">{(stats.totalUnitsSold || 0).toLocaleString()}</h2>
           </div>
         </div>
 
@@ -98,7 +108,7 @@ export default function VendorInventoryPage() {
           </div>
           <div className="mt-[16px]">
             <p className="text-[14px] text-[#4a5565] mb-1">Total Revenue</p>
-            <h2 className="text-[24px] font-bold text-[#0a0a0a]">${stats.totalRevenue.toLocaleString(undefined, {minimumFractionDigits: 2})}</h2>
+            <h2 className="text-[24px] font-bold text-[#0a0a0a]">${(stats.totalRevenue || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}</h2>
           </div>
         </div>
 
@@ -115,7 +125,7 @@ export default function VendorInventoryPage() {
           </div>
           <div className="mt-[16px]">
             <p className="text-[14px] text-[#4a5565] mb-1">Total Spend</p>
-            <h2 className="text-[24px] font-bold text-[#0a0a0a]">${stats.totalSpend.toLocaleString(undefined, {minimumFractionDigits: 2})}</h2>
+            <h2 className="text-[24px] font-bold text-[#0a0a0a]">${(stats.totalSpend || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}</h2>
           </div>
         </div>
 
@@ -162,23 +172,30 @@ export default function VendorInventoryPage() {
             <h2 className="text-[16px] font-bold text-[#0a0a0a]">Best Selling Products</h2>
          </div>
          <div className="grid grid-cols-1 md:grid-cols-5 gap-[16px]">
-            {bestSellingMock.map((item, index) => (
+            {bestSellingProducts.map((item, index) => (
                <div key={index} className="border border-[#e5e7eb] rounded-[8px] p-[12px] flex flex-col justify-between hover:shadow-md transition-shadow group">
                   <div>
                     <div className="flex items-start justify-between mb-[12px]">
                        <span className="text-[18px] font-bold text-[#0a0a0a]">#{index + 1}</span>
                        <div className="w-[38px] h-[38px] bg-gray-100 rounded-[6px] overflow-hidden">
-                          <img src={item.image} alt={item.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform" />
+                          {item.productImage ? (
+                            <img src={item.productImage} alt={item.productName} className="w-full h-full object-cover group-hover:scale-110 transition-transform" />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center text-gray-400 text-[10px]">No Img</div>
+                          )}
                        </div>
                     </div>
-                    <p className="text-[12px] text-[#4a5565] mb-[12px] line-clamp-2 h-[36px] font-medium">{item.name}</p>
+                    <p className="text-[12px] text-[#4a5565] mb-[12px] line-clamp-2 h-[36px] font-medium">{item.productName}</p>
                   </div>
                   <div className="flex items-center justify-between border-t border-[#eaecf0] pt-[12px]">
-                     <span className="text-[10px] text-blue-600 font-medium bg-blue-50 px-2 py-0.5 rounded-full">{item.sold} sold</span>
+                     <span className="text-[10px] text-blue-600 font-medium bg-blue-50 px-2 py-0.5 rounded-full">{item.unitsSold} sold</span>
                      <span className="text-[12px] text-green-600 font-bold">${item.revenue.toLocaleString()}</span>
                   </div>
                </div>
             ))}
+            {bestSellingProducts.length === 0 && (
+              <div className="col-span-full py-10 text-center text-gray-500">No sales records yet.</div>
+            )}
          </div>
       </div>
 
@@ -202,30 +219,35 @@ export default function VendorInventoryPage() {
                  </tr>
                </thead>
                <tbody className="divide-y divide-[#e5e7eb]">
-                 {[
-                   { id: "ORD-1234", prod: "Premium Dog Food - Chicken & Rice", cust: "Sarah Johnson", qty: 2, amt: 91.98, date: "2025-12-24", stat: "Completed", stock: 489, stClass: "bg-green-100 text-green-700" },
-                   { id: "ORD-1235", prod: "Interactive Cat Toy Bundle", cust: "Michael Chen", qty: 1, amt: 24.99, date: "2025-12-24", stat: "Processing", stock: 245, stClass: "bg-blue-100 text-blue-700" },
-                   { id: "ORD-1236", prod: "Orthopedic Dog Bed - Large", cust: "Emily Davis", qty: 1, amt: 89.99, date: "2025-12-23", stat: "Pending", stock: 112, stClass: "bg-yellow-100 text-yellow-700" },
-                 ].map((row, idx) => (
-                   <tr key={idx} className="hover:bg-gray-50/50 transition-colors h-[50px]">
-                      <td className="px-[20px] py-[14px] text-[12px] text-[#0a0a0a] font-medium">{row.id}</td>
-                      <td className="px-[20px] py-[14px] text-[12px] text-[#0a0a0a] font-medium truncate max-w-[200px]">{row.prod}</td>
-                      <td className="px-[20px] py-[14px] text-[12px] text-[#4a5565] truncate max-w-[120px]">{row.cust}</td>
-                      <td className="px-[20px] py-[14px] text-[12px] text-[#4a5565]">{row.qty}</td>
-                      <td className="px-[20px] py-[14px] text-[12px] text-[#00a63e] font-bold">${row.amt}</td>
-                      <td className="px-[20px] py-[14px] text-[12px] text-[#4a5565]">{row.date}</td>
-                      <td className="px-[20px] py-[14px]">
-                        <span className={`px-[10px] py-[4px] rounded-full text-[10px] font-medium ${row.stClass}`}>{row.stat}</span>
-                      </td>
-                      <td className="px-[20px] py-[14px] text-[12px] text-[#0a0a0a] font-medium">{row.stock}</td>
-                   </tr>
-                 ))}
+                  {detailedList.map((row, idx) => (
+                    <tr key={idx} className="hover:bg-gray-50/50 transition-colors h-[50px]">
+                       <td className="px-[20px] py-[14px] text-[12px] text-[#0a0a0a] font-medium">#{row.orderId.slice(0, 8).toUpperCase()}</td>
+                       <td className="px-[20px] py-[14px] text-[12px] text-[#0a0a0a] font-medium truncate max-w-[200px]">{row.productName}</td>
+                       <td className="px-[20px] py-[14px] text-[12px] text-[#4a5565] truncate max-w-[120px]">{row.customerName}</td>
+                       <td className="px-[20px] py-[14px] text-[12px] text-[#4a5565]">{row.quantity}</td>
+                       <td className="px-[20px] py-[14px] text-[12px] text-[#00a63e] font-bold">${row.amount.toLocaleString()}</td>
+                       <td className="px-[20px] py-[14px] text-[12px] text-[#4a5565]">{new Date(row.date).toLocaleDateString()}</td>
+                       <td className="px-[20px] py-[14px]">
+                         <span className={`px-[10px] py-[4px] rounded-full text-[10px] font-medium ${
+                           row.status === 'DELIVERED' ? 'bg-green-100 text-green-700' :
+                           row.status === 'PENDING' ? 'bg-yellow-100 text-yellow-700' :
+                           'bg-blue-100 text-blue-700'
+                         }`}>{row.status}</span>
+                       </td>
+                       <td className="px-[20px] py-[14px] text-[12px] text-[#0a0a0a] font-medium">{row.stock}</td>
+                    </tr>
+                  ))}
+                  {detailedList.length === 0 && (
+                    <tr>
+                      <td colSpan={8} className="px-[20px] py-[40px] text-center text-gray-500">No items in inventory.</td>
+                    </tr>
+                  )}
                </tbody>
             </table>
          </div>
          {/* Footer Pagination mock */}
          <div className="px-[20px] py-[12px] border-t border-[#e5e7eb] flex justify-between items-center text-[12px] text-[#6a7282]">
-            <span>Showing 1 to 3 of 152 items</span>
+            <span>Showing 1 to {detailedList.length} of {detailedList.length} items</span>
             <div className="flex items-center gap-2">
                <button className="px-3 py-1 border border-[#e5e7eb] rounded-[6px] hover:bg-gray-50">Prev</button>
                <button className="px-3 py-1 bg-gray-100 rounded-[6px] font-bold text-[#0a0a0a]">1</button>

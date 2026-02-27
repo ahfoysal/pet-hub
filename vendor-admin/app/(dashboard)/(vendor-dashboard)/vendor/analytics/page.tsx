@@ -1,3 +1,8 @@
+/**
+ * Vendor Analytics Page
+ * Figma Node: 13028:16128 - Analytics & Performance
+ * Displays KPI stats, Revenue Trend, Units Sold, and Average Rating Trend charts.
+ */
 "use client";
 
 import React from "react";
@@ -13,15 +18,19 @@ import {
   Line,
 } from "recharts";
 import { useSession } from "next-auth/react";
-import { 
-  ShoppingCart, 
-  DollarSign, 
-  TrendingUp, 
+import {
+  ShoppingCart,
+  DollarSign,
+  TrendingUp,
   BarChart3,
-  ArrowUpRight 
+  ArrowUpRight,
 } from "lucide-react";
 import { useGetVendorDashboardQuery } from "@/redux/features/api/dashboard/vendor/dashboard/vendorDashboardApi";
-import { PageHeader, StatCard, ChartCard } from "@/components/dashboard/shared/DashboardUI";
+import {
+  PageHeader,
+  StatCard,
+  ChartCard,
+} from "@/components/dashboard/shared/DashboardUI";
 
 export default function VendorAnalyticsPage() {
   const { status } = useSession();
@@ -48,10 +57,14 @@ export default function VendorAnalyticsPage() {
         <div className="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mb-4 text-red-500">
           <BarChart3 size={32} />
         </div>
-        <h2 className="text-xl font-bold text-gray-900 mb-2 font-arimo">Failed to load analytics</h2>
-        <p className="text-gray-500 mb-6 font-arimo">We couldn't retrieve your performance data at this time.</p>
-        <button 
-          onClick={() => refetch()} 
+        <h2 className="text-xl font-bold text-gray-900 mb-2 font-arimo">
+          Failed to load analytics
+        </h2>
+        <p className="text-gray-500 mb-6 font-arimo">
+          We couldn&apos;t retrieve your performance data at this time.
+        </p>
+        <button
+          onClick={() => refetch()}
           className="px-6 py-2 bg-[#ff7176] text-white rounded-xl font-medium hover:bg-[#ff7176]/90 transition-all shadow-md cursor-pointer"
         >
           Try Again
@@ -64,77 +77,88 @@ export default function VendorAnalyticsPage() {
   const charts = data.charts;
 
   // Transform chart data for Recharts
-  const revenueData = charts.revenueChart.labels.map((label: string, index: number) => ({
-    name: label,
-    revenue: charts.revenueChart.data[index],
-  }));
+  const revenueData = charts.revenueChart.labels.map(
+    (label: string, index: number) => ({
+      name: label,
+      revenue: charts.revenueChart.data[index],
+    })
+  );
 
-  const unitsData = charts.unitsSoldChart.labels.map((label: string, index: number) => ({
-    name: label,
-    units: charts.unitsSoldChart.data[index],
-  }));
+  const unitsData = charts.unitsSoldChart.labels.map(
+    (label: string, index: number) => ({
+      name: label,
+      units: charts.unitsSoldChart.data[index],
+    })
+  );
+
+  const ratingData = charts.ratingChart.labels.map(
+    (label: string, index: number) => ({
+      name: label,
+      rating: charts.ratingChart.data[index],
+    })
+  );
 
   // Derived stats
-  const avgCompletionRate = Math.min(100, (data.averageRating * 20)).toFixed(0);
+  const avgCompletionRate = Math.min(100, data.averageRating * 20).toFixed(0);
   const avgSalesPerMonth = (data.totalUnitsSold / 12).toFixed(1);
 
   const statCards = [
-    { 
-      title: "Total Bookings (2025)", 
-      value: data.totalUnitsSold, 
-      indicator: "+12% from last year", 
-      icon: <ShoppingCart className="text-[#ff7176]" size={18} />, 
+    {
+      title: "Total Bookings (2025)",
+      value: data.totalOrders ?? data.totalUnitsSold,
+      indicator: "+12% from last year",
+      icon: <ShoppingCart className="text-[#ff7176]" size={18} />,
       iconBg: "bg-[#ff7176]/10",
       trendIcon: <ArrowUpRight size={10} className="text-[#008236]" />,
-      isPositive: true
+      isPositive: true,
     },
-    { 
-      title: "Annual Revenue", 
-      value: `$${data.totalRevenue.toLocaleString()}`, 
-      indicator: "+18% from last year", 
-      icon: <DollarSign className="text-[#008236]" size={18} />, 
+    {
+      title: "Annual Revenue",
+      value: `$${data.totalRevenue.toLocaleString()}`,
+      indicator: "+18% from last year",
+      icon: <DollarSign className="text-[#008236]" size={18} />,
       iconBg: "bg-[#008236]/10",
       trendIcon: <ArrowUpRight size={10} className="text-[#008236]" />,
-      isPositive: true
+      isPositive: true,
     },
-    { 
-      title: "Avg Completion Rate", 
-      value: `${avgCompletionRate}%`, 
-      indicator: "Excellent performance", 
+    {
+      title: "Avg Completion Rate",
+      value: `${avgCompletionRate}%`,
+      indicator: "Excellent performance",
       indicatorColor: "text-[#155dfc]",
-      icon: <TrendingUp className="text-[#155dfc]" size={18} />, 
+      icon: <TrendingUp className="text-[#155dfc]" size={18} />,
       iconBg: "bg-[#155dfc]/10",
-      isPositive: true 
+      isPositive: true,
     },
-    { 
-      title: "Average Sales (Per Month)", 
-      value: avgSalesPerMonth, 
-      indicator: "product sales", 
+    {
+      title: "Average Sales (Per Month)",
+      value: avgSalesPerMonth,
+      indicator: "product sales",
       indicatorColor: "text-[#666]",
-      icon: <BarChart3 className="text-[#7C3AED]" size={18} />, 
+      icon: <BarChart3 className="text-[#7C3AED]" size={18} />,
       iconBg: "bg-[#7C3AED]/10",
-      isPositive: true
+      isPositive: true,
     },
   ];
 
   return (
     <div className="space-y-8 pb-10 px-1 font-arimo">
-      <PageHeader 
-        title="Analytics & Performance" 
-        subtitle="Track your hotel's growth and performance metrics" 
+      <PageHeader
+        title="Analytics & Performance"
+        subtitle="Track your store's growth and performance metrics"
       />
 
-      {/* Stats Grid */}
+      {/* Stats Grid - 4 KPI Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
         {statCards.map((card, index) => (
           <StatCard key={index} {...card} />
         ))}
       </div>
 
-      {/* Charts Grid */}
+      {/* Charts Row: Revenue Trend + Units Sold */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-        {/* Revenue Trend */}
-        <ChartCard 
+        {/* Revenue Trend - Line Chart */}
+        <ChartCard
           title="Revenue Trend"
           legend={
             <div className="flex items-center gap-2 justify-center">
@@ -145,73 +169,166 @@ export default function VendorAnalyticsPage() {
         >
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={revenueData}>
-              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
-              <XAxis 
-                dataKey="name" 
-                axisLine={false} 
-                tickLine={false} 
-                tick={{ fill: '#666', fontSize: 10 }} 
-                dy={10} 
+              <CartesianGrid
+                strokeDasharray="3 3"
+                vertical={false}
+                stroke="#e5e7eb"
               />
-              <YAxis 
-                axisLine={false} 
-                tickLine={false} 
-                tick={{ fill: '#666', fontSize: 10 }} 
+              <XAxis
+                dataKey="name"
+                axisLine={false}
+                tickLine={false}
+                tick={{ fill: "#666", fontSize: 10 }}
+                dy={10}
               />
-              <Tooltip 
-                contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
+              <YAxis
+                axisLine={false}
+                tickLine={false}
+                tick={{ fill: "#666", fontSize: 10 }}
               />
-              <Line 
-                type="monotone" 
-                dataKey="revenue" 
-                stroke="#ff7176" 
-                strokeWidth={2} 
-                dot={{ r: 4, fill: '#ff7176', strokeWidth: 0 }} 
-                activeDot={{ r: 6 }} 
+              <Tooltip
+                contentStyle={{
+                  borderRadius: "8px",
+                  border: "none",
+                  boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+                }}
+              />
+              <Line
+                type="monotone"
+                dataKey="revenue"
+                stroke="#ff7176"
+                strokeWidth={2}
+                dot={{ r: 4, fill: "#ff7176", strokeWidth: 0 }}
+                activeDot={{ r: 6 }}
               />
             </LineChart>
           </ResponsiveContainer>
         </ChartCard>
 
-        {/* Units Sold Over Time */}
-        <ChartCard 
+        {/* Units Sold Over Time - Bar Chart (teal per Figma) */}
+        <ChartCard
           title="Units Sold Over Time"
           legend={
             <div className="flex items-center gap-2 justify-center">
-              <div className="w-3 h-3 rounded-full bg-[#7C3AED]" />
-              <span className="text-[13px] text-[#7C3AED]">Units Sold</span>
+              <div className="w-3 h-3 rounded bg-[#10B981]" />
+              <span className="text-[13px] text-[#10B981]">Units Sold</span>
             </div>
           }
         >
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={unitsData}>
-              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
-              <XAxis 
-                dataKey="name" 
-                axisLine={false} 
-                tickLine={false} 
-                tick={{ fill: '#666', fontSize: 10 }} 
-                dy={10} 
+              <CartesianGrid
+                strokeDasharray="3 3"
+                vertical={false}
+                stroke="#e5e7eb"
               />
-              <YAxis 
-                axisLine={false} 
-                tickLine={false} 
-                tick={{ fill: '#666', fontSize: 10 }} 
+              <XAxis
+                dataKey="name"
+                axisLine={false}
+                tickLine={false}
+                tick={{ fill: "#666", fontSize: 10 }}
+                dy={10}
               />
-              <Tooltip 
-                cursor={{ fill: '#f3f4f6' }}
-                contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
+              <YAxis
+                axisLine={false}
+                tickLine={false}
+                tick={{ fill: "#666", fontSize: 10 }}
               />
-              <Bar 
-                dataKey="units" 
-                fill="#7C3AED" 
-                radius={[4, 4, 0, 0]} 
-                barSize={20} 
+              <Tooltip
+                cursor={{ fill: "#f3f4f6" }}
+                contentStyle={{
+                  borderRadius: "8px",
+                  border: "none",
+                  boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+                }}
+              />
+              <Bar
+                dataKey="units"
+                fill="#10B981"
+                radius={[4, 4, 0, 0]}
+                barSize={20}
               />
             </BarChart>
           </ResponsiveContainer>
         </ChartCard>
       </div>
+
+      {/* Average Rating Trend - Full Width Area Chart (Figma Node: 13028:18422) */}
+      <ChartCard
+        title="Average Rating Trend"
+        icon={<span className="text-amber-400 text-[16px]">★</span>}
+        legend={
+          <div className="flex items-center gap-2 justify-center">
+            <div className="w-3 h-3 rounded-full bg-[#f59e0b]" />
+            <span className="text-[13px] text-[#f59e0b]">Average Rating</span>
+          </div>
+        }
+      >
+        <ResponsiveContainer width="100%" height="100%">
+          <LineChart data={ratingData}>
+            <defs>
+              <linearGradient
+                id="ratingGradient"
+                x1="0"
+                y1="0"
+                x2="0"
+                y2="1"
+              >
+                <stop offset="5%" stopColor="#f59e0b" stopOpacity={0.15} />
+                <stop offset="95%" stopColor="#f59e0b" stopOpacity={0.02} />
+              </linearGradient>
+            </defs>
+            <CartesianGrid
+              strokeDasharray="3 3"
+              vertical={false}
+              stroke="#e5e7eb"
+            />
+            <XAxis
+              dataKey="name"
+              axisLine={false}
+              tickLine={false}
+              tick={{ fill: "#666", fontSize: 10 }}
+              dy={10}
+            />
+            <YAxis
+              axisLine={false}
+              tickLine={false}
+              tick={{ fill: "#666", fontSize: 10 }}
+              domain={[0, 5]}
+              ticks={[0, 1, 2, 3, 4, 5]}
+            />
+            <Tooltip
+              contentStyle={{
+                borderRadius: "8px",
+                border: "none",
+                boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+              }}
+              formatter={(value: number | undefined) => [
+                (value ?? 0).toFixed(1),
+                "Rating",
+              ]}
+            />
+            <Line
+              type="monotone"
+              dataKey="rating"
+              stroke="#f59e0b"
+              strokeWidth={2}
+              dot={{
+                r: 5,
+                fill: "#f59e0b",
+                strokeWidth: 2,
+                stroke: "#fff",
+              }}
+              activeDot={{
+                r: 7,
+                fill: "#f59e0b",
+                strokeWidth: 2,
+                stroke: "#fff",
+              }}
+            />
+          </LineChart>
+        </ResponsiveContainer>
+      </ChartCard>
     </div>
   );
 }

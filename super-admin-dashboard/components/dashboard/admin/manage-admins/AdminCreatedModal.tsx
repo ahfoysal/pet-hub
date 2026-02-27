@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { X, Eye, EyeOff, Copy } from "lucide-react";
 import Image from "next/image";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 import { toast } from "react-toastify";
 
 interface AdminCreatedModalProps {

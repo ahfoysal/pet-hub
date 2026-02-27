@@ -71,19 +71,19 @@ export default function Footer() {
               </div>
             </div>
 
-            <div className="space-y-2 w-full max-w-[200px] md:ml-auto">
-              <Link href="#" className="bg-[#282828] flex items-center gap-3 px-4 py-2 rounded-[14px] hover:bg-black transition-colors">
-                <Image src="/assets/app-store.svg" alt="" width={24} height={24} />
+            <div className="flex flex-col gap-3 w-full max-w-[180px] md:ml-auto">
+              <Link href="#" className="bg-[#282828] h-[52px] flex items-center justify-center gap-3 rounded-[12px] hover:bg-black transition-colors">
+                <Image src="/assets/app-store.svg" alt="" width={22} height={22} />
                 <div className="flex flex-col">
-                  <span className="text-[10px] text-white/80">Download on the</span>
-                  <span className="text-[12px] font-medium text-white">App Store</span>
+                  <span className="text-[10px] text-white/70 leading-none">Download on the</span>
+                  <span className="text-[16px] font-bold text-white leading-tight">App Store</span>
                 </div>
               </Link>
-              <Link href="#" className="bg-primary flex items-center gap-3 px-4 py-2 rounded-[14px] hover:bg-primary/90 transition-colors">
-                <Image src="/assets/google-play.svg" alt="" width={24} height={24} />
+              <Link href="#" className="bg-primary h-[52px] flex items-center justify-center gap-3 rounded-[12px] hover:bg-primary/90 transition-colors shadow-lg shadow-primary/20">
+                <Image src="/assets/google-play.svg" alt="" width={22} height={22} />
                 <div className="flex flex-col">
-                  <span className="text-[10px] text-white/80">GET IT ON</span>
-                  <span className="text-[12px] font-medium text-white">Google Play</span>
+                  <span className="text-[10px] text-white/70 leading-none">GET IT ON</span>
+                  <span className="text-[18px] font-bold text-white leading-tight">Google Play</span>
                 </div>
               </Link>
             </div>

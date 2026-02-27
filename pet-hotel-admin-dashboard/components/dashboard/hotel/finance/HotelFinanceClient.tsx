@@ -11,8 +11,10 @@ import {
   DollarSign,
   Info
 } from "lucide-react";
-import { useGetHotelBookingsQuery } from "@/redux/features/api/dashboard/hotel/booking/hotelBookingApi";
-import { useGetHotelDashboardQuery } from "@/redux/features/api/dashboard/hotel/dashboard/hotelDashboardApi";
+import { 
+  useGetFinanceOverviewQuery,
+  useGetFinanceHistoryQuery 
+} from "@/redux/features/api/dashboard/hotel/finance/hotelFinanceApi";
 import { 
   PageHeader, 
   TableContainer 
@@ -20,16 +22,18 @@ import {
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
 
 export default function HotelFinanceClient() {
-  const { data: dashboardData, isLoading: isDashboardLoading } = useGetHotelDashboardQuery();
-  const { data: bookingsData, isLoading: isBookingsLoading } =
-    useGetHotelBookingsQuery({ page: 1, limit: 10 });
+  const { data: overviewData, isLoading: isOverviewLoading } = useGetFinanceOverviewQuery();
+  const { data: historyData, isLoading: isHistoryLoading } =
+    useGetFinanceHistoryQuery({ page: 1, limit: 10 });
 
-  const transactions = bookingsData?.data?.items || [];
-  const totalRevenue = dashboardData?.data?.stats?.totalRevenue || 600;
-  const pendingPayout = 1270; // Placeholder as per Figma mockup
-  const totalCompleted = 4;   // Placeholder as per Figma mockup
+  const stats = overviewData?.data || {};
+  const transactions = historyData?.data?.data || [];
+  
+  const totalRevenue = stats.releasedPayments || 0;
+  const pendingPayout = stats.pendingPayout || 0;
+  const totalCompleted = stats.totalCompletedBookings || 0;
 
-  if (isDashboardLoading || isBookingsLoading) return <LoadingSpinner />;
+  if (isOverviewLoading || isHistoryLoading) return <LoadingSpinner />;
 
   return (
     <div className="space-y-[25px] pb-10 font-arimo bg-[#f2f4f8]">
@@ -114,28 +118,32 @@ export default function HotelFinanceClient() {
             </tr>
           </thead>
           <tbody className="divide-y divide-[#eaecf0]">
-             {/* Mocking the Figma rows for high-fidelity demonstration if real data is sparse */}
-             {[
-               { id: "#4", pet: "Rocky", amount: 350, completed: "2025-12-05", release: "2025-12-08", status: "Released" },
-               { id: "#5", pet: "Whiskers", amount: 250, completed: "2025-11-25", release: "2025-11-28", status: "Released" },
-               { id: "#1", pet: "Max", amount: 250, completed: "2025-12-15", release: "Pending", status: "Pending" },
-               { id: "#2", pet: "Luna & Bella", amount: 1020, completed: "2025-12-20", release: "Pending", status: "Pending" },
-             ].map((row, idx) => (
-               <tr key={idx} className="hover:bg-gray-50/50 transition-colors h-[72px]">
-                 <td className="px-6 py-4 text-[14px] font-medium text-[#0a0a0a]">{row.id}</td>
-                 <td className="px-6 py-4 text-[14px] text-[#0a0a0a]">{row.pet}</td>
-                 <td className="px-6 py-4 text-[14px] font-bold text-[#008236]">${row.amount}</td>
-                 <td className="px-6 py-4 text-[14px] text-[#0a0a0a]">{row.completed}</td>
-                 <td className="px-6 py-4 text-[14px] text-[#667085]">{row.release}</td>
-                 <td className="px-6 py-4">
-                    <span className={`px-3 py-1 rounded-full text-[12px] font-medium ${
-                      row.status === "Released" ? "bg-[#dcfce7] text-[#008236]" : "bg-[#fff5e5] text-[#fe9a00]"
-                    }`}>
-                      {row.status}
-                    </span>
+             {transactions.length > 0 ? (
+               transactions.map((row: any, idx: number) => (
+                 <tr key={idx} className="hover:bg-gray-50/50 transition-colors h-[72px]">
+                   <td className="px-6 py-4 text-[14px] font-medium text-[#0a0a0a]">#{row.id.slice(0, 5)}</td>
+                   <td className="px-6 py-4 text-[14px] text-[#0a0a0a]">{row.guestName}</td>
+                   <td className="px-6 py-4 text-[14px] font-bold text-[#008236]">${row.amount}</td>
+                   <td className="px-6 py-4 text-[14px] text-[#0a0a0a]">{format(new Date(row.date), "MMM dd, yyyy")}</td>
+                   <td className="px-6 py-4 text-[14px] text-[#667085]">
+                     {row.status === "CHECKED_OUT" ? format(new Date(row.date), "MMM dd, yyyy") : "Pending"}
+                   </td>
+                   <td className="px-6 py-4">
+                      <span className={`px-3 py-1 rounded-full text-[12px] font-medium ${
+                        row.status === "CHECKED_OUT" ? "bg-[#dcfce7] text-[#008236]" : "bg-[#fff5e5] text-[#fe9a00]"
+                      }`}>
+                        {row.status === "CHECKED_OUT" ? "Released" : "Pending"}
+                      </span>
+                   </td>
+                 </tr>
+               ))
+             ) : (
+               <tr>
+                 <td colSpan={6} className="px-6 py-10 text-center text-[#667085]">
+                   No payment history found.
                  </td>
                </tr>
-             ))}
+             )}
           </tbody>
         </table>
       </TableContainer>

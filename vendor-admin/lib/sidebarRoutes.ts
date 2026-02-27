@@ -39,6 +39,7 @@ import {
   MessageCircle,
   Globe,
   Wallet,
+  Star,
 } from "lucide-react";
 
 export interface MenuItemConfig {
@@ -113,6 +114,18 @@ export const menuItemsConfig: MenuItemConfig[] = [
     label: "Community",
     href: "/vendor/community",
     icon: MessagesSquare,
+    roles: ["VENDOR"],
+  },
+  {
+    label: "Finance",
+    href: "/vendor/finance",
+    icon: Wallet,
+    roles: ["VENDOR"],
+  },
+  {
+    label: "Reviews",
+    href: "/vendor/reviews",
+    icon: Star,
     roles: ["VENDOR"],
   },
 

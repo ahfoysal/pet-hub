@@ -1,217 +1,65 @@
-// import NextAuth from "next-auth";
-// import CredentialsProvider from "next-auth/providers/credentials";
-// import type { AuthOptions } from "next-auth";
-
-// export const authOptions: AuthOptions = {
-//   session: { strategy: "jwt" },
-//   pages: { signIn: process.env.NEXT_PUBLIC_AUTH_URL || "https://auth-pethub-rnc.vercel.app" },
-
-//   providers: [
-//     CredentialsProvider({
-//       name: "Credentials",
-
-//       credentials: {
-//         email: { type: "email" },
-//         password: { type: "password" },
-//         accessToken: { type: "text" },
-//         refreshToken: { type: "text" },
-//       },
-
-//       async authorize(credentials) {
-//         let accessToken = credentials?.accessToken;
-//         let refreshToken = credentials?.refreshToken;
-//         let isProfileCompleted = false;
-
-//         // 1️ Normal email/password login
-//         if (credentials?.email && credentials?.password) {
-//           const res = await fetch(
-//             `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/login`,
-//             {
-//               method: "POST",
-//               headers: { "Content-Type": "application/json" },
-//               body: JSON.stringify({
-//                 email: credentials.email,
-//                 password: credentials.password,
-//               }),
-//               credentials: "include",
-//             },
-//           );
-
-//           const data = await res.json();
-
-//           if (!res.ok || !data?.success) return null;
-
-//           accessToken = data.data.accessToken;
-//           refreshToken = data.data.refreshToken;
-//           isProfileCompleted = data.data.isProfileCompleted ?? false;
-//         }
-
-//         if (!accessToken) return null;
-
-//         // 2️ Always verify token with backend
-//         const meRes = await fetch(
-//           `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/me`,
-//           {
-//             headers: {
-//               Authorization: `Bearer ${accessToken}`,
-//             },
-//           },
-//         );
-
-//         if (!meRes.ok) return null;
-
-//         const me = await meRes.json();
-
-//         return {
-//           id: me.data.id,
-//           email: me.data.email,
-//           name: me.data.fullName || me.data.userName,
-//           role: me.data.role,
-//           image: me.data.image,
-//           accessToken,
-//           refreshToken,
-//           isProfileCompleted: isProfileCompleted ?? false,
-//         };
-//       },
-//     }),
-//   ],
-
-//   callbacks: {
-//     async jwt({ token, user }) {
-//       if (user) {
-//         token.id = user.id;
-//         token.email = user.email;
-//         token.name = user.name;
-//         token.role = user.role;
-//         token.image = user.image;
-//         token.hasProfile = user.hasProfile;
-//         token.isProfileCompleted = user.isProfileCompleted;
-//         token.accessToken = user.accessToken;
-//         token.refreshToken = user.refreshToken;
-//       }
-//       return token;
-//     },
-
-//     async session({ session, token }) {
-//       session.user.id = token.id as string;
-//       session.user.email = token.email as string;
-//       session.user.name = token.name as string;
-//       session.user.role = token.role as string;
-//       session.user.image = token.image as string;
-//       session.user.isProfileCompleted = token.isProfileCompleted as boolean;
-//       session.accessToken = token.accessToken as string;
-//       return session;
-//     },
-//   },
-// };
-
-// const handler = NextAuth(authOptions);
-// export { handler as GET, handler as POST };
+// app/api/auth/[...nextauth]/route.ts — Super Admin Dashboard
+// Figma Node: N/A — Infrastructure
+// Purpose: READ-ONLY NextAuth handler. Does NOT have login providers.
+// Reads the shared JWT cookie set by auth-and-kyc on `.lvh.me` domain.
+// This dashboard is for ADMIN role only.
 
 import NextAuth from "next-auth";
-import CredentialsProvider from "next-auth/providers/credentials";
 import type { AuthOptions } from "next-auth";
-import { refreshAccessToken } from "@/lib/auth/refreshAccessToken";
+
+const IS_PRODUCTION = process.env.NODE_ENV === "production";
+const COOKIE_DOMAIN = IS_PRODUCTION ? undefined : ".lvh.me";
 
 export const authOptions: AuthOptions = {
   session: { strategy: "jwt" },
-  pages: {
-    signIn:
-      process.env.NEXT_PUBLIC_AUTH_URL || "https://auth-pethub-rnc.vercel.app",
-  },
   secret: process.env.NEXTAUTH_SECRET,
 
-  providers: [
-    CredentialsProvider({
-      name: "Credentials",
+  // Point sign-in to the central auth server
+  pages: {
+    signIn: process.env.NEXT_PUBLIC_AUTH_URL || "http://auth.lvh.me:3000",
+  },
 
-      credentials: {
-        email: { type: "email" },
-        password: { type: "password" },
-        accessToken: { type: "text" },
-        refreshToken: { type: "text" },
+  // CRITICAL: Same cookie config as auth-and-kyc so we read the same JWT
+  cookies: {
+    sessionToken: {
+      name: "next-auth.session-token",
+      options: {
+        httpOnly: true,
+        sameSite: "lax" as const,
+        path: "/",
+        secure: IS_PRODUCTION,
+        domain: COOKIE_DOMAIN,
       },
-
-      async authorize(credentials) {
-        let accessToken = credentials?.accessToken;
-        let refreshToken = credentials?.refreshToken;
-        let isProfileCompleted = false;
-
-        // 1️ Normal email/password login
-        if (credentials?.email && credentials?.password) {
-          const res = await fetch(
-            `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/login`,
-            {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                email: credentials.email,
-                password: credentials.password,
-              }),
-              credentials: "include",
-            },
-          );
-
-          const data = await res.json();
-
-          if (!res.ok || !data?.success) return null;
-
-          accessToken = data.data.accessToken;
-          refreshToken = data.data.refreshToken;
-          isProfileCompleted = data.data.isProfileCompleted ?? false;
-        }
-
-        if (!accessToken) return null;
-
-        // 2️ Always verify token with backend
-        const meRes = await fetch(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/me`,
-          {
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
-          },
-        );
-
-        if (!meRes.ok) return null;
-
-        const me = await meRes.json();
-
-        return {
-          id: me.data.id,
-          email: me.data.email,
-          name: me.data.fullName || me.data.userName,
-          role: me.data.role,
-          image: me.data.image,
-          accessToken,
-          refreshToken,
-          isProfileCompleted: isProfileCompleted ?? false,
-          accessTokenExpires: Date.now() + 15 * 60 * 1000,
-        };
+    },
+    callbackUrl: {
+      name: "next-auth.callback-url",
+      options: {
+        httpOnly: true,
+        sameSite: "lax" as const,
+        path: "/",
+        secure: IS_PRODUCTION,
+        domain: COOKIE_DOMAIN,
       },
-    }),
-  ],
+    },
+    csrfToken: {
+      name: "next-auth.csrf-token",
+      options: {
+        httpOnly: true,
+        sameSite: "lax" as const,
+        path: "/",
+        secure: IS_PRODUCTION,
+        domain: COOKIE_DOMAIN,
+      },
+    },
+  },
+
+  // NO providers — this dashboard does NOT handle login
+  providers: [],
 
   callbacks: {
-    async jwt({ token, user }) {
-      if (user) {
-        token.id = user.id;
-        token.email = user.email;
-        token.name = user.name;
-        token.role = user.role;
-        token.image = user.image;
-        token.hasProfile = user.hasProfile;
-        token.isProfileCompleted = user.isProfileCompleted;
-        token.accessToken = user.accessToken;
-        token.refreshToken = user.refreshToken;
-        token.accessTokenExpires = Date.now() + 15 * 60 * 1000;
-      }
-
-      // Still valid
-      if (Date.now() < (token.accessTokenExpires as number)) {
-        return token;
-      }
-      return await refreshAccessToken(token);
+    async jwt({ token }) {
+      // Just pass through the token from the shared cookie
+      return token;
     },
 
     async session({ session, token }) {

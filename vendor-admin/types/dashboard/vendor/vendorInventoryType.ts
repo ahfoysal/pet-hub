@@ -5,6 +5,10 @@ export interface VendorStats {
   totalUnitsSold: number;
   totalRevenue: number;
   averageRating: number;
+  totalTransactions: number;
+  totalPayouts: number;
+  totalOrders: number;
+  totalPendingOrders: number;
 }
 
 // Inventory summary
@@ -25,12 +29,32 @@ export interface RecentActivity {
   time: string; // ISO date string
 }
 
-// Main dashboard data
+export interface InventoryItem {
+  orderId: string;
+  productName: string;
+  customerName: string;
+  quantity: number;
+  amount: number;
+  date: string;
+  stock: number;
+  status: string;
+}
+
+export interface BestSellingProduct {
+  rank: number;
+  productId: string;
+  productName: string;
+  productImage: string;
+  unitsSold: number;
+  revenue: number;
+}
+
 export interface VendorInventoryData {
   stats: VendorStats;
-  bestSellingProducts: unknown[]; // replace with a proper type if available
+  bestSellingProducts: BestSellingProduct[];
   inventorySummary: InventorySummary;
   recentActivity: RecentActivity[];
+  detailedList: InventoryItem[];
 }
 
 // API response wrapper

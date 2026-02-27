@@ -11,7 +11,7 @@ export const personalInfoSchema = z.object({
   fullName: z.string().min(1, "Please enter your full name"),
   phoneNumber: z.string().min(1, "Please enter your phone number"),
   email: z.string().email("Please enter a valid email address"),
-  dateOfBirth: z.string().optional(),
+  dateOfBirth: z.string().min(1, "Please enter your date of birth"),
   identificationFrontImage: z.any().optional(), // File validation is handled in Step 5 or via custom check
   identificationBackImage: z.any().optional(),
 });
@@ -40,7 +40,7 @@ export const kycFormSchema = z.object({
   // Personal Information
   fullName: z.string().min(1, "Full name is required"),
   email: z.string().email("Invalid email address"),
-  dateOfBirth: z.string().optional(),
+  dateOfBirth: z.string().min(1, "Date of birth is required"),
   gender: z.string().optional(),
   nationality: z.string().optional(),
   image: z.union([z.instanceof(File), z.null()]).optional(),

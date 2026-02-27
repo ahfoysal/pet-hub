@@ -129,14 +129,14 @@ export const TableContainer = ({
   action, 
   footer 
 }: { 
-  title: string; 
+  title: React.ReactNode; 
   children: React.ReactNode; 
   action?: React.ReactNode;
   footer?: React.ReactNode;
 }) => (
   <div className="bg-white border border-[#eaecf0] rounded-[8px] shadow-[0px_0.775px_2.325px_0px_rgba(0,0,0,0.1)] overflow-hidden font-arimo transition-all hover:shadow-md">
     <div className="px-[24px] py-[20px] border-b border-[#eaecf0] flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white">
-      <h2 className="text-[18px] font-medium text-[#101828] font-arimo leading-[28px]">{title}</h2>
+      <div className="text-[18px] font-medium text-[#101828] font-arimo leading-[28px]">{title}</div>
       {action}
     </div>
     <div className="overflow-x-auto">

@@ -316,6 +316,9 @@ export default function CreateProductPage() {
               <FormGroup label="SKU">
                 <TextInput name="sku" value={formData.sku} onChange={handleInputChange} placeholder="Product SKU" />
               </FormGroup>
+              <FormGroup label="Low Stock Threshold">
+                <TextInput type="number" name="lowStockThreshold" value={formData.lowStockThreshold} onChange={handleInputChange} placeholder="10" />
+              </FormGroup>
             </div>
 
             <FormGroup label="Product Images" required>

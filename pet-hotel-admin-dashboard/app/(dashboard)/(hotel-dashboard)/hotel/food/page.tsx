@@ -16,6 +16,7 @@ import {
   TableContainer, 
   ActionButton 
 } from "@/components/dashboard/shared/DashboardUI";
+import { Eye, Edit2, Trash2 } from "lucide-react";
 
 export default function FoodManagementPage() {
   const { status: sessionStatus } = useSession();
@@ -130,9 +131,9 @@ export default function FoodManagementPage() {
                 </td>
                 <td className="px-6 py-4">
                   <div className="flex items-center justify-end gap-1">
-                    <button onClick={() => setDetailsFoodId(food.id)} className="p-2 hover:bg-gray-100 rounded-lg transition-colors"><Image src="/assets/view-eye.svg" alt="View" width={20} height={20} /></button>
-                    <button onClick={() => setEditFood(food)} className="p-2 hover:bg-gray-100 rounded-lg transition-colors"><Image src="/assets/edit-pencil.svg" alt="Edit" width={20} height={20} /></button>
-                    <button onClick={() => setDeleteFood({ id: food.id, name: food.name })} className="p-2 hover:bg-gray-100 rounded-lg transition-colors"><Image src="/assets/delete-trash.svg" alt="Delete" width={20} height={20} /></button>
+                    <button onClick={() => setDetailsFoodId(food.id)} className="p-2 hover:bg-gray-100 rounded-lg transition-colors text-[#667085] hover:text-[#ff7176]"><Eye size={20} /></button>
+                    <button onClick={() => setEditFood(food)} className="p-2 hover:bg-gray-100 rounded-lg transition-colors text-[#667085] hover:text-[#ff7176]"><Edit2 size={20} /></button>
+                    <button onClick={() => setDeleteFood({ id: food.id, name: food.name })} className="p-2 hover:bg-gray-100 rounded-lg transition-colors text-[#667085] hover:text-red-500"><Trash2 size={20} /></button>
                   </div>
                 </td>
               </tr>

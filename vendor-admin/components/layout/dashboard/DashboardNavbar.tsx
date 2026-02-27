@@ -11,15 +11,21 @@ import { clearCredentials } from "@/redux/features/slice/authSlice";
 import petzyLogo from "@/public/images/logo.png";
 import { getRedirectSettingPath } from "@/lib/roleRoutes";
 import { useSelector } from "react-redux";
-import { RootState } from "@/redux/store/store";
 import { selectTotalUnreadCount } from "@/redux/features/slice/socketSlice";
+import NotificationPopover from "./NotificationPopover";
+import MailPopover from "./MailPopover";
 
 export function DashboardNavbar() {
   const [showProfileMenu, setShowProfileMenu] = useState(false);
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [showMail, setShowMail] = useState(false);
+  
   const { data: session, status } = useSession();
   const { isMobileMenuOpen, setIsMobileMenuOpen } = useMobileMenu();
   const dispatch = useAppDispatch();
   const profileDropdownRef = useRef<HTMLDivElement>(null);
+  const notificationsRef = useRef<HTMLDivElement>(null);
+  const mailRef = useRef<HTMLDivElement>(null);
   const totalUnreadCount = useSelector(selectTotalUnreadCount);
 
   // Get user role from session
@@ -48,6 +54,18 @@ export function DashboardNavbar() {
         !profileDropdownRef.current.contains(event.target as Node)
       ) {
         setShowProfileMenu(false);
+      }
+      if (
+        notificationsRef.current &&
+        !notificationsRef.current.contains(event.target as Node)
+      ) {
+        setShowNotifications(false);
+      }
+      if (
+        mailRef.current &&
+        !mailRef.current.contains(event.target as Node)
+      ) {
+        setShowMail(false);
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
@@ -83,29 +101,51 @@ export function DashboardNavbar() {
         {/* Right - Icons */}
         <div className="flex items-center gap-[24px]">
           {/* Mail */}
-          <div className="relative group cursor-pointer hidden sm:block">
-            <div className="relative">
-              <Mail size={22} className="text-[#282828] group-hover:text-primary transition-colors" strokeWidth={1.5} />
-              <div className="absolute -top-1 -right-2 bg-[#ff7176] text-white text-[10px] font-bold rounded-full w-[15px] h-[15px] flex items-center justify-center border border-white">
+          <div className="relative" ref={mailRef}>
+            <button 
+              onClick={() => {
+                setShowMail(!showMail);
+                setShowNotifications(false);
+                setShowProfileMenu(false);
+              }}
+              className="relative group cursor-pointer hidden sm:block py-2"
+            >
+              <Mail size={22} className={`${showMail ? 'text-primary' : 'text-[#282828]'} group-hover:text-primary transition-colors`} strokeWidth={1.5} />
+              <div className="absolute top-1 -right-2 bg-[#ff7176] text-white text-[10px] font-bold rounded-full w-[15px] h-[15px] flex items-center justify-center border border-white">
                 2
               </div>
-            </div>
+            </button>
+            {showMail && <MailPopover onClose={() => setShowMail(false)} />}
           </div>
 
           {/* Notifications/Bell */}
-          <button className="relative group cursor-pointer">
-            <Bell size={22} className="text-[#282828] group-hover:text-primary transition-colors" strokeWidth={1.5} />
-            {totalUnreadCount > 0 && (
-              <span className="absolute -top-1 -right-2 bg-[#ff7176] text-white text-[10px] font-bold rounded-full w-[15px] h-[15px] flex items-center justify-center border border-white">
-                {totalUnreadCount > 99 ? "99+" : totalUnreadCount}
-              </span>
-            )}
-          </button>
+          <div className="relative" ref={notificationsRef}>
+            <button 
+              onClick={() => {
+                setShowNotifications(!showNotifications);
+                setShowMail(false);
+                setShowProfileMenu(false);
+              }}
+              className="relative group cursor-pointer py-2"
+            >
+              <Bell size={22} className={`${showNotifications ? 'text-primary' : 'text-[#282828]'} group-hover:text-primary transition-colors`} strokeWidth={1.5} />
+              {totalUnreadCount > 0 && (
+                <span className="absolute top-1 -right-2 bg-[#ff7176] text-white text-[10px] font-bold rounded-full w-[15px] h-[15px] flex items-center justify-center border border-white">
+                  {totalUnreadCount > 99 ? "99+" : totalUnreadCount}
+                </span>
+              )}
+            </button>
+            {showNotifications && <NotificationPopover onClose={() => setShowNotifications(false)} />}
+          </div>
 
           {/* Profile */}
           <div className="relative" ref={profileDropdownRef}>
             <button
-              onClick={() => setShowProfileMenu(!showProfileMenu)}
+              onClick={() => {
+                setShowProfileMenu(!showProfileMenu);
+                setShowMail(false);
+                setShowNotifications(false);
+              }}
               className="flex items-center justify-center cursor-pointer transition-transform hover:scale-105"
             >
               <div className="w-[32px] h-[32px] rounded-full flex items-center justify-center overflow-hidden border border-gray-100 shadow-sm">

@@ -132,7 +132,7 @@ body {
 }
 
 * {
-  border-color: hsl(var(--border));
+ 
 }
 
 @keyframes fadeIn {

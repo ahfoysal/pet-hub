@@ -15,7 +15,7 @@ function DashboardLayout({ children }: { children: React.ReactNode }) {
 
         {/* Main content */}
         <div className="flex-1 flex flex-col">
-          <header className="fixed top-0 left-0 w-full z-100 bg-white shadow">
+          <header className="fixed top-0 left-0 w-full z-100 bg-white border-b border-[#D0D0D0]">
             <DashboardNavbar />
           </header>
 

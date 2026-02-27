@@ -1,4 +1,4 @@
-import { Controller, Patch, Param, UseGuards, Body, Get, Post } from '@nestjs/common';
+import { Controller, Patch, Param, UseGuards, Body, Get, Post, Delete } from '@nestjs/common';
 import { AdminService } from './admin.service';
 import { AuthGuard } from 'src/common/guards/auth.guard';
 import { Roles } from 'src/common/decorators/role.decorator';
@@ -43,6 +43,26 @@ export class AdminController {
   @ApiBody({ type: UpdateAdminDto, description: 'Payload to update an admin' })
   async updateAdmin(@Param() params: UpdateAdminParamDto, @Body() payload: UpdateAdminDto) {
     return await this.adminService.updateAdmin(params.adminId, payload);
+  }
+
+  @Delete('delete/:adminId')
+  @ApiOperation({
+    summary: 'Delete an Admin user [ADMIN]',
+    description: 'Allows an existing admin to delete another admin account. Also deletes the user from Firebase.',
+  })
+  @ApiParam({ name: 'adminId', description: 'The ID of the admin to delete', type: String })
+  async deleteAdmin(@Param('adminId') adminId: string) {
+    return await this.adminService.deleteAdmin(adminId);
+  }
+
+  @Post('reset-password/:adminId')
+  @ApiOperation({
+    summary: 'Reset Admin password [ADMIN]',
+    description: 'Generates a new random password for the specified admin.',
+  })
+  @ApiParam({ name: 'adminId', description: 'The ID of the admin whose password is to be reset', type: String })
+  async resetAdminPassword(@Param('adminId') adminId: string) {
+    return await this.adminService.resetAdminPassword(adminId);
   }
 
   @Patch('reactivate-user/:userId')

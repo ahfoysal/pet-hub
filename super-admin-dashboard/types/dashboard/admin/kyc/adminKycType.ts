@@ -1,7 +1,7 @@
 /**
  * Represents the status of the KYC verification process.
  */
-export type KYCStatus = "PENDING" | "APPROVED" | "REJECTED";
+export type KYCStatus = "PENDING" | "APPROVED" | "REJECTED" | "NOT_SUBMITTED";
 
 /**
  * Represents the role type associated with the user.

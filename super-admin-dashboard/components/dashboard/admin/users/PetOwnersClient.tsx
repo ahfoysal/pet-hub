@@ -14,21 +14,23 @@ import {
 import {
   useGetPetOwnersQuery,
   useGetRolesCountQuery,
-  useGetFinanceStatsQuery,
 } from "@/redux/features/api/dashboard/admin/dashboard/adminDashboardApi";
 import { PetOwnerItem } from "@/types/dashboard/admin/dashboard/adminDashboardType";
 import PetOwnerDetailsModal from "./PetOwnerDetailsModal";
+import TablePagination from "./TablePagination";
 
 export default function PetOwnersClient() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedUser, setSelectedUser] = useState<PetOwnerItem | null>(null);
   const [activeTab, setActiveTab] = useState<"ALL" | "SUSPENDED">("ALL");
+  const [page, setPage] = useState(1);
+  const itemsPerPage = 20;
 
   const { data: rolesCount } = useGetRolesCountQuery();
-  const { data: financeData, isLoading: isFinanceLoading } = useGetFinanceStatsQuery();
   const { data, isLoading, isError } = useGetPetOwnersQuery({
     search: searchTerm,
-    limit: 20,
+    limit: itemsPerPage,
+    page,
     // Add filtering by status if backend supports it, otherwise filter on frontend
   });
 
@@ -37,14 +39,13 @@ export default function PetOwnersClient() {
     ? owners 
     : owners.filter(o => o.status === "SUSPENDED" || o.status === "BANNED");
 
-  const displayUsers = isFinanceLoading ? "..." : (financeData?.data?.activeUsers || 0).toLocaleString();
-  const displayBookings = isFinanceLoading ? "..." : (financeData?.data?.totalBookings || 0).toLocaleString();
+  const activePetOwnersCount = rolesCount?.data?.PET_OWNER || 0;
   
   const stats = [
     { label: "Total Pet Owners", value: rolesCount?.data?.PET_OWNER || 0, icon: <Users size={18} className="text-blue-500" />, bgColor: "bg-blue-50" },
-    { label: "Active Users", value: displayUsers, icon: <Activity size={18} className="text-green-500" />, bgColor: "bg-green-50" },
-    { label: "Suspended Users", value: owners.filter(o => o.status === "SUSPENDED").length, icon: <FileBadge size={18} className="text-red-500" />, bgColor: "bg-red-50" },
-    { label: "Total Bookings", value: displayBookings, icon: <Loader2 size={18} className="text-purple-500" />, bgColor: "bg-purple-50" },
+    { label: "Active Users", value: activePetOwnersCount, icon: <Activity size={18} className="text-green-500" />, bgColor: "bg-green-50" },
+    { label: "Suspended Users", value: owners.filter(o => o.status === "SUSPENDED" || o.status === "BANNED").length, icon: <FileBadge size={18} className="text-red-500" />, bgColor: "bg-red-50" },
+    { label: "Total Bookings", value: 0, icon: <Loader2 size={18} className="text-purple-500" />, bgColor: "bg-purple-50" },
   ];
 
   return (
@@ -254,23 +255,16 @@ export default function PetOwnersClient() {
           </table>
         </div>
 
-        {/* Pagination placeholder matching the design */}
-        <div className="border-t border-[#e2e8f0] px-6 py-4 flex items-center justify-between bg-white h-17">
-          <p className="font-['Inter',sans-serif] text-sm text-[#475569]">
-             Showing 1 to {filteredOwners.length} of {filteredOwners.length} entries
-          </p>
-          <div className="flex items-center gap-1">
-            <button className="px-3 py-1 rounded w-8 h-8 flex items-center justify-center border border-[#e2e8f0] text-gray-400 cursor-not-allowed">
-              {"<"}
-            </button>
-            <button className="px-3 py-1 bg-red-500 text-white rounded w-8 h-8 flex items-center justify-center">
-              1
-            </button>
-             <button className="px-3 py-1 rounded w-8 h-8 flex items-center justify-center border border-[#e2e8f0] text-gray-400 cursor-not-allowed" disabled>
-              {">"}
-            </button>
-          </div>
-        </div>
+        {/* Pagination */}
+        {!isLoading && !isError && filteredOwners.length > 0 && (
+          <TablePagination
+            currentPage={page}
+            totalPages={Math.ceil((data?.data?.totalCount || 0) / itemsPerPage)}
+            onPageChange={(p) => setPage(p)}
+            totalItems={data?.data?.totalCount || 0}
+            itemsPerPage={itemsPerPage}
+          />
+        )}
       </div>
 
       {selectedUser && (

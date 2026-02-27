@@ -1,4 +1,4 @@
-import { baseApi } from "../../baseApi";
+import { baseApi } from "../../../baseApi";
 import {
   CreateAdminRequest,
   UpdateAdminRequest,
@@ -51,6 +51,22 @@ export const manageAdminsApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["ManageAdmins" as any, "ManageUsers"],
     }),
+
+    deleteAdmin: builder.mutation<any, string>({
+      query: (adminId) => ({
+        url: `/admin/delete/${adminId}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["ManageAdmins" as any, "ManageUsers"],
+    }),
+
+    resetAdminPassword: builder.mutation<any, string>({
+      query: (adminId) => ({
+        url: `/admin/reset-password/${adminId}`,
+        method: "POST",
+      }),
+      invalidatesTags: ["ManageAdmins" as any],
+    }),
   }),
 });
 
@@ -59,4 +75,6 @@ export const {
   useGetAllAdminsQuery,
   useCreateAdminMutation,
   useUpdateAdminMutation,
+  useDeleteAdminMutation,
+  useResetAdminPasswordMutation,
 } = manageAdminsApi;

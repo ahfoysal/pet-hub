@@ -1,6 +1,6 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
-import { IsArray, IsOptional, IsString } from 'class-validator';
+import { IsArray, IsInt, IsOptional, IsString } from 'class-validator';
 import parseStringArray from 'src/common/utils/parseArray';
 
 export class UpdateProductDto {
@@ -33,6 +33,33 @@ export class UpdateProductDto {
   @IsArray()
   @IsString({ each: true })
   features?: string[];
+
+  @ApiPropertyOptional({ type: String })
+  @IsOptional()
+  @IsString()
+  brandName?: string;
+
+  @ApiPropertyOptional({ type: [String] })
+  @IsOptional()
+  @Transform(parseStringArray)
+  @IsArray()
+  countryOfOrigin?: string[];
+
+  @ApiPropertyOptional({ type: String })
+  @IsOptional()
+  @IsString()
+  manufacturingDate?: string;
+
+  @ApiPropertyOptional({ type: String })
+  @IsOptional()
+  @IsString()
+  expiryDate?: string;
+
+  @ApiPropertyOptional({ type: Number })
+  @IsOptional()
+  @Transform(({ value }) => (value ? parseInt(value as string, 10) : undefined))
+  @IsInt()
+  lowStockThreshold?: number;
 
   @ApiPropertyOptional({ type: String, example: 'SEO Title' })
   @IsOptional()

@@ -20,16 +20,32 @@ async function bootstrap() {
   app.setGlobalPrefix('api');
   app.enableCors({
     origin: [
+      // Local development
       'http://localhost:3000',
       'http://localhost:3001',
       'http://localhost:3002',
+      'http://localhost:3003',
+      'http://localhost:3004',
+      'http://localhost:3005',
+      'http://localhost:3006',
+      // lvh.me subdomains (local dev with subdomains)
       'http://auth.lvh.me:3000',
       'http://admin.lvh.me:3001',
-      'http://owner.lvh.me:3002',
+      'http://hotel.lvh.me:3002',
+      'http://vendor.lvh.me:3003',
+      'http://sitter.lvh.me:3004',
+      'http://owner.lvh.me:3005',
+      'http://school.lvh.me:3006',
       'http://lvh.me:3000',
       'http://lvh.me:3001',
       'http://lvh.me:3002',
+      'http://lvh.me:3003',
+      'http://lvh.me:3004',
+      'http://lvh.me:3005',
+      'http://lvh.me:3006',
+      // Ngrok
       'https://clever-iguana-terminally.ngrok-free.app',
+      // Vercel Production
       'https://richardhan-frontend-web.vercel.app',
       'https://auth-pethub-rnc.vercel.app',
       'https://admin-pethub-rnc.vercel.app',

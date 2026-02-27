@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { KycStatus, ProfileStatus } from '@prisma/client';
+import { KycStatus, ProfileStatus, ProfileType } from '@prisma/client';
 import { ApiResponse } from 'src/common/response/api-response';
 import { User } from 'src/common/types/user.type';
 import { CloudinaryService } from 'src/common/utils/cloudinary/cloudinary.service';
@@ -231,8 +231,38 @@ export class KycService {
   }
 
   async getAllKyc() {
-    const result = await this.prisma.kYC.findMany();
-    return ApiResponse.success('KYC found', result);
+    const kycs = await this.prisma.kYC.findMany();
+    
+    // Find users with provider roles who have NOT submitted KYC
+    const usersWithoutKyc = await this.prisma.user.findMany({
+      where: {
+        role: {
+          in: [ProfileType.PET_SITTER, ProfileType.PET_HOTEL, ProfileType.PET_SCHOOL, ProfileType.VENDOR],
+        },
+        kycs: {
+          none: {},
+        },
+      },
+    });
+
+    const notSubmittedKycs = usersWithoutKyc.map((user) => ({
+      id: `ns_${user.id}`,
+      userId: user.id,
+      fullName: user.fullName,
+      email: user.email,
+      phoneNumber: user.phone || 'N/A',
+      roleType: user.role,
+      status: 'NOT_SUBMITTED' as any, // Cast as any since it's not in the Prisma enum
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
+      // Mock minimum required fields for the UI
+      identificationFrontImage: '',
+      identificationBackImage: '',
+      signatureImage: '',
+      image: user.image || '',
+    }));
+
+    return ApiResponse.success('KYC found', [...kycs, ...notSubmittedKycs]);
   }
 
   async getKycById(id: string) {

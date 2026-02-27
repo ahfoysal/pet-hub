@@ -23,3 +23,18 @@ export class AddProductReviewDto {
   @IsNotEmpty()
   review: string;
 }
+
+export class ReplyToReviewDto {
+  @ApiProperty({ example: 'Thank you for your feedback!' })
+  @MaxLength(500)
+  @IsString()
+  @IsNotEmpty()
+  reply: string;
+}
+
+export class FlagReviewDto {
+  @ApiProperty({ example: 'Inappropriate language' })
+  @IsString()
+  @IsNotEmpty()
+  reason: string;
+}

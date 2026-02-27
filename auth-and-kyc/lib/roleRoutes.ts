@@ -109,8 +109,15 @@ export const getRedirectProfilePath = (role: string | null) => {
     return getRedirectPath("PET_OWNER");
   }
 
-  // All other roles (Sitter, School) share the unified KYC flow
-  // inside the auth-and-kyc repository. We do NOT use baseUrl here to keep them local.
+  if (normalizedRole === "PET_SITTER") {
+    return getRedirectPath("PET_SITTER");
+  }
+
+  if (normalizedRole === "PET_SCHOOL") {
+    return getRedirectPath("PET_SCHOOL");
+  }
+
+  // Fallback for any other specific roles that might still need local KYC
   return "/kyc-verification";
 };
 

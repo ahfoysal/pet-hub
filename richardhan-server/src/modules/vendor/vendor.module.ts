@@ -6,6 +6,7 @@ import { OrderModule } from './order/order.module';
 import { VariantModule } from './variant/variant.module';
 import { DashboardModule } from './dashboard/dashboard.module';
 import { VendorSettingsModule } from './vendor-settings/vendor-settings.module';
+import { VendorFinanceModule } from './finance/finance.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { VendorSettingsModule } from './vendor-settings/vendor-settings.module';
     VariantModule,
     DashboardModule,
     VendorSettingsModule,
+    VendorFinanceModule,
   ],
   controllers: [VendorController],
   providers: [VendorService],

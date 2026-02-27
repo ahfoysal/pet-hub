@@ -80,6 +80,10 @@ export const baseApi = createApi({
     "VendorNotifications",
     "VendorBanking",
     "VendorDocuments",
+    "VendorFinance",
+    "Reviews",
+    "ReviewStats",
+    "Notifications",
   ],
   endpoints: () => ({}),
 });

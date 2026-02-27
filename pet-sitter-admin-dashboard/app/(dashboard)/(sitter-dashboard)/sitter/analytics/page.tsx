@@ -73,15 +73,16 @@ export default function AnalyticsPage() {
 
   const stats = statsData?.data;
   const bookingRatio = (ratioData?.data || []).map((item: { type: string; percentage: number; count: number }) => ({
-    name: item.type === "PACKAGE" ? "Package Booking" : "Regular Booking",
+    name: item.type,
     value: item.percentage || 0,
     count: item.count || 0
   }));
-  const bookingTrends = (trendsData?.data?.data || []).map((item: { month: string; totalBookings: number; revenue?: number }) => ({
-    name: item.month,
+  
+  const ratingTrend = stats?.ratingTrend || [];
+  const bookingTrends = (trendsData?.data?.data || []).map((item: { name: string; totalBookings: number; revenue?: number }) => ({
+    name: item.name,
     bookings: item.totalBookings || 0,
-    // Using bookings as placeholder for revenue if not available, or mapping if exists
-    revenue: item.revenue || item.totalBookings * 50 
+    revenue: item.revenue || 0 
   }));
 
   if (isStatsLoading || isRatioLoading || isTrendsLoading) {
@@ -122,26 +123,26 @@ export default function AnalyticsPage() {
           icon={BarChart3} 
           title="Total Bookings (2025)" 
           value={stats?.bookings?.total?.toString() || "0"} 
-          trend="+12% from last year" 
+          trend="Total All-time" 
         />
         <StatCard 
           icon={DollarSign} 
           title="Annual Revenue" 
           value={`$${(stats?.totalEarnings || 0).toLocaleString()}`} 
-          trend="+18% from last year" 
+          trend="Current Year" 
         />
         <StatCard 
           icon={Layers} 
           title="Active Clients" 
-          value={(stats?.activeClients || 1248).toString()} 
+          value={(stats?.activeClients || 0).toString()} 
           trend="This Year" 
           trendColor="text-[#155dfc]"
         />
         <StatCard 
           icon={TrendingUp} 
           title="Average Services provide" 
-          value={(stats?.avgServices || 6.2).toString()} 
-          trend="Per month" 
+          value={(stats?.avgServices || 0).toString()} 
+          trend="Per month (Avg)" 
           trendColor="text-[#155dfc]"
         />
       </div>
@@ -159,7 +160,7 @@ export default function AnalyticsPage() {
           </div>
           <div className="flex-1 min-h-0">
             <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={bookingTrends}>
+              <AreaChart data={bookingTrends} margin={{ top: 10, right: 10, left: 0, bottom: 20 }}>
                 <defs>
                   <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%" stopColor="#ff7176" stopOpacity={0.1}/>
@@ -171,7 +172,10 @@ export default function AnalyticsPage() {
                   dataKey="name" 
                   axisLine={false} 
                   tickLine={false} 
-                  tick={{ fill: '#666', fontSize: 9.75 }} 
+                  tick={{ fill: '#666', fontSize: 9 }}
+                  interval={0} // Show all days
+                  height={30}
+                  tickMargin={5}
                 />
                 <YAxis 
                   axisLine={false} 
@@ -234,16 +238,11 @@ export default function AnalyticsPage() {
       <div className="bg-white border-[#e5e7eb] border-[0.813px] p-5 rounded-[11.375px] shadow-[0px_0.813px_2.438px_0px_rgba(0,0,0,0.1),0px_0.813px_1.625px_0px_rgba(0,0,0,0.1)] flex flex-col gap-5">
         <div className="flex items-center gap-1.5">
           <PieChartIcon size={16} className="text-[#0a0a0a]" />
-          <h2 className="text-base font-normal text-[#0a0a0a]">Average Rating Trend</h2>
+          <h2 className="text-base font-normal text-[#0a0a0a]">Average Rating: {stats?.averageRating?.toFixed(1) || "0.0"} ({stats?.reviewCount || 0} Reviews)</h2>
         </div>
         <div className="h-[243.75px]">
           <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={[
-              { name: "Week 1", rating: 4.2 },
-              { name: "Week 2", rating: 4.5 },
-              { name: "Week 3", rating: 4.8 },
-              { name: "Week 4", rating: 4.6 },
-            ]}>
+            <AreaChart data={ratingTrend}>
               <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
               <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#666', fontSize: 9.75 }} />
               <YAxis domain={[0, 5]} axisLine={false} tickLine={false} tick={{ fill: '#666', fontSize: 9.75 }} />

@@ -503,7 +503,7 @@ model VendorNotificationSettings {
 }
 
 model Product {
-  id              String   @id @default(uuid())
+  id              String    @id @default(uuid())
   vendorId        String
   name            String
   images          String[]
@@ -512,14 +512,19 @@ model Product {
   petCategory     String
   tags            String[]
   features        String[]
-  inStock         Boolean  @default(true)
-  isPublish       Boolean  @default(true)
+  brandName       String?
+  countryOfOrigin String[]
+  manufacturingDate DateTime?
+  expiryDate      DateTime?
+  lowStockThreshold Int?
+  inStock         Boolean   @default(true)
+  isPublish       Boolean   @default(true)
   // isBestSelling   Boolean  @default(false)
-  avgRating       Float    @default(0)
+  avgRating       Float     @default(0)
   seoTitle        String?
   seoDescription  String?
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
 
   vendor         VendorProfile   @relation(fields: [vendorId], references: [id])
   reviews        Review[]
@@ -535,6 +540,10 @@ model ProductReview {
   userId    String
   rating    Int
   review    String
+  reply     String?
+  repliedAt DateTime?
+  isFlagged Boolean  @default(false)
+  flaggedReason String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -1216,15 +1225,19 @@ model PetSitterAddress {
 }
 
 model Review {
-  id          String           @id @default(uuid())
-  reviewerId  String
-  rating      Int
-  comment     String
-  productId   String?
-  profileType ReviewTargetType
-  profileId   String
-  createdAt   DateTime         @default(now())
-  updatedAt   DateTime         @updatedAt
+  id            String           @id @default(uuid())
+  reviewerId    String
+  rating        Int
+  comment       String
+  productId     String?
+  profileType   ReviewTargetType
+  profileId     String
+  reply         String?
+  repliedAt     DateTime?
+  isFlagged     Boolean          @default(false)
+  flaggedReason String?
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
 
   reviewer User     @relation(fields: [reviewerId], references: [id])
   product  Product? @relation(fields: [productId], references: [id])

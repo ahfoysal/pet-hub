@@ -16,10 +16,14 @@ import { selectTotalUnreadCount } from "@/redux/features/slice/socketSlice";
 
 export function DashboardNavbar() {
   const [showProfileMenu, setShowProfileMenu] = useState(false);
+  const [showMailDropdown, setShowMailDropdown] = useState(false);
+  const [showNotifDropdown, setShowNotifDropdown] = useState(false);
   const { data: session, status } = useSession();
   const { isMobileMenuOpen, setIsMobileMenuOpen } = useMobileMenu();
   const dispatch = useAppDispatch();
   const profileDropdownRef = useRef<HTMLDivElement>(null);
+  const mailDropdownRef = useRef<HTMLDivElement>(null);
+  const notifDropdownRef = useRef<HTMLDivElement>(null);
   const totalUnreadCount = useSelector(selectTotalUnreadCount);
 
   // Get user role from session
@@ -34,19 +38,28 @@ export function DashboardNavbar() {
     .toUpperCase();
 
   const handleLogout = async () => {
-    // Clear Redux state first
-    dispatch(clearCredentials());
+    try {
+      // 1. Clear Redux state
+      dispatch(clearCredentials());
 
-    // Clear local NextAuth session
-    await signOut({ redirect: false });
+      // 2. Clear local session without redirecting to login page
+      // This clears the next-auth.session-token cookie on the CURRENT domain
+      await signOut({ redirect: false });
 
-    // Then redirect to central logout page to clear auth session
-    const authUrl = process.env.NEXT_PUBLIC_AUTH_URL || "http://auth.lvh.me:3000";
-    window.location.href = `${authUrl}/logout`;
-    setShowProfileMenu(false);
+      // 3. Redirect to central logout to clear the shared SSO cookie (.lvh.me)
+      const authUrl = process.env.NEXT_PUBLIC_AUTH_URL || "http://auth.lvh.me:3000";
+      window.location.href = `${authUrl}/logout`;
+      
+      setShowProfileMenu(false);
+    } catch (error) {
+      console.error("Logout failed:", error);
+      // Fallback redirect if signOut fails
+      const authUrl = process.env.NEXT_PUBLIC_AUTH_URL || "http://auth.lvh.me:3000";
+      window.location.href = `${authUrl}/logout`;
+    }
   };
 
-  // Close profile dropdown when clicking outside
+  // Close dropdowns when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -54,6 +67,18 @@ export function DashboardNavbar() {
         !profileDropdownRef.current.contains(event.target as Node)
       ) {
         setShowProfileMenu(false);
+      }
+      if (
+        mailDropdownRef.current &&
+        !mailDropdownRef.current.contains(event.target as Node)
+      ) {
+        setShowMailDropdown(false);
+      }
+      if (
+        notifDropdownRef.current &&
+        !notifDropdownRef.current.contains(event.target as Node)
+      ) {
+        setShowNotifDropdown(false);
       }
     };
 
@@ -64,7 +89,7 @@ export function DashboardNavbar() {
   }, []);
 
   return (
-    <nav className="absolute top-0 z-100 w-full bg-white border-b border-[#d0d0d0]">
+    <nav className="relative w-full bg-white">
       <div className="flex items-center justify-between px-[38px] h-[80px]">
         {/* Left - Greeting Section */}
         <div className="flex items-center gap-4 flex-1">
@@ -91,22 +116,58 @@ export function DashboardNavbar() {
         {/* Right - Icons */}
         <div className="flex items-center gap-[12px]">
           {/* Mail */}
-          <button className="relative p-2 hover:bg-gray-100 rounded-lg transition-colors cursor-pointer">
-            <Mail size={22.5} className="text-[#282828]" strokeWidth={1.5} />
-            <span className="absolute top-1.5 right-1 min-w-[15px] h-[15px] px-1 bg-[#FF7176] text-white text-[10px] font-bold rounded-full flex items-center justify-center border-2 border-white leading-none">
-              2
-            </span>
-          </button>
+          <div className="relative" ref={mailDropdownRef}>
+            <button
+              onClick={() => { setShowMailDropdown(!showMailDropdown); setShowNotifDropdown(false); setShowProfileMenu(false); }}
+              className="relative p-2 hover:bg-gray-100 rounded-lg transition-colors cursor-pointer"
+            >
+              <Mail size={22.5} className="text-[#282828]" strokeWidth={1.5} />
+              <span className="absolute top-1.5 right-1 min-w-[15px] h-[15px] px-1 bg-[#FF7176] text-white text-[10px] font-bold rounded-full flex items-center justify-center border-2 border-white leading-none">
+                0
+              </span>
+            </button>
+
+            {showMailDropdown && (
+              <div className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg border border-gray-200 z-50 overflow-hidden">
+                <div className="p-4 border-b border-gray-100">
+                  <p className="font-['Nunito',sans-serif] font-bold text-[16px] text-[#282828]">Messages</p>
+                </div>
+                <div className="p-8 flex flex-col items-center justify-center text-center">
+                  <Mail size={32} className="text-gray-300 mb-3" />
+                  <p className="font-['Nunito',sans-serif] text-[14px] text-[#62748e] font-medium">No messages yet</p>
+                  <p className="font-['Arial',sans-serif] text-[12px] text-gray-400 mt-1">Messages will appear here</p>
+                </div>
+              </div>
+            )}
+          </div>
 
           {/* Notifications */}
-          <button className="relative p-2 hover:bg-gray-100 rounded-lg transition-colors cursor-pointer mr-2">
-            <Bell size={22.5} className="text-[#282828]" strokeWidth={1.5} />
-            {totalUnreadCount > 0 && (
-              <span className="absolute top-1 right-1 min-w-[15px] h-[15px] px-1 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center border-2 border-white leading-none">
-                {totalUnreadCount > 99 ? "99+" : totalUnreadCount}
-              </span>
+          <div className="relative" ref={notifDropdownRef}>
+            <button
+              onClick={() => { setShowNotifDropdown(!showNotifDropdown); setShowMailDropdown(false); setShowProfileMenu(false); }}
+              className="relative p-2 hover:bg-gray-100 rounded-lg transition-colors cursor-pointer mr-2"
+            >
+              <Bell size={22.5} className="text-[#282828]" strokeWidth={1.5} />
+              {totalUnreadCount > 0 && (
+                <span className="absolute top-1 right-1 min-w-[15px] h-[15px] px-1 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center border-2 border-white leading-none">
+                  {totalUnreadCount > 99 ? "99+" : totalUnreadCount}
+                </span>
+              )}
+            </button>
+
+            {showNotifDropdown && (
+              <div className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg border border-gray-200 z-50 overflow-hidden">
+                <div className="p-4 border-b border-gray-100">
+                  <p className="font-['Nunito',sans-serif] font-bold text-[16px] text-[#282828]">Notifications</p>
+                </div>
+                <div className="p-8 flex flex-col items-center justify-center text-center">
+                  <Bell size={32} className="text-gray-300 mb-3" />
+                  <p className="font-['Nunito',sans-serif] text-[14px] text-[#62748e] font-medium">No notifications yet</p>
+                  <p className="font-['Arial',sans-serif] text-[12px] text-gray-400 mt-1">Notifications will appear here</p>
+                </div>
+              </div>
             )}
-          </button>
+          </div>
 
           {/* Profile */}
           <div className="relative" ref={profileDropdownRef}>

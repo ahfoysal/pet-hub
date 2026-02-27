@@ -8,6 +8,7 @@ import {
   Calendar,
   ShoppingBag,
 } from "lucide-react";
+import Image from "next/image";
 
 interface OrderDetailsModalProps {
   isOpen: boolean;
@@ -29,6 +30,7 @@ export default function OrderDetailsModal({
       case "PROCESSING":
         return "bg-blue-50 text-blue-700 border-blue-200";
       case "DELIVERED":
+      case "COMPLETED":
       case "Completed":
         return "bg-[#ecfdf3] text-[#027a48] border-[#a6f4c5]";
       case "CANCELLED":
@@ -73,15 +75,15 @@ export default function OrderDetailsModal({
                 Order ORD-{order.id.slice(0, 8).toUpperCase()}
               </h2>
               <p className="text-[14px] text-[#667085] mt-[2px]">
-                Placed on {new Date(order.createdAt).toLocaleDateString()}
+                Placed on {new Date(order.createdAt).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}
               </p>
             </div>
           </div>
           <div className="flex items-center gap-[12px]">
             <span
-              className={`px-[12px] py-[4px] rounded-full text-[12px] font-medium border ${getStatusColor(order.status)} font-inter flex items-center gap-1.5`}
+              className={`px-[12px] py-[4px] rounded-full text-[12px] font-medium border ${getStatusColor(order.status)} font-inter flex items-center gap-1.5 uppercase`}
             >
-              <span className={`w-1.5 h-1.5 rounded-full ${order.status === 'DELIVERED' || order.status === 'Completed' ? 'bg-[#12b76a]' : order.status === 'PENDING' ? 'bg-[#ff7176]' : 'bg-current'}`}></span>
+              <span className={`w-1.5 h-1.5 rounded-full ${order.status === 'DELIVERED' || order.status === 'COMPLETED' || order.status === 'Completed' ? 'bg-[#12b76a]' : order.status === 'PENDING' ? 'bg-[#ff7176]' : 'bg-current'}`}></span>
               {order.status}
             </span>
             <button
@@ -119,36 +121,45 @@ export default function OrderDetailsModal({
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-[#eaecf0]">
-                      {order.orderItems.length > 0 ? order.orderItems.map((item, index) => (
-                        <tr key={index} className="hover:bg-gray-50/50 transition-colors">
-                          <td className="px-[20px] py-[16px] max-w-[200px]">
-                             <p className="font-medium text-[#101828] truncate">Product {item.productId.split('-').pop()}</p>
-                             <p className="text-[#667085] text-[12px] mt-1 truncate">Variant {item.variantId}</p>
-                          </td>
-                          <td className="px-[20px] py-[16px] text-center text-[#4a5565]">{item.quantity}</td>
-                          <td className="px-[20px] py-[16px] text-right text-[#4a5565]">${item.price.toFixed(2)}</td>
-                          <td className="px-[20px] py-[16px] text-right font-medium text-[#101828]">${item.totalPrice.toFixed(2)}</td>
-                        </tr>
-                      )) : (
-                        <tr className="hover:bg-gray-50/50 transition-colors">
-                          <td className="px-[20px] py-[16px]">
-                             <div className="flex items-center gap-3">
-                               <div className="w-[40px] h-[40px] rounded-[6px] bg-[#f9fafb] border border-[#eaecf0]"></div>
-                               <div>
-                                 <p className="font-medium text-[#101828]">Automatic Pet Feeder</p>
-                                 <p className="text-[#667085] text-[12px]">PRD-001</p>
+                      {order.orderItems.length > 0 ? order.orderItems.map((item, index) => {
+                        const productName = item.product?.name || `Product ${item.productId.slice(-6).toUpperCase()}`;
+                        const sku = item.variant?.sku || `SKU-${item.variantId.slice(-4).toUpperCase()}`;
+                        const itemImage = item.variant?.images?.[0] || item.product?.images?.[0] || `https://avatar.iran.liara.run/public/${(index % 20) + 1}`;
+                        
+                        return (
+                          <tr key={index} className="hover:bg-gray-50/50 transition-colors">
+                            <td className="px-[20px] py-[16px]">
+                               <div className="flex items-center gap-3">
+                                 <div className="w-[48px] h-[48px] rounded-[8px] bg-[#f9fafb] border border-[#eaecf0] relative overflow-hidden shrink-0 flex items-center justify-center text-gray-400">
+                                   {itemImage ? (
+                                     <Image src={itemImage} alt={productName} fill className="object-cover" />
+                                   ) : (
+                                     <Package size={24} />
+                                   )}
+                                 </div>
+                                 <div className="max-w-[150px]">
+                                   <p className="font-medium text-[#101828] truncate" title={productName}>{productName}</p>
+                                   <p className="text-[#667085] text-[12px] mt-0.5 uppercase">{sku}</p>
+                                 </div>
                                </div>
-                             </div>
+                            </td>
+                            <td className="px-[20px] py-[16px] text-center text-[#4a5565]">{item.quantity}</td>
+                            <td className="px-[20px] py-[16px] text-right text-[#4a5565]">${item.price.toFixed(2)}</td>
+                            <td className="px-[20px] py-[16px] text-right font-medium text-[#101828]">${item.totalPrice.toFixed(2)}</td>
+                          </tr>
+                        );
+                      }) : (
+                        <tr>
+                          <td colSpan={4} className="px-[20px] py-[40px] text-center text-[#667085]">
+                            No items found in this order.
                           </td>
-                          <td className="px-[20px] py-[16px] text-center text-[#4a5565]">1</td>
-                          <td className="px-[20px] py-[16px] text-right text-[#4a5565]">$200.00</td>
-                          <td className="px-[20px] py-[16px] text-right font-medium text-[#101828]">$200.00</td>
                         </tr>
                       )}
                     </tbody>
                   </table>
                 </div>
               </div>
+
 
               {/* Payment Summary */}
               <div className="bg-white border border-[#eaecf0] rounded-[12px] p-[20px]">

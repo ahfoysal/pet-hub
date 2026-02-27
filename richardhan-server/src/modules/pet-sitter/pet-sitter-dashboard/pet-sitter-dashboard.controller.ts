@@ -98,10 +98,9 @@ export class PetSitterDashboardController {
       'Optional year for filtering booking trends. Defaults to current year.',
   })
   async getBookingTrends(
-    @CurrentUser('id') userId: string,
-    @Query('year', new ParseIntPipe({ optional: true })) year?: number
+    @CurrentUser('id') userId: string
   ) {
-    return await this.petSitterDashboardService.getBookingTrends(userId, year);
+    return await this.petSitterDashboardService.getBookingTrends(userId);
   }
 
   @Get('clients')

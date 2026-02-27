@@ -11,6 +11,7 @@ import { getSuspendDuration, TakenActionEnum } from './admin.constant';
 import { Prisma, User } from '@prisma/client';
 import { Role } from 'src/common/types/auth.types';
 import { MailService } from '../mail/mail.service';
+import { FirebaseService } from '../firebase/firebase.service';
 import * as bcrypt from 'bcrypt';
 import * as crypto from 'crypto';
 
@@ -18,7 +19,8 @@ import * as crypto from 'crypto';
 export class AdminService {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly mailService: MailService
+    private readonly mailService: MailService,
+    private readonly firebaseService: FirebaseService
   ) {}
 
   private logger = new Logger(AdminService.name);
@@ -159,6 +161,70 @@ export class AdminService {
       adminId: updatedAdmin.id,
       email: updatedAdmin.email,
       fullName: updatedAdmin.fullName,
+    });
+  }
+
+  async deleteAdmin(adminId: string) {
+    const admin = await this.prisma.user.findUnique({
+      where: { id: adminId },
+    });
+
+    if (!admin) {
+      throw new NotFoundException('Admin not found');
+    }
+
+    if (admin.role !== Role.ADMIN) {
+      throw new BadRequestException('User is not an admin');
+    }
+
+    try {
+      // Delete from Firebase
+      if (admin.email) {
+        try {
+          const firebaseUser = await this.firebaseService.getUserByEmail(admin.email);
+          if (firebaseUser?.uid) {
+            await this.firebaseService.deleteUser(firebaseUser.uid);
+          }
+        } catch (firebaseError: any) {
+          if (firebaseError.code !== 'auth/user-not-found') {
+            this.logger.error(`Firebase deletion failed for ${admin.email}`, firebaseError);
+          }
+        }
+      }
+    } catch (error) {
+      this.logger.error(`Error during admin deletion: ${admin.email}`, error);
+    }
+
+    await this.prisma.user.delete({
+      where: { id: adminId },
+    });
+
+    return ApiResponse.success('Admin deleted successfully');
+  }
+
+  async resetAdminPassword(adminId: string) {
+    const admin = await this.prisma.user.findUnique({
+      where: { id: adminId },
+    });
+
+    if (!admin) {
+      throw new NotFoundException('Admin not found');
+    }
+
+    if (admin.role !== Role.ADMIN) {
+      throw new BadRequestException('User is not an admin');
+    }
+
+    const randomPassword = crypto.randomBytes(4).toString('hex'); // 8 characters
+    const hashedPassword = await bcrypt.hash(randomPassword, 10);
+
+    await this.prisma.user.update({
+      where: { id: adminId },
+      data: { password: hashedPassword },
+    });
+
+    return ApiResponse.success('Password reset successfully', {
+      temporaryPassword: randomPassword,
     });
   }
 

@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { CommunityManagement } from "@/components/dashboard/common/community/CommunityManagement";
 import { ChatLayout } from "@/components/dashboard/common/chat";
 import { MessageCircle, Users } from "lucide-react";
@@ -8,12 +9,28 @@ import { MessageCircle, Users } from "lucide-react";
 type Tab = "feed" | "chat";
 
 export default function VendorCommunityPage() {
-  const [activeTab, setActiveTab] = useState<Tab>("feed");
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const tabParam = searchParams.get("tab") as Tab | null;
+  const [activeTab, setActiveTab] = useState<Tab>(tabParam === "chat" ? "chat" : "feed");
   const [chatUserId, setChatUserId] = useState<string | null>(null);
+
+  useEffect(() => {
+    if ((tabParam === "chat" || tabParam === "feed") && tabParam !== activeTab) {
+      setActiveTab(tabParam);
+    }
+  }, [tabParam, activeTab]);
+
+  const handleTabChange = (tab: Tab) => {
+    setActiveTab(tab);
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("tab", tab);
+    router.push(`?${params.toString()}`);
+  };
 
   const handleMessage = () => {
     setChatUserId(null);
-    setActiveTab("chat");
+    handleTabChange("chat");
   };
 
   const handleUserClick = (userId: string) => {
@@ -24,7 +41,7 @@ export default function VendorCommunityPage() {
   const handleStartChat = (userId: string) => {
     // When user clicks "Message" in profile modal, switch to chat with that user
     setChatUserId(userId);
-    setActiveTab("chat");
+    handleTabChange("chat");
   };
 
   return (
@@ -32,7 +49,7 @@ export default function VendorCommunityPage() {
       {/* Tab Navigation */}
       <div className="flex mb-4 bg-white rounded-xl shadow-sm overflow-hidden">
         <button
-          onClick={() => setActiveTab("feed")}
+          onClick={() => handleTabChange("feed")}
           className={`flex-1 flex items-center justify-center gap-2 py-4 font-medium transition-all ${
             activeTab === "feed"
               ? "text-[#FF6B6B] bg-[#FF6B6B]/5"
@@ -44,7 +61,7 @@ export default function VendorCommunityPage() {
           <span className="hidden sm:inline">Community Feed</span>
         </button>
         <button
-          onClick={() => setActiveTab("chat")}
+          onClick={() => handleTabChange("chat")}
           className={`flex-1 flex items-center justify-center gap-2 py-4 font-medium transition-all ${
             activeTab === "chat"
               ? "text-[#FF6B6B] bg-[#FF6B6B]/5"

@@ -16,6 +16,8 @@ export class DashboardService {
       ratingStats,
       customerGroups,
       paymentStats,
+      totalOrders,
+      totalPendingOrders,
     ] = await Promise.all([
       this.prisma.product.count({
         where: { vendorId, isPublish: true },
@@ -71,6 +73,16 @@ export class DashboardService {
         _count: { id: true },
         _sum: { amount: true },
       }),
+
+      // Total Orders (all statuses)
+      this.prisma.order.count({
+        where: { vendorId },
+      }),
+
+      // Total Pending Orders
+      this.prisma.order.count({
+        where: { vendorId, status: OrderStatus.PENDING },
+      }),
     ]);
 
     return {
@@ -82,22 +94,70 @@ export class DashboardService {
       totalNewCustomers: customerGroups.length,
       totalTransactions: paymentStats._count.id ?? 0,
       totalPayouts: paymentStats._sum.amount ?? 0,
+      totalOrders: totalOrders ?? 0,
+      totalPendingOrders: totalPendingOrders ?? 0,
     };
   }
+
+  // Get recent orders for the vendor dashboard
+  async getRecentOrders(vendorId: string) {
+    const orders = await this.prisma.order.findMany({
+      where: { vendorId },
+      orderBy: { createdAt: 'desc' },
+      take: 10,
+      select: {
+        id: true,
+        grandTotal: true,
+        status: true,
+        createdAt: true,
+        orderItems: {
+          take: 1,
+          select: {
+            quantity: true,
+            product: {
+              select: {
+                name: true,
+                images: true,
+                productCategory: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    return orders.map((order) => {
+      const firstItem = order.orderItems[0];
+      return {
+        id: order.id.slice(0, 8).toUpperCase(),
+        fullId: order.id,
+        name: firstItem?.product?.name ?? 'Unknown Product',
+        image: firstItem?.product?.images?.[0] ?? '',
+        quantity: firstItem?.quantity ?? 0,
+        price: order.grandTotal,
+        status: order.status,
+        category: firstItem?.product?.productCategory ?? 'Uncategorized',
+        date: order.createdAt,
+      };
+    });
+  }
+
 
   // Get vendor dashboard data
   async getVendorDashboard(
     vendorId: string,
     period: 'Daily' | 'Weekly' | 'Monthly' = 'Daily'
   ) {
-    const [stats, charts] = await Promise.all([
+    const [stats, charts, recentOrders] = await Promise.all([
       this.getStats(vendorId),
       this.getCharts(vendorId, period),
+      this.getRecentOrders(vendorId),
     ]);
 
     return ApiResponse.success('Dashboard data found', {
       ...stats,
       charts: charts.data,
+      recentOrders,
     });
   }
 
@@ -341,18 +401,23 @@ export class DashboardService {
       select: {
         id: true,
         name: true,
+        images: true,
       },
     });
 
-    const productMap = new Map(products.map((p) => [p.id, p.name]));
+    const productMap = new Map(products.map((p) => [p.id, { name: p.name, image: p.images?.[0] || '' }]));
 
-    return items.map((item, i) => ({
-      rank: i + 1,
-      productId: item.productId,
-      productName: productMap.get(item.productId),
-      unitsSold: item._sum.quantity ?? 0,
-      revenue: item._sum.totalPrice ?? 0,
-    }));
+    return items.map((item, i) => {
+      const productInfo = productMap.get(item.productId);
+      return {
+        rank: i + 1,
+        productId: item.productId,
+        productName: productInfo?.name || 'Unknown Product',
+        productImage: productInfo?.image || '',
+        unitsSold: item._sum.quantity ?? 0,
+        revenue: item._sum.totalPrice ?? 0,
+      };
+    });
   }
 
   // Get inventory summary

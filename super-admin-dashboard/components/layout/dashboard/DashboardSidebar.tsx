@@ -10,7 +10,6 @@ import { getVisibleMenuItems, UserRole, MenuItemConfig } from "@/lib/sidebarRout
 import { X, LogOut, Settings, ChevronDown, ChevronUp } from "lucide-react";
 import { useAppDispatch } from "@/redux/store/hooks";
 import { clearCredentials } from "@/redux/features/slice/authSlice";
-import Button from "@/components/ui/Button";
 import { useMobileMenu } from "@/contexts/MobileMenuContext";
 import { getRedirectSettingPath } from "@/lib/roleRoutes";
 
@@ -62,13 +61,21 @@ export default function DashboardSidebar() {
   }, [isMobileMenuOpen]);
 
   const handleLogout = async () => {
-    dispatch(clearCredentials());
+    try {
+      // 1. Clear Redux state
+      dispatch(clearCredentials());
 
-    // Clear local NextAuth session
-    await signOut({ redirect: false });
+      // 2. Clear local session
+      await signOut({ redirect: false });
 
-    const authUrl = process.env.NEXT_PUBLIC_AUTH_URL || "http://auth.lvh.me:3000";
-    window.location.href = `${authUrl}/logout`;
+      // 3. Redirect to central SSO logout
+      const authUrl = process.env.NEXT_PUBLIC_AUTH_URL || "http://auth.lvh.me:3000";
+      window.location.href = `${authUrl}/logout`;
+    } catch (error) {
+      console.error("Logout failed:", error);
+      const authUrl = process.env.NEXT_PUBLIC_AUTH_URL || "http://auth.lvh.me:3000";
+      window.location.href = `${authUrl}/logout`;
+    }
   };
 
   return (
@@ -83,7 +90,7 @@ export default function DashboardSidebar() {
       >
         <div className="flex flex-col h-full mt-6">
           {/* Navigation */}
-          <nav className="flex-1 px-3 space-y-2 overflow-y-auto lg:pt-12">
+          <nav className="flex-1 px-[38px] space-y-2 overflow-y-auto pt-[80px]">
             {visibleItems.length > 0 ? (
               visibleItems.map((item) => {
                 const isExpanded = expandedMenus[item.label];
@@ -103,28 +110,33 @@ export default function DashboardSidebar() {
                           <span className="shrink-0">{renderIcon(item)}</span>
                           <span className="whitespace-nowrap">{item.label}</span>
                         </div>
-                        {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                        {isExpanded ? <ChevronUp size={16} className="transition-transform duration-200" /> : <ChevronDown size={16} className="transition-transform duration-200" />}
                       </button>
                       
-                      {isExpanded && (
-                        <div className="flex flex-col space-y-1 pl-4 mt-1 border-l-2 border-gray-100 ml-5">
-                          {item.subItems.map((subItem) => (
-                            <Link
-                              key={subItem.href}
-                              href={subItem.href}
-                              onClick={() => setIsMobileMenuOpen(false)}
-                              className={`flex items-center gap-3 px-3 py-2 rounded-lg text-[14px] font-['Arial'] transition-colors ${
-                                isActive(subItem.href)
-                                  ? "text-[#FF7176] font-medium bg-gray-50"
-                                  : "text-[#282828] hover:bg-gray-100"
-                              }`}
-                            >
-                              <span className="shrink-0 scale-90">{renderIcon(subItem as MenuItemConfig)}</span>
-                              <span className="whitespace-nowrap">{subItem.label}</span>
-                            </Link>
-                          ))}
+                      <div
+                        className="grid transition-[grid-template-rows] duration-200 ease-in-out"
+                        style={{ gridTemplateRows: isExpanded ? "1fr" : "0fr" }}
+                      >
+                        <div className="overflow-hidden">
+                          <div className="flex flex-col space-y-1 pl-4 mt-1 border-l-2 border-gray-100 ml-5">
+                            {item.subItems.map((subItem) => (
+                              <Link
+                                key={subItem.href}
+                                href={subItem.href}
+                                onClick={() => setIsMobileMenuOpen(false)}
+                                className={`flex items-center gap-3 px-3 py-2 rounded-lg text-[14px] font-['Arial'] transition-colors ${
+                                  isActive(subItem.href)
+                                    ? "text-[#FF7176] font-medium bg-gray-50"
+                                    : "text-[#282828] hover:bg-gray-100"
+                                }`}
+                              >
+                                <span className="shrink-0 scale-90">{renderIcon(subItem as MenuItemConfig)}</span>
+                                <span className="whitespace-nowrap">{subItem.label}</span>
+                              </Link>
+                            ))}
+                          </div>
                         </div>
-                      )}
+                      </div>
                     </div>
                   );
                 }
@@ -153,7 +165,7 @@ export default function DashboardSidebar() {
           </nav>
 
           {/* Bottom Section */}
-          <div className="px-3 py-4 mt-auto border-t border-primary   ">
+          <div className="px-3 py-4 pt-6 mt-auto">
             <Link
               href={getRedirectSettingPath(userRole)}
               className={`flex items-center gap-3 px-3 py-3 rounded-lg text-sm font-medium transition-colors ${
@@ -166,16 +178,15 @@ export default function DashboardSidebar() {
               <span>Policies & Settings</span>
             </Link>
 
-            <Button
-              variant="outline"
-              className="w-full flex items-center gap-3 px-3 py-3 c rounded-lg text-sm text-foreground bg-white text-[#FF7176]  border border-[#FF7176]! font-bold!   hover:bg-[#FF7176] hover:text-white!  transition-colors mt-1"
+            <button
+              className="w-full flex items-center justify-start gap-3 px-3 py-3 rounded-lg text-sm text-[#282828] hover:bg-gray-100 transition-colors mt-1"
               onClick={async () => {
                 await handleLogout();
               }}
             >
               <LogOut size={20} />
               <span>Log out</span>
-            </Button>
+            </button>
           </div>
         </div>
       </aside>

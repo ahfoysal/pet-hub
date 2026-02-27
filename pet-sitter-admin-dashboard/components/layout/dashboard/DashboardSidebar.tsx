@@ -71,7 +71,7 @@ export default function DashboardSidebar() {
     lg:translate-x-0 ${isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"}
     lg:relative`}
       >
-        <div className="flex flex-col h-full pt-10 px-9.5">
+        <div className="flex flex-col h-full pt-25 px-9.5">
           {/* Logo container if needed, but Navbar has it. Figma shows Sidebar starts with items */}
           
           <nav className="flex-1 flex flex-col gap-3.5 overflow-y-auto min-h-0">

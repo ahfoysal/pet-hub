@@ -9,6 +9,17 @@ export interface OrderItem {
   totalPrice: number;
   createdAt: string;
   updatedAt: string;
+  product?: {
+    name: string;
+    productCategory: string;
+    petCategory: string;
+    images: string[];
+  };
+  variant?: {
+    sku: string;
+    images: string[];
+    attributes: Record<string, string>;
+  };
 }
 
 // Shipping address

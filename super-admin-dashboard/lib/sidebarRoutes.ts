@@ -73,7 +73,7 @@ export const menuItemsConfig: MenuItemConfig[] = [
   },
   {
     label: "Payments & Payouts",
-    href: "/admin/finance",
+    href: "/admin/payments",
     icon: DollarSign,
     roles: ["ADMIN"],
   },

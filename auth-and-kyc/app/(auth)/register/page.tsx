@@ -372,6 +372,7 @@ export default function SignUpPage() {
                   acceptedTypes="image/png, image/jpeg"
                   maxSizeMB={5}
                   onFileSelect={setProfilePicture}
+                  initialFile={profilePicture}
                   preview={true}
                 />
               </div>

@@ -19,12 +19,13 @@ import LoadingSpinner from "@/components/ui/LoadingSpinner";
 export default function SitterFinanceClient() {
   const { data: dashboardData, isLoading: isDashboardLoading } = useGetSitterStatsQuery();
   const { data: bookingsData, isLoading: isBookingsLoading } =
-    useGetMyBookingsQuery({ page: 1, limit: 10 });
+    useGetMyBookingsQuery({ limit: 10 });
 
   const transactions = bookingsData?.data?.data || [];
-  const totalRevenue = dashboardData?.data?.totalEarnings || 600;
-  const pendingPayout = 1270; // Placeholder as per Figma mockup
-  const totalCompleted = 4;   // Placeholder as per Figma mockup
+  const stats = dashboardData?.data;
+  const totalRevenue = stats?.totalEarnings || 0;
+  const pendingPayout = stats?.pendingPayout || 0;
+  const totalCompleted = stats?.bookings?.byStatus?.COMPLETED || 0;
 
   if (isDashboardLoading || isBookingsLoading) return <LoadingSpinner />;
 

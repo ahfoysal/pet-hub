@@ -25,11 +25,13 @@ export default function Step3({ formData, updateFormData }: StepProps) {
             <p className="text-[#6a7282] text-[14px]">Upload your animal care license or related permit required to operate a pet hotel.</p>
           </div>
           <FileUpload
+            label="Hotel License"
             acceptedTypes="image/png, image/jpeg, application/pdf"
             maxSizeMB={10}
             onFileSelect={(file) =>
               updateFormData({ hotelLicenseImage: file })
             }
+            initialFile={formData.hotelLicenseImage}
             className="rounded-[14px] bg-white border-2 border-[#d1d5dc] border-dashed hover:border-[#ff6900] transition-all min-h-[176px]"
             preview={true}
             uploadIconColor="#ff6900"

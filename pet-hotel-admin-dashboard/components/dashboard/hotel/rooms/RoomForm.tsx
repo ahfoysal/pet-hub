@@ -41,9 +41,10 @@ interface RoomFormProps {
   isLoading: boolean;
   onCancel: () => void;
   title: string;
+  isPage?: boolean;
 }
 
-export default function RoomForm({ initialData, onSubmit, isLoading, onCancel, title }: RoomFormProps) {
+export default function RoomForm({ initialData, onSubmit, isLoading, onCancel, title, isPage = false }: RoomFormProps) {
   const [formData, setFormData] = useState<RoomFormData>({
     roomName: initialData?.roomName || "",
     roomNumber: initialData?.roomNumber || "",
@@ -51,7 +52,7 @@ export default function RoomForm({ initialData, onSubmit, isLoading, onCancel, t
     roomType: initialData?.roomType || "PET_ONLY",
     status: initialData?.status || "AVAILABLE",
     petCapacity: initialData?.petCapacity || "1",
-    humanCapacity: initialData?.humanCapacity || "0",
+    humanCapacity: initialData?.humanCapacity || "1",
     price: initialData?.price || "50",
     roomAmenities: initialData?.roomAmenities || [],
     images: initialData?.images || [],
@@ -108,7 +109,9 @@ export default function RoomForm({ initialData, onSubmit, isLoading, onCancel, t
     fd.append("roomType", formData.roomType);
     fd.append("status", formData.status);
     fd.append("petCapacity", formData.petCapacity);
-    fd.append("humanCapacity", formData.humanCapacity);
+    if (formData.roomType === "PET_WITH_ACCO") {
+      fd.append("humanCapacity", formData.humanCapacity);
+    }
     fd.append("price", formData.price);
     formData.roomAmenities.forEach(a => fd.append("roomAmenities", a));
     
@@ -123,16 +126,34 @@ export default function RoomForm({ initialData, onSubmit, isLoading, onCancel, t
     onSubmit(fd);
   };
 
+  const overlayClass = isPage
+    ? "bg-[#f2f4f8] font-arimo pb-10"
+    : "fixed inset-0 z-[300] bg-[#f2f4f8] overflow-y-auto font-arimo";
+
+  const containerClass = isPage
+    ? "max-w-[800px] mx-auto bg-white shadow-sm border border-[#e5e7eb] rounded-2xl overflow-hidden flex flex-col"
+    : "max-w-[800px] mx-auto min-h-screen bg-white shadow-lg overflow-hidden flex flex-col";
+
   return (
-    <div className="fixed inset-0 z-[300] bg-[#f2f4f8] overflow-y-auto font-arimo">
-      <div className="max-w-[800px] mx-auto min-h-screen bg-white shadow-lg overflow-hidden flex flex-col">
+    <div className={overlayClass}>
+      <div className={containerClass}>
         {/* Top Header */}
-        <div className="px-8 py-6 flex items-center gap-4 bg-white border-b border-[#e5e7eb]">
-          <button onClick={onCancel} className="p-2 hover:bg-gray-100 rounded-full transition-colors text-[#0a0a0a]">
-            <ArrowLeft size={20} />
-          </button>
-          <h2 className="text-[20px] font-normal text-[#0a0a0a]">{title}</h2>
-        </div>
+        {!isPage && (
+          <div className="px-8 py-6 flex items-center gap-4 bg-white border-b border-[#e5e7eb]">
+            <button onClick={onCancel} className="p-2 hover:bg-gray-100 rounded-full transition-colors text-[#0a0a0a]">
+              <ArrowLeft size={20} />
+            </button>
+            <h2 className="text-[20px] font-normal text-[#0a0a0a]">{title}</h2>
+          </div>
+        )}
+        {isPage && (
+          <div className="px-8 py-6 flex items-center gap-4 bg-white border-b border-[#e5e7eb]">
+            <button onClick={onCancel} className="p-2 hover:bg-gray-100 rounded-full transition-colors text-[#0a0a0a]">
+              <ArrowLeft size={20} />
+            </button>
+            <h2 className="text-[20px] font-normal text-[#0a0a0a]">{title}</h2>
+          </div>
+        )}
 
         {/* Form Body */}
         <form onSubmit={handleSubmit} className="p-8 space-y-2 flex-1">
@@ -231,7 +252,7 @@ export default function RoomForm({ initialData, onSubmit, isLoading, onCancel, t
               />
               {formData.roomType === "PET_WITH_ACCO" && (
                 <FormInput 
-                  label="Pet with Accommodation (Adults)" 
+                  label="Human Capacity" 
                   name="humanCapacity" 
                   type="number" 
                   value={formData.humanCapacity} 

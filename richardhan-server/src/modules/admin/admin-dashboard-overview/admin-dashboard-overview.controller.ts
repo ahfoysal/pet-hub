@@ -88,12 +88,14 @@ export class AdminDashboardOverviewController {
   async getAllPetSitters(
     @Query('search') search?: string,
     @Query('cursor') cursor?: string,
-    @Query('limit', new ParseIntPipe({ optional: true })) limit = 20
+    @Query('limit', new ParseIntPipe({ optional: true })) limit = 20,
+    @Query('page', new ParseIntPipe({ optional: true })) page?: number
   ) {
     return this.adminDashboardOverviewService.getAllPetSitters(
       search,
       cursor,
-      limit
+      limit,
+      page
     );
   }
 
@@ -105,12 +107,14 @@ export class AdminDashboardOverviewController {
   async getAllVendors(
     @Query('search') search?: string,
     @Query('cursor') cursor?: string,
-    @Query('limit', new ParseIntPipe({ optional: true })) limit?: number
+    @Query('limit', new ParseIntPipe({ optional: true })) limit?: number,
+    @Query('page', new ParseIntPipe({ optional: true })) page?: number
   ) {
     return this.adminDashboardOverviewService.getAllVendors(
       search,
       cursor,
-      limit ?? 20
+      limit ?? 20,
+      page
     );
   }
 
@@ -122,12 +126,14 @@ export class AdminDashboardOverviewController {
   async getAllHotels(
     @Query('search') search?: string,
     @Query('cursor') cursor?: string,
-    @Query('limit', new ParseIntPipe({ optional: true })) limit?: number
+    @Query('limit', new ParseIntPipe({ optional: true })) limit?: number,
+    @Query('page', new ParseIntPipe({ optional: true })) page?: number
   ) {
     return this.adminDashboardOverviewService.getAllPetHotels(
       search,
       cursor,
-      limit ?? 20
+      limit ?? 20,
+      page
     );
   }
 
@@ -139,12 +145,14 @@ export class AdminDashboardOverviewController {
   async getAllSchools(
     @Query('search') search?: string,
     @Query('cursor') cursor?: string,
-    @Query('limit', new ParseIntPipe({ optional: true })) limit?: number
+    @Query('limit', new ParseIntPipe({ optional: true })) limit?: number,
+    @Query('page', new ParseIntPipe({ optional: true })) page?: number
   ) {
     return this.adminDashboardOverviewService.getAllSchool(
       search,
       cursor,
-      limit ?? 20
+      limit ?? 20,
+      page
     );
   }
 
@@ -156,12 +164,14 @@ export class AdminDashboardOverviewController {
   async getAllPetOwners(
     @Query('search') search?: string,
     @Query('cursor') cursor?: string,
-    @Query('limit', new ParseIntPipe({ optional: true })) limit: number = 20
+    @Query('limit', new ParseIntPipe({ optional: true })) limit: number = 20,
+    @Query('page', new ParseIntPipe({ optional: true })) page?: number
   ) {
     return this.adminDashboardOverviewService.getPetOwners(
       search?.trim() || undefined,
       cursor,
-      limit
+      limit,
+      page
     );
   }
 
@@ -204,5 +214,23 @@ export class AdminDashboardOverviewController {
   })
   async getCategoryAnalytics() {
     return this.adminDashboardOverviewService.getCategoryAnalytics();
+  }
+
+  @Get('overview-stats')
+  @ApiOperation({
+    summary: 'Get dashboard overview stats',
+    description: 'Returns counts and trends for Active Providers, Pet Owners, KYC Pending, Payout Pending, Open Reports.',
+  })
+  async getDashboardOverviewStats() {
+    return this.adminDashboardOverviewService.getDashboardOverviewStats();
+  }
+
+  @Get('monthly-revenue')
+  @ApiOperation({
+    summary: 'Get monthly revenue for past 7 months',
+    description: 'Returns revenue per month for Revenue Flow chart.',
+  })
+  async getMonthlyRevenue() {
+    return this.adminDashboardOverviewService.getMonthlyRevenue();
   }
 }

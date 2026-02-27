@@ -3,38 +3,30 @@
 import {
   useGetPlatformSettingsQuery,
   useUpdatePlatformSettingsMutation,
-  useGetPlatformSettingsHistoryQuery,
 } from "@/redux/features/api/dashboard/admin/platformSettings/platformSettingsApi";
-import {
-  Settings,
-  History,
-  TrendingUp,
-  DollarSign,
-  Save,
-  Loader2,
-  RefreshCcw,
-  AlertCircle,
-  ChevronRight,
-  ShieldCheck,
-  BellRing,
-  Smartphone,
-  Info,
-} from "lucide-react";
+import { AlertCircle, Shield } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useToast } from "@/contexts/ToastContext";
 import Switch from "@/components/ui/Switch";
 
+const PercentIcon = ({ className }: { className?: string }) => (
+  <svg className={className} width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M19 5L5 19M5.5 6.5C5.5 7.05228 5.05228 7.5 4.5 7.5C3.94772 7.5 3.5 7.05228 3.5 6.5C3.5 5.94772 3.94772 5.5 4.5 5.5C5.05228 5.5 5.5 5.94772 5.5 6.5ZM19.5 17.5C19.5 18.0523 19.0523 18.5 18.5 18.5C17.9477 18.5 17.5 18.0523 17.5 17.5C17.5 16.9477 17.9477 16.5 18.5 16.5C19.0523 16.5 19.5 16.9477 19.5 17.5Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+  </svg>
+);
+
+const SaveIcon = ({ className }: { className?: string }) => (
+  <svg className={className} width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M12.6667 2.5C13.1063 2.50626 13.5256 2.68598 13.8333 3L17 6.16667C17.314 6.47438 17.4937 6.89372 17.5 7.33333V15.8333C17.5 16.2754 17.3244 16.6993 17.0118 17.0118C16.6993 17.3244 16.2754 17.5 15.8333 17.5H4.16667C3.72464 17.5 3.30072 17.3244 2.98816 17.0118C2.67559 16.6993 2.5 16.2754 2.5 15.8333V4.16667C2.5 3.72464 2.67559 3.30072 2.98816 2.98816C3.30072 2.67559 3.72464 2.5 4.16667 2.5H12.6667Z" stroke="currentColor" strokeWidth="1.66667" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M14.1654 17.5007V11.6673C14.1654 11.4463 14.0776 11.2343 13.9213 11.0781C13.765 10.9218 13.553 10.834 13.332 10.834H6.66536C6.44435 10.834 6.23239 10.9218 6.07611 11.0781C5.91983 11.2343 5.83203 11.4463 5.83203 11.6673V17.5007" stroke="currentColor" strokeWidth="1.66667" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M5.83203 2.5V5.83333C5.83203 6.05435 5.91983 6.26631 6.07611 6.42259C6.23239 6.57887 6.44435 6.66667 6.66536 6.66667H12.4987" stroke="currentColor" strokeWidth="1.66667" strokeLinecap="round" strokeLinejoin="round"/>
+  </svg>
+);
+
 export default function AdminSettingsClient() {
   const { showToast } = useToast();
-  const {
-    data: settingsData,
-    isLoading: isSettingsLoading,
-    refetch,
-  } = useGetPlatformSettingsQuery();
-  const { data: historyData, isLoading: isHistoryLoading } =
-    useGetPlatformSettingsHistoryQuery({ limit: 10 });
-  const [updateSettings, { isLoading: isUpdating }] =
-    useUpdatePlatformSettingsMutation();
+  const { data: settingsData, refetch } = useGetPlatformSettingsQuery();
+  const [updateSettings, { isLoading: isUpdating }] = useUpdatePlatformSettingsMutation();
 
   const [platformFee, setPlatformFee] = useState(10);
   const [commissionRate, setCommissionRate] = useState(5);
@@ -62,7 +54,7 @@ export default function AdminSettingsClient() {
       setIsEmailNotificationEnabled(settingsData.data.isEmailNotificationEnabled);
       setIsTwoFactorEnabled(settingsData.data.isTwoFactorEnabled);
       if (settingsData.data.providerCategoryLevels) {
-        setProviderCategoryLevels(settingsData.data.providerCategoryLevels.map(lvl => ({
+        setProviderCategoryLevels(settingsData.data.providerCategoryLevels.map((lvl: any) => ({
           name: lvl.name,
           bookingThreshold: lvl.bookingThreshold,
           benefits: lvl.benefits || ""
@@ -85,350 +77,298 @@ export default function AdminSettingsClient() {
       }).unwrap();
       showToast("Platform policies updated successfully", "success");
       refetch();
-    } catch (error) {
-      const err = error as any;
-      showToast(err?.data?.message || "Failed to update policies", "error");
+    } catch (error: any) {
+      showToast(error?.data?.message || "Failed to update policies", "error");
     }
-  }
-
-  const historyItems = historyData?.data?.items || [];
-
-  // Example Calculation Logic
-  const serviceAmount = 100.0;
-  const calculatedFee = (serviceAmount * platformFee) / 100;
-  const providerReceives = serviceAmount - calculatedFee;
+  };
 
   return (
-    <div className="space-y-10 pb-10 max-w-7xl mx-auto">
-      {/* Page Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900 font-nunito tracking-tight">
-            Policies & Settings
-          </h1>
-          <p className="text-gray-500 font-arimo mt-2">
-            Control platform revenue models, safety policies, and tiered incentive programs.
-          </p>
+    <div className="w-full max-w-[1090px]">
+      <div className="mb-[24px]">
+        <h1 className="text-[30px] font-['Nunito',sans-serif] font-semibold leading-[36px] text-[#0f172b]">
+          Policies & Settings
+        </h1>
+        <p className="text-[16px] font-['Arimo',sans-serif] font-normal leading-[24px] text-[#45556c] mt-[8px]">
+          Configure platform-wide policies and settings
+        </p>
+      </div>
+
+      {/* Platform Service Charge */}
+      <div className="bg-white border border-[#e2e8f0] rounded-[14px] p-[24px] mb-[24px]">
+        <div className="flex gap-[16px] items-start mb-[24px]">
+          <div className="bg-[#dcfce7] rounded-[10px] w-[48px] h-[48px] flex items-center justify-center shrink-0">
+            <PercentIcon className="w-[24px] h-[24px] text-[#00a63e]" />
+          </div>
+          <div>
+            <h2 className="text-[20px] font-['Inter',sans-serif] font-semibold text-[#0f172b] leading-[28px]">
+              Platform Service Charge
+            </h2>
+            <p className="text-[14px] font-['Inter',sans-serif] text-[#45556c] leading-[20px] mt-[4px]">
+              Set the percentage fee charged on all transactions
+            </p>
+          </div>
         </div>
-        <button
-          onClick={() => refetch()}
-          className="flex items-center gap-2 px-5 py-2.5 bg-white border border-gray-100 rounded-2xl hover:bg-gray-50 transition-all text-sm font-bold text-gray-600 font-arimo shadow-sm"
+
+        <div className="grid grid-cols-2 gap-[24px] items-start">
+          <div className="flex flex-col gap-[8px]">
+            <label className="text-[14px] font-['Inter',sans-serif] font-medium text-[#314158] leading-[20px]">
+              Platform Fee Percentage
+            </label>
+            <div className="flex items-center gap-[16px]">
+               <div className="flex-1 relative">
+                 <input 
+                    type="range" min="0" max="50" step="1" 
+                    value={platformFee} 
+                    onChange={(e) => setPlatformFee(Number(e.target.value))}
+                    className="w-full h-[10px] bg-[#f6f6f6] rounded-[9px] appearance-none focus:outline-none [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-[20px] [&::-webkit-slider-thumb]:h-[20px] [&::-webkit-slider-thumb]:rounded-[15px] [&::-webkit-slider-thumb]:bg-[#ff7176] [&::-webkit-slider-thumb]:cursor-pointer"
+                    style={{
+                      background: `linear-gradient(to right, #ff7176 ${(platformFee / 50) * 100}%, #f6f6f6 ${(platformFee / 50) * 100}%)`
+                    }}
+                 />
+               </div>
+               <div className="w-[80px]">
+                 <p className="text-[24px] font-['Inter',sans-serif] font-bold text-[#00a63e] leading-[32px] text-center">
+                   {platformFee}%
+                 </p>
+               </div>
+            </div>
+            <p className="text-[12px] font-['Inter',sans-serif] text-[#62748e] leading-[16px]">
+              Current setting: Platform retains {platformFee}% of each transaction
+            </p>
+          </div>
+
+          <div className="bg-[#f8fafc] border border-[#e2e8f0] rounded-[10px] p-[17px] pt-[17px] pb-[16px] flex flex-col gap-[12px]">
+            <h3 className="text-[16px] font-['Inter',sans-serif] font-semibold text-[#0f172b] leading-[24px]">
+              Example Calculation
+            </h3>
+            <div className="flex flex-col gap-[8px]">
+              <div className="flex justify-between items-start h-[20px]">
+                <span className="text-[14px] font-['Inter',sans-serif] font-normal text-[#45556c] leading-[20px]">Service Amount:</span>
+                <span className="text-[14px] font-['Inter',sans-serif] font-semibold text-[#0f172b] leading-[20px]">$100.00</span>
+              </div>
+              <div className="flex justify-between items-start h-[20px]">
+                <span className="text-[14px] font-['Inter',sans-serif] font-normal text-[#45556c] leading-[20px]">Platform Fee ({platformFee}%):</span>
+                <span className="text-[14px] font-['Inter',sans-serif] font-semibold text-[#e7000b] leading-[20px]">-${(100 * platformFee / 100).toFixed(2)}</span>
+              </div>
+              <div className="pt-[9px] border-t border-[#cad5e2] flex justify-between items-start h-[29px]">
+                <span className="text-[14px] font-['Inter',sans-serif] font-medium text-[#0f172b] leading-[20px]">Provider Receives:</span>
+                <span className="text-[14px] font-['Inter',sans-serif] font-bold text-[#00a63e] leading-[20px]">${(100 - (100 * platformFee / 100)).toFixed(2)}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <button 
+          onClick={handleUpdate}
+          disabled={isUpdating}
+          className="w-fit mt-[24px] inline-flex items-center gap-[4px] bg-[#00a63e] hover:bg-[#009035] text-white px-[15px] py-[10px] rounded-[10px] transition-colors"
         >
-          <RefreshCcw
-            className={`w-4 h-4 ${isSettingsLoading ? "animate-spin" : ""}`}
-          />
-          Sync System
+          <SaveIcon className="w-[20px] h-[20px] text-white" />
+          <span className="text-[16px] font-['Inter',sans-serif] font-medium leading-[24px] text-center">Save Platform Fee Settings</span>
         </button>
       </div>
 
-      <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
-        {/* Main Settings Section */}
-        <div className="xl:col-span-2 space-y-8">
-          
-          {/* Platform Service Charge */}
-          <section className="bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-sm relative overflow-hidden">
-            <div className="flex items-center gap-3 mb-8">
-              <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
-                <DollarSign className="w-5 h-5 text-primary" />
-              </div>
-              <h2 className="text-xl font-bold text-gray-900 font-nunito">
-                Platform Service Charge
-              </h2>
-            </div>
-
-            <div className="space-y-8">
-              <div className="space-y-6">
-                <div className="flex items-center justify-between">
-                  <label className="text-sm font-bold text-gray-700 font-arimo">
-                    Set Global Platform Fee
-                  </label>
-                  <span className="text-xl font-black text-primary font-nunito bg-primary/5 px-4 py-1 rounded-full">
-                    {platformFee}%
-                  </span>
-                </div>
-                <input
-                  type="range"
-                  min="0"
-                  max="50"
-                  step="0.5"
-                  value={platformFee}
-                  onChange={(e) => setPlatformFee(parseFloat(e.target.value))}
-                  className="w-full h-2 bg-gray-100 rounded-lg appearance-none cursor-pointer accent-primary"
-                />
-                <div className="flex justify-between text-[10px] font-black text-gray-400 uppercase tracking-tighter">
-                  <span>Minimum (0%)</span>
-                  <span>Intermediate (25%)</span>
-                  <span>Maximum (50%)</span>
-                </div>
-              </div>
-
-              {/* Example Calculation Box */}
-              <div className="bg-gray-50 rounded-3xl p-6 border border-gray-100 flex flex-col sm:flex-row gap-6 items-center">
-                <div className="flex-1 space-y-1">
-                  <h4 className="text-xs font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
-                    <Info className="w-3 h-3 text-primary" />
-                    Example Calculation
-                  </h4>
-                  <p className="text-[11px] text-gray-500 font-arimo">
-                    Based on a standard service charge of $100.00
-                  </p>
-                </div>
-                
-                <div className="flex items-center gap-4 sm:gap-8">
-                  <div className="text-center">
-                    <p className="text-[10px] text-gray-400 font-bold uppercase mb-1">Fee Amount</p>
-                    <p className="text-lg font-black text-gray-900 font-nunito">${calculatedFee.toFixed(2)}</p>
-                  </div>
-                  <ChevronRight className="w-4 h-4 text-gray-300" />
-                  <div className="text-center">
-                    <p className="text-[10px] text-gray-400 font-bold uppercase mb-1">Provider Receives</p>
-                    <p className="text-lg font-black text-green-600 font-nunito">${providerReceives.toFixed(2)}</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          {/* Cancellation Policy */}
-          <section className="bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-sm relative overflow-hidden">
-            <div className="flex items-center gap-3 mb-8">
-              <div className="w-10 h-10 rounded-xl bg-orange-50 flex items-center justify-center">
-                <RefreshCcw className="w-5 h-5 text-orange-500" />
-              </div>
-              <h2 className="text-xl font-bold text-gray-900 font-nunito">
-                Cancellation Policy
-              </h2>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-              <div className="space-y-4">
-                <label className="text-sm font-bold text-gray-700 font-arimo">
-                  Free Cancellation Window
-                </label>
-                <div className="relative">
-                  <input
-                    type="number"
-                    value={freeCancellationWindow}
-                    onChange={(e) => setFreeCancellationWindow(parseInt(e.target.value))}
-                    className="w-full px-6 py-4 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:border-primary/20 focus:ring-4 focus:ring-primary/5 transition-all font-nunito text-lg font-bold outline-none"
-                    placeholder="24"
-                  />
-                  <span className="absolute right-6 top-1/2 -translate-y-1/2 text-xs font-black text-gray-400 uppercase tracking-widest">
-                    Hours
-                  </span>
-                </div>
-                <p className="text-xs text-gray-400 font-arimo max-w-[240px]">
-                  Pet Owners can cancel for free within this timeframe before the service starts.
-                </p>
-              </div>
-
-              <div className="space-y-6">
-                <div className="flex items-center justify-between">
-                  <label className="text-sm font-bold text-gray-700 font-arimo">
-                    Post-Window Refund %
-                  </label>
-                  <span className="text-xl font-black text-orange-600 font-nunito bg-orange-50 px-4 py-1 rounded-full">
-                    {refundPercentage}%
-                  </span>
-                </div>
-                <input
-                  type="range"
-                  min="0"
-                  max="100"
-                  step="5"
-                  value={refundPercentage}
-                  onChange={(e) => setRefundPercentage(parseFloat(e.target.value))}
-                  className="w-full h-2 bg-gray-100 rounded-lg appearance-none cursor-pointer accent-orange-500"
-                />
-                <div className="flex justify-between text-[10px] font-black text-gray-400 uppercase tracking-tighter">
-                  <span>No Refund</span>
-                  <span>Half Refund</span>
-                  <span>Full Refund</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="mt-8 bg-amber-50 border border-amber-100 p-5 rounded-3xl flex items-start gap-4">
-              <AlertCircle className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
-              <div>
-                <h4 className="text-[13px] font-bold text-amber-900 font-nunito uppercase tracking-tight">
-                  Late Cancellation Policy
-                </h4>
-                <p className="text-[11px] text-amber-700 font-arimo mt-1 leading-relaxed">
-                  Cancellations requested after the <strong>{freeCancellationWindow}h window</strong> will apply a <strong>{100 - refundPercentage}% penalty</strong> fee that goes to the platform to compensate for lost slots.
-                </p>
-              </div>
-            </div>
-          </section>
-
-          {/* Provider Category Levels */}
-          <section className="space-y-6">
-            <div className="flex items-center justify-between px-2">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-purple-50 flex items-center justify-center">
-                  <TrendingUp className="w-5 h-5 text-purple-600" />
-                </div>
-                <h2 className="text-xl font-bold text-gray-900 font-nunito">
-                  Provider Category Levels
-                </h2>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              {providerCategoryLevels.map((level, idx) => (
-                <div 
-                  key={level.name}
-                  className={`bg-white p-6 rounded-[2rem] border-2 transition-all hover:shadow-lg ${
-                    idx === 0 ? "border-amber-100" :
-                    idx === 1 ? "border-slate-200" :
-                    idx === 2 ? "border-yellow-200" :
-                    "border-indigo-100"
-                  }`}
-                >
-                  <div className={`w-12 h-12 rounded-2xl mb-4 flex items-center justify-center ${
-                    idx === 0 ? "bg-amber-100 text-amber-700" :
-                    idx === 1 ? "bg-slate-100 text-slate-700" :
-                    idx === 2 ? "bg-yellow-100 text-yellow-700" :
-                    "bg-indigo-100 text-indigo-700"
-                  }`}>
-                    <ShieldCheck className="w-6 h-6" />
-                  </div>
-                  <h3 className="text-lg font-black font-nunito text-gray-900">{level.name}</h3>
-                  <div className="mt-2 space-y-3">
-                    <div className="space-y-1">
-                      <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Threshold</p>
-                      <p className="text-sm font-bold text-gray-700 font-arimo">{level.bookingThreshold}+ Bookings</p>
-                    </div>
-                    <div className="pt-2 border-t border-gray-50">
-                      <p className="text-[11px] text-gray-500 font-arimo leading-relaxed italic">
-                        &quot;{level.benefits}&quot;
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </section>
-        </div>
-
-        {/* Sidebar Controls */}
-        <div className="space-y-8">
-          {/* Action Center */}
-          <div className="bg-gray-900 p-8 rounded-[2.5rem] text-white shadow-2xl shadow-gray-200">
-            <h3 className="text-xl font-bold font-nunito mb-2">Policy Master</h3>
-            <p className="text-white/60 text-xs font-arimo mb-8 leading-relaxed">
-              Applying changes will update platform logic globally. Please verify with legal.
-            </p>
-            
-            <button
-              onClick={handleUpdate}
-              disabled={isUpdating}
-              className="w-full flex items-center justify-center gap-3 bg-primary text-white py-4 rounded-2xl font-black text-sm uppercase tracking-[2px] hover:brightness-110 active:scale-95 transition-all disabled:opacity-50"
-            >
-              {isUpdating ? (
-                <Loader2 className="w-5 h-5 animate-spin" />
-              ) : (
-                <>
-                  <Save className="w-5 h-5" />
-                  Update Policies
-                </>
-              )}
-            </button>
+      {/* Cancellation Policy */}
+      <div className="bg-white border border-[#e2e8f0] rounded-[14px] p-[24px] mb-[24px] relative">
+        <div className="flex gap-[16px] items-start mb-[24px]">
+          <div className="bg-[#ff7176]/10 rounded-[10px] w-[48px] h-[48px] flex items-center justify-center shrink-0">
+            <AlertCircle className="w-[24px] h-[24px] text-[#ff7176]" />
           </div>
-
-          {/* Additional Platform Settings */}
-          <div className="bg-white p-7 rounded-[2.5rem] border border-gray-100 shadow-sm">
-            <h2 className="text-lg font-bold text-gray-900 font-nunito mb-6 flex items-center gap-2">
-              <Settings className="w-4 h-4 text-gray-400" />
-              Safety Toggles
+          <div>
+            <h2 className="text-[20px] font-['Inter',sans-serif] font-semibold text-[#0f172b] leading-[28px]">
+              Cancellation Policy
             </h2>
-            
-            <div className="space-y-6">
-              <div className="flex items-center justify-between p-3 rounded-2xl bg-gray-50/50">
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center">
-                    <ShieldCheck className="w-4 h-4 text-blue-500" />
-                  </div>
-                  <div className="space-y-0.5">
-                    <p className="text-[13px] font-bold text-gray-800 font-arimo">Auto KYC</p>
-                    <p className="text-[10px] text-gray-400">Scan identities instantly</p>
-                  </div>
-                </div>
-                <Switch checked={isKycAutomatic} onChange={setIsKycAutomatic} />
-              </div>
-
-              <div className="flex items-center justify-between p-3 rounded-2xl bg-gray-50/50">
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-lg bg-green-50 flex items-center justify-center">
-                    <BellRing className="w-4 h-4 text-green-500" />
-                  </div>
-                  <div className="space-y-0.5">
-                    <p className="text-[13px] font-bold text-gray-800 font-arimo">Notifications</p>
-                    <p className="text-[10px] text-gray-400">Global email service</p>
-                  </div>
-                </div>
-                <Switch checked={isEmailNotificationEnabled} onChange={setIsEmailNotificationEnabled} />
-              </div>
-
-              <div className="flex items-center justify-between p-3 rounded-2xl bg-gray-50/50">
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center">
-                    <Smartphone className="w-4 h-4 text-indigo-500" />
-                  </div>
-                  <div className="space-y-0.5">
-                    <p className="text-[13px] font-bold text-gray-800 font-arimo">2FA Auth</p>
-                    <p className="text-[10px] text-gray-400">Force SMS/Email code</p>
-                  </div>
-                </div>
-                <Switch checked={isTwoFactorEnabled} onChange={setIsTwoFactorEnabled} />
-              </div>
-            </div>
-          </div>
-
-          {/* Activity Log (Mini) */}
-          <div className="bg-white p-7 rounded-[2.5rem] border border-gray-100 shadow-sm">
-            <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center gap-2">
-                <History className="w-4 h-4 text-gray-400" />
-                <h2 className="text-lg font-bold text-gray-900 font-nunito">Audit</h2>
-              </div>
-              <button className="text-[10px] font-black text-primary uppercase">View Logs</button>
-            </div>
-
-            <div className="space-y-5">
-              {isHistoryLoading ? (
-                <div className="py-4 flex justify-center"><Loader2 className="w-5 h-5 animate-spin text-gray-200" /></div>
-              ) : historyItems.slice(0, 3).map((item) => (
-                <div key={item.id} className="relative pl-5 border-l border-gray-100 pb-1">
-                  <div className="absolute left-[-4.5px] top-1 w-2 h-2 rounded-full bg-gray-200" />
-                  <p className="text-[11px] font-bold text-gray-800 font-arimo truncate">{item.updatedBy.fullName}</p>
-                  <p className="text-[10px] text-gray-400">{new Date(item.updatedAt).toLocaleDateString()}</p>
-                </div>
-              ))}
-            </div>
+            <p className="text-[14px] font-['Inter',sans-serif] text-[#45556c] leading-[20px] mt-[4px]">
+              Define cancellation windows and refund policies
+            </p>
           </div>
         </div>
+
+        <div className="grid grid-cols-2 gap-[24px] items-start mb-[24px]">
+          <div className="flex flex-col gap-[8px]">
+            <label className="text-[14px] font-['Inter',sans-serif] font-medium text-[#314158] leading-[20px]">
+              Free Cancellation Window (Hours)
+            </label>
+            <div className="h-[42px] border border-[#cad5e2] rounded-[10px] flex items-center px-[16px] py-[8px]">
+              <input 
+                type="number" 
+                value={freeCancellationWindow}
+                onChange={(e) => setFreeCancellationWindow(Number(e.target.value))}
+                className="w-full bg-transparent font-['Inter',sans-serif] text-[16px] text-[#0a0a0a] outline-none" 
+              />
+            </div>
+            <p className="text-[12px] font-['Inter',sans-serif] font-normal text-[#62748e] leading-[16px]">
+              Users can cancel bookings for free within {freeCancellationWindow} hours of booking
+            </p>
+          </div>
+
+          <div className="flex flex-col gap-[8px]">
+            <label className="text-[14px] font-['Inter',sans-serif] font-medium text-[#314158] leading-[20px]">
+              Refund Percentage (Within Window)
+            </label>
+            <div className="flex items-center gap-[16px] h-[32px]">
+               <div className="flex-1 relative">
+                 <input 
+                    type="range" min="0" max="100" step="1" 
+                    value={refundPercentage} 
+                    onChange={(e) => setRefundPercentage(Number(e.target.value))}
+                    className="w-full h-[10px] bg-[#f6f6f6] rounded-[9px] appearance-none focus:outline-none [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-[20px] [&::-webkit-slider-thumb]:h-[20px] [&::-webkit-slider-thumb]:rounded-[15px] [&::-webkit-slider-thumb]:bg-[#ff7176] [&::-webkit-slider-thumb]:cursor-pointer"
+                    style={{
+                      background: `linear-gradient(to right, #ff7176 ${refundPercentage}%, #f6f6f6 ${refundPercentage}%)`
+                    }}
+                 />
+               </div>
+               <div className="w-[80px]">
+                 <p className="text-[24px] font-['Inter',sans-serif] font-bold text-[#155dfc] leading-[32px] text-center">
+                   {refundPercentage}%
+                 </p>
+               </div>
+            </div>
+            <p className="text-[12px] font-['Inter',sans-serif] font-normal text-[#62748e] leading-[16px]">
+              Customers receive {refundPercentage}% refund for cancellations within the window
+            </p>
+          </div>
+        </div>
+
+        <div className="bg-[#fffbeb] border border-[#fee685] rounded-[10px] px-[17px] pt-[17px] pb-[16px] flex gap-[12px] items-start mb-[24px]">
+          <AlertCircle className="w-[20px] h-[20px] text-[#bb4d00]" />
+          <div className="flex flex-col gap-[4px]">
+            <h3 className="text-[14px] font-['Inter',sans-serif] font-medium text-[#7b3306] leading-[20px]">Late Cancellation Policy</h3>
+            <p className="text-[12px] font-['Inter',sans-serif] text-[#bb4d00] leading-[16px]">
+              Cancellations made after the {freeCancellationWindow}-hour window will incur a {100-refundPercentage}% cancellation fee. Providers will receive {100-refundPercentage}% of the booking amount as compensation.
+            </p>
+          </div>
+        </div>
+
+        <button 
+          onClick={handleUpdate}
+          disabled={isUpdating}
+          className="w-fit inline-flex items-center justify-center gap-[4px] bg-[#ff7176] hover:bg-[#ff5a60] text-white px-[15px] py-[10px] rounded-[10px] transition-colors"
+        >
+          <SaveIcon className="w-[20px] h-[20px] text-white" />
+          <span className="text-[16px] font-['Inter',sans-serif] font-medium leading-[24px] text-center">Save Cancellation Policy</span>
+        </button>
       </div>
 
-      {/* Safety Banner */}
-      <div className="bg-primary/5 border border-primary/10 p-6 rounded-3xl flex items-center justify-between gap-6 overflow-hidden relative">
-        <div className="flex items-start gap-4 z-10">
-          <ShieldCheck className="w-10 h-10 text-primary shrink-0 opacity-20" />
+      {/* Provider Category Levels */}
+      <div className="bg-white border border-[#e2e8f0] rounded-[14px] p-[24px] mb-[24px]">
+        <div className="flex gap-[16px] items-start mb-[24px]">
+          <div className="bg-[#f3e8ff] rounded-[10px] w-[48px] h-[48px] flex items-center justify-center shrink-0">
+            <Shield className="w-[24px] h-[24px] text-[#9810fa]" />
+          </div>
           <div>
-            <h4 className="text-sm font-bold text-gray-900 font-nunito uppercase tracking-widest">
-              Financial Integrity Protocol
-            </h4>
-            <p className="text-xs text-gray-500 font-arimo mt-1 leading-relaxed max-w-2xl">
-              Platform fee adjustments follow the <strong>Immutable Ledger Rule</strong>: changes only affect future transactions. Active contracts remain protected under their original agreement terms to prevent billing discrepancies.
+            <h2 className="text-[20px] font-['Inter',sans-serif] font-semibold text-[#0f172b] leading-[28px]">
+              Provider Category Levels
+            </h2>
+            <p className="text-[14px] font-['Inter',sans-serif] text-[#45556c] leading-[20px] mt-[4px]">
+              Manage provider tier system and benefits
             </p>
           </div>
         </div>
-        <div className="hidden lg:block z-10">
-          <div className="px-4 py-2 bg-primary text-white text-[10px] font-black rounded-lg uppercase tracking-widest opacity-80">
-            Compliant
+
+        <div className="grid grid-cols-4 gap-[16px]">
+          {/* Bronze */}
+          <div className="border-[2px] border-[#bb4d00] rounded-[14px] p-[20px] flex flex-col items-start gap-[12px]" style={{ background: "linear-gradient(149.91deg, #fffbeb 0%, #fef3c6 100%)" }}>
+            <div className="flex items-center gap-[8px]">
+              <Shield className="w-[20px] h-[20px] text-[#7b3306]" />
+              <h3 className="text-[18px] font-['Inter',sans-serif] font-bold text-[#7b3306] leading-[28px]">Bronze</h3>
+            </div>
+            <div>
+              <p className="text-[14px] font-['Inter',sans-serif] font-semibold text-[#314158] leading-[20px] mb-[8px]">0+ bookings</p>
+              <p className="text-[10px] font-['Inter',sans-serif] text-[#45556c] leading-[16px]">Basic support, Standard visibility</p>
+            </div>
+          </div>
+
+          {/* Silver */}
+          <div className="border-[2px] border-[#90a1b9] rounded-[14px] p-[20px] flex flex-col items-start gap-[12px]" style={{ background: "linear-gradient(149.91deg, #f8fafc 0%, #f1f5f9 100%)" }}>
+            <div className="flex items-center gap-[8px]">
+              <Shield className="w-[20px] h-[20px] text-[#0f172b]" />
+              <h3 className="text-[18px] font-['Inter',sans-serif] font-bold text-[#0f172b] leading-[28px]">Silver</h3>
+            </div>
+            <div>
+              <p className="text-[14px] font-['Inter',sans-serif] font-semibold text-[#314158] leading-[20px] mb-[8px]">50+ bookings</p>
+              <p className="text-[10px] font-['Inter',sans-serif] text-[#45556c] leading-[16px]">Priority support, Enhanced visibility, 12% fee</p>
+            </div>
+          </div>
+
+          {/* Gold */}
+          <div className="border-[2px] border-[#f0b100] rounded-[14px] p-[20px] flex flex-col items-start gap-[12px]" style={{ background: "linear-gradient(149.91deg, #fefce8 0%, #fef9c2 100%)" }}>
+            <div className="flex items-center gap-[8px]">
+              <Shield className="w-[20px] h-[20px] text-[#733e0a]" />
+              <h3 className="text-[18px] font-['Inter',sans-serif] font-bold text-[#733e0a] leading-[28px]">Gold</h3>
+            </div>
+            <div>
+              <p className="text-[14px] font-['Inter',sans-serif] font-semibold text-[#314158] leading-[20px] mb-[8px]">150+ bookings</p>
+              <p className="text-[10px] font-['Inter',sans-serif] text-[#45556c] leading-[16px]">Premium support, Top visibility, 10% fee, Featured badge</p>
+            </div>
+          </div>
+
+          {/* Platinum */}
+          <div className="border-[2px] border-[#ad46ff] rounded-[14px] p-[20px] flex flex-col items-start gap-[12px]" style={{ background: "linear-gradient(149.91deg, #faf5ff 0%, #f3e8ff 100%)" }}>
+            <div className="flex items-center gap-[8px]">
+              <Shield className="w-[20px] h-[20px] text-[#59168b]" />
+              <h3 className="text-[18px] font-['Inter',sans-serif] font-bold text-[#59168b] leading-[28px]">Platinum</h3>
+            </div>
+            <div>
+              <p className="text-[14px] font-['Inter',sans-serif] font-semibold text-[#314158] leading-[20px] mb-[8px]">300+ bookings</p>
+              <p className="text-[10px] font-['Inter',sans-serif] text-[#45556c] leading-[16px]">Dedicated account manager, Maximum visibility, 8% fee, Premium badge</p>
+            </div>
           </div>
         </div>
-        <div className="absolute right-[-5%] top-[-50%] w-64 h-64 bg-primary/5 rounded-full blur-3xl pointer-events-none"></div>
+
+        <button 
+          onClick={handleUpdate}
+          disabled={isUpdating}
+          className="w-fit mt-[24px] inline-flex items-center justify-center gap-[4px] bg-[#9810fa] hover:bg-[#850ddb] text-white px-[17px] py-[12px] rounded-[10px] transition-colors"
+        >
+          <SaveIcon className="w-[20px] h-[20px] text-white" />
+          <span className="text-[16px] font-['Inter',sans-serif] font-medium leading-[24px] text-center">Update Provider Levels</span>
+        </button>
+      </div>
+
+      {/* Additional Platform Settings */}
+      <div className="bg-white border border-[#e2e8f0] rounded-[14px] p-[25px] flex flex-col gap-[24px]">
+        <h2 className="text-[20px] font-['Inter',sans-serif] font-semibold text-[#0f172b] leading-[28px]">
+          Additional Platform Settings
+        </h2>
+
+        <div className="flex flex-col gap-[16px]">
+          {/* Setting 1 */}
+          <div className="bg-[#f8fafc] border border-[#e2e8f0] rounded-[10px] h-[78px] flex items-center justify-between px-[16px]">
+            <div className="flex flex-col justify-center">
+              <h3 className="text-[16px] font-['Inter',sans-serif] font-medium text-[#0f172b] leading-[24px]">Automatic KYC Verification</h3>
+              <p className="text-[14px] font-['Inter',sans-serif] text-[#45556c] leading-[20px]">Enable AI-powered automatic document verification</p>
+            </div>
+            <Switch checked={isKycAutomatic} onChange={setIsKycAutomatic} />
+          </div>
+
+          {/* Setting 2 */}
+          <div className="bg-[#f8fafc] border border-[#e2e8f0] rounded-[10px] h-[78px] flex items-center justify-between px-[16px]">
+            <div className="flex flex-col justify-center">
+              <h3 className="text-[16px] font-['Inter',sans-serif] font-medium text-[#0f172b] leading-[24px]">Email Notifications</h3>
+              <p className="text-[14px] font-['Inter',sans-serif] text-[#45556c] leading-[20px]">Send email alerts for important platform events</p>
+            </div>
+            <Switch checked={isEmailNotificationEnabled} onChange={setIsEmailNotificationEnabled} />
+          </div>
+
+          {/* Setting 3 */}
+          <div className="bg-[#f8fafc] border border-[#e2e8f0] rounded-[10px] h-[78px] flex items-center justify-between px-[16px]">
+            <div className="flex flex-col justify-center">
+              <h3 className="text-[16px] font-['Inter',sans-serif] font-medium text-[#0f172b] leading-[24px]">Two-Factor Authentication</h3>
+              <p className="text-[14px] font-['Inter',sans-serif] text-[#45556c] leading-[20px]">Require 2FA for all admin accounts</p>
+            </div>
+            <Switch checked={isTwoFactorEnabled} onChange={setIsTwoFactorEnabled} />
+          </div>
+        </div>
+
+        <button 
+          onClick={handleUpdate}
+          disabled={isUpdating}
+          className="w-fit mt-[8px] inline-flex items-center justify-center gap-[4px] bg-[#0f172b] hover:bg-[#1e293b] text-white px-[15px] py-[10px] rounded-[10px] transition-colors"
+        >
+          <SaveIcon className="w-[20px] h-[20px] text-white" />
+          <span className="text-[16px] font-['Inter',sans-serif] font-medium leading-[24px] text-center">Save Additional Settings</span>
+        </button>
       </div>
     </div>
   );

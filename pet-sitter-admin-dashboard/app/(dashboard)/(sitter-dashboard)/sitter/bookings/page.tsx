@@ -1,25 +1,21 @@
 "use client";
-
 import { useState } from "react";
 import {
   Eye,
-  Trash2,
+  Package,
   CheckCircle2,
   Clock,
   Play,
-  AlertTriangle,
-  Send,
-  XCircle,
-  Ban,
-  Package,
+  Trash2,
   ChevronLeft,
   ChevronRight,
+  MoreVertical,
 } from "lucide-react";
 import { useToast } from "@/contexts/ToastContext";
-import {
-  useGetMyBookingsQuery,
-  useConfirmBookingMutation,
+import { 
+  useGetMyBookingsQuery 
 } from "@/redux/features/api/dashboard/sitter/bookings/sitterBookingApi";
+import { useGetSitterStatsQuery } from "@/redux/features/api/dashboard/sitter/dashboard/sitterDashboardApi";
 import { useSession } from "next-auth/react";
 import {
   SitterBookingListItem,
@@ -85,12 +81,14 @@ const getStatusBadge = (status: BookingStatus) => {
 
 export default function SitterBookingsPage() {
   const { status: sessionStatus } = useSession();
-  const { showToast } = useToast();
-
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
   const [selectedBooking, setSelectedBooking] =
     useState<SitterBookingListItem | null>(null);
+
+  const { data: statsData } = useGetSitterStatsQuery(undefined, {
+    skip: sessionStatus === "loading",
+  });
 
   const { data, isLoading, isError, refetch } = useGetMyBookingsQuery(
     { limit: 20 },
@@ -101,14 +99,14 @@ export default function SitterBookingsPage() {
     }
   );
 
-  const bookings = data?.data?.data ?? [];
+  const stats = statsData?.data;
+  const bookingsByStatus = stats?.bookings?.byStatus || {};
 
-  // Stats calculation
-  const totalBookings = bookings.length;
-  // Let's assume pending and some others for demo based on Figma
-  const newBookings = bookings.filter((b) => b.bookingStatus === "PENDING").length || 42; 
-  const pendingConfirmation = bookings.filter((b) => b.bookingStatus === "REQUEST_TO_COMPLETE").length || 3;
-  const activePackages = bookings.filter((b) => b.bookingStatus === "IN_PROGRESS").length || 8;
+  // Stats calculation from real API data
+  const totalBookingsCount = stats?.bookings?.total || 0;
+  const newBookings = bookingsByStatus.PENDING || 0;
+  const pendingConfirmation = bookingsByStatus.REQUEST_TO_COMPLETE || 0;
+  const activePackages = bookingsByStatus.IN_PROGRESS || 0;
 
   const handleView = (e: React.MouseEvent, booking: SitterBookingListItem) => {
     e.stopPropagation();
@@ -156,7 +154,7 @@ export default function SitterBookingsPage() {
             <div className="flex flex-col gap-[4px]">
                <p className="text-[12px] font-medium text-[#101828] uppercase">Total Bookings</p>
                <p className="text-[28px] font-semibold text-[#101828] leading-none">
-                  {(totalBookings === 0 ? 1248 : totalBookings).toLocaleString()}
+                  {totalBookingsCount.toLocaleString()}
                </p>
                <p className="text-[12px] text-[#667085]">This Month</p>
             </div>
@@ -218,8 +216,8 @@ export default function SitterBookingsPage() {
                   </tr>
                </thead>
                <tbody className="divide-y divide-[#eaecf0]">
-                 {bookings.length > 0 ? (
-                   bookings.map((booking) => (
+                 {(data?.data?.data ?? []).length > 0 ? (
+                   (data?.data?.data ?? []).map((booking: SitterBookingListItem) => (
                      <tr key={booking.id} className="hover:bg-gray-50/50 transition-colors h-[72px]">
                         <td className="px-[24px] py-[16px]">
                            <div className="flex items-center gap-[12px]">
@@ -324,7 +322,7 @@ export default function SitterBookingsPage() {
           isOpen={isDetailModalOpen}
           onClose={() => setIsDetailModalOpen(false)}
           bookingId={selectedBooking.id}
-          onCancelRequest={() => {
+          onCancel={() => {
              setIsDetailModalOpen(false);
              setIsCancelModalOpen(true);
           }}
@@ -335,7 +333,7 @@ export default function SitterBookingsPage() {
         <CancelBookingModal
           isOpen={isCancelModalOpen}
           onClose={() => setIsCancelModalOpen(false)}
-          bookingId={selectedBooking.id}
+          booking={selectedBooking}
         />
       )}
 

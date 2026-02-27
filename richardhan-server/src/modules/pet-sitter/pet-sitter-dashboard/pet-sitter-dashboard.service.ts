@@ -40,6 +40,7 @@ export class PetSitterDashboardService {
     const petSitter = await this.getActivePetSitter(userId);
     const now = new Date();
     const startOfYear = new Date(now.getFullYear(), 0, 1);
+    const endOfYear = new Date(now.getFullYear() + 1, 0, 1);
 
     const [
       packageGroups,
@@ -47,6 +48,8 @@ export class PetSitterDashboardService {
       bookingGroups,
       activeClientsCount,
       revenueResult,
+      reviewResult,
+      payoutResult,
     ] = await Promise.all([
       this.prisma.package.groupBy({
         by: ['isAvailable'],
@@ -73,6 +76,21 @@ export class PetSitterDashboardService {
       }),
       this.prisma.petSitterBooking.aggregate({
         where: { petSitterProfileId: petSitter.id, status: 'COMPLETED' },
+        _sum: { grandTotal: true },
+      }),
+      this.prisma.petSitterReview.aggregate({
+        where: { petSitterId: petSitter.id, isDeleted: false },
+        _avg: { rating: true },
+        _count: true,
+      }),
+      this.prisma.petSitterBooking.aggregate({
+        where: {
+          petSitterProfileId: petSitter.id,
+          status: 'COMPLETED',
+          payments: {
+            none: { status: 'SUCCESS' },
+          },
+        },
         _sum: { grandTotal: true },
       }),
     ]);
@@ -126,11 +144,59 @@ export class PetSitterDashboardService {
       (bookingsByStatus.IN_PROGRESS || 0) +
       (bookingsByStatus.REQUEST_TO_COMPLETE || 0);
 
-    return ApiResponse.success("Pet sitter's stats found", {
+    const totalEarnings = revenueResult._sum.grandTotal || 0;
+    const averageRating = reviewResult._avg.rating || 0;
+    const reviewCount = reviewResult._count || 0;
+    const pendingPayout = payoutResult._sum.grandTotal || 0;
+
+    // Calculate average services per month for the current year
+    const completedThisYear = await this.prisma.petSitterBooking.count({
+      where: {
+        petSitterProfileId: petSitter.id,
+        status: 'COMPLETED',
+        createdAt: { gte: startOfYear },
+      },
+    });
+    const monthsPassed = now.getMonth() + 1;
+    const avgServices = Number((completedThisYear / monthsPassed).toFixed(1));
+
+    const ratingTrend: { name: string; rating: number }[] = [];
+    for (let i = 5; i >= 0; i--) {
+      const d = new Date();
+      d.setMonth(d.getMonth() - i);
+      const m = d.getMonth() + 1;
+      const y = d.getFullYear();
+      const monthName = d.toLocaleString('en-US', { month: 'short' });
+      
+      const ratingTrendData = await this.prisma.petSitterReview.aggregate({
+        where: {
+          petSitterId: petSitter.id,
+          isDeleted: false,
+          createdAt: {
+            gte: new Date(y, m - 1, 1),
+            lt: new Date(y, m, 1),
+          },
+        },
+        _avg: { rating: true },
+      });
+
+      ratingTrend.push({
+        name: monthName,
+        rating: ratingTrendData._avg.rating || 0,
+      });
+    }
+
+    return ApiResponse.success("Pet sitter stats fetched successfully", {
       packages,
       services,
       activeClients: activeClientsCount.length,
-      totalRevenue: revenueResult._sum.grandTotal || 0,
+      totalRevenue: totalEarnings,
+      totalEarnings: totalEarnings, 
+      pendingPayout,
+      averageRating,
+      reviewCount,
+      avgServices,
+      ratingTrend,
       bookings: {
         total: totalBookings,
         byStatus: bookingsByStatus,
@@ -153,10 +219,19 @@ export class PetSitterDashboardService {
     const typeCounts: Record<BookingType, number> = { PACKAGE: 0, SERVICE: 0 };
     bookings.forEach((b) => (typeCounts[b.bookingType] = b._count));
 
-    const chartData = (['PACKAGE', 'SERVICE'] as BookingType[]).map((type) => ({
-      type: type === 'PACKAGE' ? 'Package' : 'Service',
-      count: typeCounts[type],
-    }));
+    const total = bookings.reduce((sum, b) => sum + b._count, 0);
+    const chartData = [
+      {
+        type: 'Package Booking',
+        count: typeCounts.PACKAGE || 0,
+        percentage: total > 0 ? Number(((typeCounts.PACKAGE / total) * 100).toFixed(1)) : 0,
+      },
+      {
+        type: 'Regular Booking',
+        count: typeCounts.SERVICE || 0,
+        percentage: total > 0 ? Number(((typeCounts.SERVICE / total) * 100).toFixed(1)) : 0,
+      }
+    ];
 
     return ApiResponse.success("Pet sitter's booking ratio found", chartData);
   }
@@ -342,52 +417,42 @@ export class PetSitterDashboardService {
   }
 
   // ---------------------- Booking Trends ----------------------
-  async getBookingTrends(userId: string, year?: number) {
+  async getBookingTrends(userId: string) {
     const petSitter = await this.getActivePetSitter(userId);
-    const targetYear = year ?? new Date().getFullYear();
-    const startDate = new Date(targetYear, 0, 1);
-    const endDate = new Date(targetYear + 1, 0, 1);
+    
+    const trends = [];
+    const now = new Date();
+    
+    for (let i = 14; i >= 0; i--) {
+      const d = new Date(now);
+      d.setDate(d.getDate() - i);
+      const startOfDay = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+      const endOfDay = new Date(d.getFullYear(), d.getMonth(), d.getDate() + 1);
+      
+      const dayLabel = d.getDate().toString();
+      
+      const dailyData = await this.prisma.petSitterBooking.aggregate({
+        where: {
+          petSitterProfileId: petSitter.id,
+          createdAt: {
+            gte: startOfDay,
+            lt: endOfDay,
+          },
+        },
+        _count: true,
+        _sum: { grandTotal: true },
+      });
 
-    const monthlyCounts = await this.prisma.$queryRaw<
-      { month: number; count: bigint }[]
-    >`
-      SELECT EXTRACT(MONTH FROM "createdAt")::int as month,
-             COUNT(*) as count
-      FROM "PetSitterBooking"
-      WHERE "petSitterProfileId" = ${petSitter.id}
-        AND "createdAt" >= ${startDate}
-        AND "createdAt" < ${endDate}
-      GROUP BY month
-      ORDER BY month;
-    `;
-
-    const monthlyData = Array(12).fill(0);
-    monthlyCounts.forEach(
-      (row) => (monthlyData[row.month - 1] = Number(row.count))
-    );
-
-    const months = [
-      'Jan',
-      'Feb',
-      'Mar',
-      'Apr',
-      'May',
-      'Jun',
-      'Jul',
-      'Aug',
-      'Sep',
-      'Oct',
-      'Nov',
-      'Dec',
-    ];
-    const data = months.map((m, i) => ({
-      month: m,
-      totalBookings: monthlyData[i],
-    }));
+      trends.push({
+        name: dayLabel,
+        totalBookings: dailyData._count || 0,
+        revenue: Number(dailyData._sum?.grandTotal || 0),
+      });
+    }
 
     return ApiResponse.success('Booking trends fetched successfully', {
-      year: targetYear,
-      data,
+      year: new Date().getFullYear(),
+      data: trends,
     });
   }
 

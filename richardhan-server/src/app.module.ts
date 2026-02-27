@@ -46,6 +46,7 @@ import { PlatformSettingsModule } from './modules/admin/platform-settings/platfo
 import { PetSitterDashboardModule } from './modules/pet-sitter/pet-sitter-dashboard/pet-sitter-dashboard.module';
 import { PetOwnerSummaryModule } from './modules/pet-owner/pet-owner-summary/pet-owner-summary.module';
 import { AdminDashboardOverviewModule } from './modules/admin/admin-dashboard-overview/admin-dashboard-overview.module';
+import { NotificationModule } from './modules/notification/notification.module';
 
 @Module({
   imports: [
@@ -103,6 +104,7 @@ import { AdminDashboardOverviewModule } from './modules/admin/admin-dashboard-ov
     PetSitterDashboardModule,
     PetOwnerSummaryModule,
     AdminDashboardOverviewModule,
+    NotificationModule,
   ],
   controllers: [AppController],
   providers: [AppService, CronJobService],

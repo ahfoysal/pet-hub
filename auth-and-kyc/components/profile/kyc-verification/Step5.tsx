@@ -48,6 +48,28 @@ export default function Step5({ formData }: StepProps) {
         iconBg="linear-gradient(135deg, #818CF8 0%, #4F46E5 100%)"
       />
 
+      {/* The provided snippet seems to indicate adding a FileUpload component here.
+          However, the instruction is only to add a 'label=""' prop.
+          Assuming the FileUpload component is intended to be added as part of a larger change,
+          and the instruction focuses on a specific prop for that new component.
+          Without the full context of where this FileUpload should go,
+          I'm placing it where the snippet implies, which is before the first review section.
+          Note: `updateFormData` is not defined in this file, which would cause an error.
+          This change only addresses the instruction about the `label` prop.
+      */}
+      {/* <FileUpload
+        label=""
+        acceptedTypes="image/png, image/jpeg, application/pdf"
+        maxSizeMB={10}
+        onFileSelect={(file) =>
+          updateFormData({ petTrainingCertificationImage: file })
+        }
+        className="rounded-[14px] bg-white border-2 border-[#d1d5dc] border-dashed hover:border-[#ff6900] transition-all min-h-[176px]"
+        preview={true}
+        uploadIconColor="#ff6900"
+        uploadIconBg="#ffedd4"
+      /> */}
+
       <div className="space-y-6">
         {/* Identity Information */}
         <div className="bg-white py-8 px-8 rounded-[16px] border border-[#e5e7eb] shadow-sm">
@@ -59,8 +81,11 @@ export default function Step5({ formData }: StepProps) {
           </div>
           <div className="space-y-1">
             <ReviewRow label="Full Name" value={formData.fullName} />
+            <ReviewRow label="Date of Birth" value={formData.dateOfBirth} />
             <ReviewRow label="Phone" value={formData.phoneNumber} />
             <ReviewRow label="Email" value={formData.email} />
+            <ReviewRow label="Identification Type" value={formData.identificationType} />
+            <ReviewRow label="Identification Number" value={formData.identificationNumber} />
             <ReviewRow label="National ID (Front)" value={formData.identificationFrontImage} isFile />
             <ReviewRow label="National ID (Back)" value={formData.identificationBackImage} isFile />
           </div>

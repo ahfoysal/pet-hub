@@ -35,7 +35,7 @@ export class PlatformSettingsController {
     @Body() payload: PlatformSettingsDto,
     @CurrentUser('id') userId: string
   ) {
-    return this.platformSettingsService.updatePlatformSettings(payload, userId);
+    return await this.platformSettingsService.updatePlatformSettings(payload, userId);
   }
 
   @Get()
@@ -45,7 +45,7 @@ export class PlatformSettingsController {
       'Retrieves platform-wide settings such as platform fee and commission rate.',
   })
   async getPlatformSettings(@CurrentUser('id') userId: string) {
-    return this.platformSettingsService.getPlatformSettings(userId);
+    return await this.platformSettingsService.getPlatformSettings(userId);
   }
 
   @Get('/history')
@@ -76,7 +76,7 @@ export class PlatformSettingsController {
     @Query('limit', new DefaultValuePipe(20), ParseIntPipe) limit?: number,
     @Query('search') search?: string
   ) {
-    return this.platformSettingsService.getPlatformSettingsHistory(
+    return await this.platformSettingsService.getPlatformSettingsHistory(
       userId,
       cursor,
       limit,

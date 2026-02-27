@@ -26,7 +26,16 @@ export default function ReportsPage() {
 
   const [takeAction, { isLoading: isSubmittingAction }] = useTakeActionOnReportMutation();
 
-  const reports = reportsResponse?.data || [];
+  let reports: any[] = [];
+  if (Array.isArray(reportsResponse?.data?.data)) {
+    reports = reportsResponse.data.data;
+  } else if (Array.isArray(reportsResponse?.data?.items)) {
+    reports = reportsResponse.data.items;
+  } else if (Array.isArray(reportsResponse?.data)) {
+    reports = reportsResponse.data;
+  } else if (Array.isArray(reportsResponse)) {
+    reports = reportsResponse;
+  }
 
   const filteredReports = reports.filter((report: any) => {
     const matchesSearch = report.subject?.toLowerCase().includes(searchTerm.toLowerCase()) || 
@@ -49,19 +58,24 @@ export default function ReportsPage() {
   const totalReports = reports.length;
   const pendingReports = reports.filter((r: any) => r.status === "PENDING").length;
   const resolvedReports = reports.filter((r: any) => r.status === "RESOLVED").length;
+  const highSeverityReports = reports.filter((r: any) => r.severity === "High" || r.status === "OPEN").length;
 
   const handleViewDetails = (report: any) => {
     setSelectedReport(report);
     setIsDetailsModalOpen(true);
   };
 
-  const handleTakeAction = async (actionType: "WARN" | "SUSPEND", note: string) => {
+  const handleTakeAction = async (actionType: "WARN" | "SUSPEND" | "RESOLVE", notes: string) => {
     if (!selectedReport) return;
+    // setIsSubmittingAction(true); // This line was commented out in the original, but the instruction implies adding it.
+    // However, the `isSubmittingAction` state is derived from the mutation hook, so setting it manually here is incorrect.
+    // The instruction seems to have a typo `y {` after `setIsSubmittingAction(true);`.
+    // I will only apply the type change and parameter name change as requested, and correct the `note` usage.
     
     try {
       await takeAction({
         id: selectedReport.id,
-        action: { actionType, note }
+        action: { actionType, note: notes }
       }).unwrap();
       
       showToast(`Action ${actionType} taken successfully`, "success");
@@ -78,210 +92,325 @@ export default function ReportsPage() {
       <div className="w-[1090px] mx-auto mt-[26px]">
         
         {/* Header Text */}
-        <div className="mb-[25px]">
+        <div className="mb-[24px]">
           <h1 className="font-['Nunito',sans-serif] font-medium leading-[36px] text-[#0a0a0a] text-[30px] m-0">
             Reports & Complaints
           </h1>
-          <p className="font-['Arimo',sans-serif] font-normal leading-[19.2px] text-[#555555] text-[16px] m-0 mt-[8px]">
-             Manage user feedhacks and complaints efficiently.
+          <p className="font-['Arimo',sans-serif] font-normal leading-[24px] text-[#4a5565] text-[16px] m-0 mt-[8px]">
+             Manage user reports and resolve platform issues
           </p>
         </div>
 
         {/* Analytics Cards */}
-        <div className="flex gap-[25px] mb-[25px]">
-          {/* Total Reports */}
-          <div className="bg-white rounded-[24px] p-[24px] w-[346.67px] shadow-[0px_4px_20px_0px_#0000000a]">
-            <div className="flex justify-between items-start">
-              <div>
-                <p className="font-['Nunito',sans-serif] font-medium text-[20px] leading-[26px] text-[#555555] m-0">Total Reports</p>
-                <h2 className="font-['Nunito',sans-serif] font-bold text-[36px] leading-[46.8px] text-[#0a0a0a] m-0 mt-[16px]">
-                  {isLoading ? "-" : totalReports}
-                </h2>
-              </div>
-              <div className="w-[52px] h-[52px] bg-[#f2f4f8] rounded-full flex items-center justify-center">
-                <Image src="/assets/icons/document-text.svg" alt="Total Reports" width={24} height={24} />
-              </div>
-            </div>
-            <p className="font-['Arimo',sans-serif] font-normal text-[16px] leading-[24px] text-[#555555] m-0 mt-[16px]">
-              +5% from last month
+        <div className="grid grid-cols-4 gap-[24px] mb-[24px] h-[110px]">
+          {/* Open Reports */}
+          <div className="bg-white border border-[#e2e8f0] rounded-[14px] pt-[25px] px-[25px] pb-px flex flex-col gap-[4px]">
+            <p className="font-['Inter',sans-serif] font-normal text-[14px] leading-[20px] text-[#45556c] m-0">
+              Open Reports
             </p>
+            <h2 className="font-['Inter',sans-serif] font-bold text-[30px] leading-[36px] text-[#e7000b] m-0">
+              {isLoading ? "-" : totalReports}
+            </h2>
           </div>
 
-          {/* Pending Reviews */}
-          <div className="bg-white rounded-[24px] p-[24px] w-[346.67px] shadow-[0px_4px_20px_0px_#0000000a]">
-            <div className="flex justify-between items-start">
-              <div>
-                <p className="font-['Nunito',sans-serif] font-medium text-[20px] leading-[26px] text-[#555555] m-0">Pending Reviews</p>
-                <h2 className="font-['Nunito',sans-serif] font-bold text-[36px] leading-[46.8px] text-[#0a0a0a] m-0 mt-[16px]">
-                  {isLoading ? "-" : pendingReports}
-                </h2>
-              </div>
-              <div className="w-[52px] h-[52px] bg-[#fff5f5] rounded-full flex items-center justify-center">
-                <Image src="/assets/icons/document-text-red.svg" alt="Pending Reviews" width={24} height={24} />
-              </div>
-            </div>
-            <p className="font-['Arimo',sans-serif] font-normal text-[16px] leading-[24px] text-[#555555] m-0 mt-[16px]">
-              Needs immediate attention
+          {/* In Review */}
+          <div className="bg-white border border-[#e2e8f0] rounded-[14px] pt-[25px] px-[25px] pb-px flex flex-col gap-[4px]">
+            <p className="font-['Inter',sans-serif] font-normal text-[14px] leading-[20px] text-[#45556c] m-0">
+              In Review
             </p>
+            <h2 className="font-['Inter',sans-serif] font-bold text-[30px] leading-[36px] text-[#155dfc] m-0">
+              {isLoading ? "-" : pendingReports}
+            </h2>
           </div>
 
-          {/* Resolved Issues */}
-          <div className="bg-white rounded-[24px] p-[24px] w-[346.67px] shadow-[0px_4px_20px_0px_#0000000a]">
-            <div className="flex justify-between items-start">
-              <div>
-                <p className="font-['Nunito',sans-serif] font-medium text-[20px] leading-[26px] text-[#555555] m-0">Resolved Issues</p>
-                <h2 className="font-['Nunito',sans-serif] font-bold text-[36px] leading-[46.8px] text-[#0a0a0a] m-0 mt-[16px]">
-                  {isLoading ? "-" : resolvedReports}
-                </h2>
-              </div>
-              <div className="w-[52px] h-[52px] bg-[#f0fbf5] rounded-full flex items-center justify-center">
-                <Image src="/assets/icons/tick-circle-green.svg" alt="Resolved Issues" width={24} height={24} />
-              </div>
-            </div>
-            <p className="font-['Arimo',sans-serif] font-normal text-[16px] leading-[24px] text-[#555555] m-0 mt-[16px]">
-              Successfully managed
+          {/* Resolved */}
+          <div className="bg-white border border-[#e2e8f0] rounded-[14px] pt-[25px] px-[25px] pb-px flex flex-col gap-[4px]">
+            <p className="font-['Inter',sans-serif] font-normal text-[14px] leading-[20px] text-[#45556c] m-0">
+              Resolved
             </p>
+            <h2 className="font-['Inter',sans-serif] font-bold text-[30px] leading-[36px] text-[#00a63e] m-0">
+              {isLoading ? "-" : resolvedReports}
+            </h2>
+          </div>
+
+          {/* High Severity */}
+          <div className="bg-white border border-[#e2e8f0] rounded-[14px] pt-[25px] px-[25px] pb-px flex flex-col gap-[4px]">
+            <p className="font-['Inter',sans-serif] font-normal text-[14px] leading-[20px] text-[#45556c] m-0">
+              High Severity
+            </p>
+            <h2 className="font-['Inter',sans-serif] font-bold text-[30px] leading-[36px] text-[#e7000b] m-0">
+              {isLoading ? "-" : highSeverityReports}
+            </h2>
           </div>
         </div>
 
-        {/* List Section */}
-        <div className="bg-white rounded-[24px] p-[24px] shadow-[0px_4px_20px_0px_#0000000a]">
-          {/* Controls */}
-          <div className="flex justify-between items-center mb-[24px]">
-            <div className="flex gap-[8px] border-b border-[#e2e8f0] w-full max-w-[430px]">
-              {["ALL REPORTS", "PENDING", "RESOLVED", "DISMISSED"].map((tab) => (
-                <button
-                  key={tab}
-                  className={`pb-[14px] px-[4px] font-['Nunito',sans-serif] font-bold text-[16px] leading-[20.8px] relative ${
-                    activeTab === tab ? "text-[#ff7176]" : "text-[#555555] hover:text-[#0a0a0a]"
-                  }`}
-                  onClick={() => setActiveTab(tab)}
-                >
-                  {tab}
-                  {activeTab === tab && (
-                    <div className="absolute bottom-[-1px] left-0 w-full h-[3px] bg-[#ff7176] rounded-t-[100px]" />
-                  )}
-                </button>
-              ))}
-            </div>
-
-            <div className="flex gap-[16px]">
-              <div className="relative">
-                <Search className="absolute left-[16px] top-1/2 -translate-y-1/2 w-[24px] h-[24px] text-[#9ca3af]" />
-                <input
-                  type="text"
-                  placeholder="Search by ID or Subject"
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-[300px] h-[52px] pl-[48px] pr-[16px] bg-[#f2f4f8] rounded-[16px] border-none font-['Arimo',sans-serif] text-[16px] text-[#0a0a0a] placeholder:text-[#9ca3af] focus:ring-1 focus:ring-[#ff7176] outline-none"
-                />
-              </div>
-              <button className="flex items-center justify-center gap-[8px] w-[130px] h-[52px] border border-[#e2e8f0] rounded-[12px] font-['Nunito',sans-serif] font-bold text-[18px] text-[#0a0a0a] hover:bg-gray-50 transition-colors">
-                <Image src="/assets/icons/filter.svg" alt="Filter" width={24} height={24} />
-                Filter
+        {/* Tabs */}
+        <div className="flex gap-[12px] mb-[24px]">
+          {["All Reports", "In Review", "Resolved", "High Severity"].map((tab) => {
+            const isActive = activeTab === tab || (activeTab === "ALL REPORTS" && tab === "All Reports") || (activeTab === "PENDING" && tab === "In Review");
+            return (
+              <button
+                key={tab}
+                className={`h-[36px] px-[16px] py-[8px] rounded-[10px] font-['Nunito',sans-serif] font-normal text-[14px] leading-[20px] transition-colors flex items-center justify-center ${
+                  isActive
+                    ? "bg-[#ff7176] text-white"
+                    : "bg-[#f1f5f9] text-[#314158] hover:bg-gray-200"
+                }`}
+                onClick={() => setActiveTab(tab === "All Reports" ? "ALL REPORTS" : tab.toUpperCase())}
+              >
+                {tab}
               </button>
-            </div>
-          </div>
+            )
+          })}
+        </div>
 
-          {/* Table */}
-          <div className="w-full">
-            <table className="w-full border-collapse">
-              <thead>
-                <tr className="bg-[#f2f4f8] rounded-[12px]">
-                  <th className="py-[16px] px-[20px] text-left font-['Nunito',sans-serif] font-bold text-[16px] leading-[20.8px] text-[#555555] first:rounded-l-[12px]">Report ID</th>
-                  <th className="py-[16px] px-[20px] text-left font-['Nunito',sans-serif] font-bold text-[16px] leading-[20.8px] text-[#555555]">Reported By</th>
-                  <th className="py-[16px] px-[20px] text-left font-['Nunito',sans-serif] font-bold text-[16px] leading-[20.8px] text-[#555555]">Subject</th>
-                  <th className="py-[16px] px-[20px] text-left font-['Nunito',sans-serif] font-bold text-[16px] leading-[20.8px] text-[#555555]">Date</th>
-                  <th className="py-[16px] px-[20px] text-left font-['Nunito',sans-serif] font-bold text-[16px] leading-[20.8px] text-[#555555]">Status</th>
-                  <th className="py-[16px] px-[20px] text-left font-['Nunito',sans-serif] font-bold text-[16px] leading-[20.8px] text-[#555555] last:rounded-r-[12px]">Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                {isLoading ? (
-                  <tr>
-                    <td colSpan={6} className="py-[40px] text-center">
-                      <div className="flex justify-center">
-                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#ff7176]"></div>
+        {/* Two Column Layout */}
+        <div className="flex gap-[24px] items-start mb-[40px]">
+          
+          {/* Left Column: Report List */}
+          <div className="w-[494px] bg-white border border-[#e2e8f0] rounded-[14px] flex flex-col shrink-0 overflow-hidden">
+            {/* List Header */}
+            <div className="bg-[#f8fafc] border-b border-[#e2e8f0] py-[16px] px-[16px]">
+              <h3 className="font-['Inter',sans-serif] font-semibold text-[16px] leading-[24px] text-[#0f172b] m-0">
+                Active Reports
+              </h3>
+            </div>
+
+            {/* List Items */}
+            <div className="flex flex-col overflow-y-auto max-h-[600px] min-h-[400px]">
+              {isLoading ? (
+                <div className="flex justify-center items-center py-10">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#ff7176]"></div>
+                </div>
+              ) : filteredReports.length === 0 ? (
+                <div className="py-10 text-center font-['Inter',sans-serif] text-[#555555]">
+                  No reports found.
+                </div>
+              ) : (
+                filteredReports.map((report: any) => {
+                  const isSelected = selectedReport?.id === report.id;
+                  
+                  // Map statuses to specific colors based on Figma
+                  let statusBg = "bg-[#f1f5f9]";
+                  let statusText = "text-[#64748b]";
+                  let statusBorder = "border-[rgba(0,0,0,0.1)]";
+                  let severityBg = "bg-[#fef9c2]";
+                  let severityText = "text-[#d08700]";
+                  let severityLabel = "Low";
+
+                  if (report.status === "PENDING" || report.status === "IN REVIEW") {
+                    statusBg = isSelected ? "bg-[rgba(255,113,118,0.1)]" : "bg-white"; // Assuming background logic if needed, Figma says bg is white or light red
+                    statusText = "text-[#ff7176]";
+                    statusBorder = "border-[rgba(255,113,118,0.2)]";
+                  } else if (report.status === "RESOLVED") {
+                    statusText = "text-[#00a63e]";
+                  } else if (report.status === "OPEN" || report.severity === "High") {
+                    statusBg = "bg-[#ffe2e2]";
+                    statusBorder = "border-[#ffc9c9]";
+                    statusText = "text-[#c10007]";
+                    severityBg = "bg-[#ffe2e2]";
+                    severityText = "text-[#e7000b]";
+                    severityLabel = "High";
+                  }
+
+                  return (
+                    <div 
+                      key={report.id}
+                      onClick={() => setSelectedReport(report)}
+                      className={`border-b border-[#e2e8f0] p-[16px] cursor-pointer transition-colors ${
+                        isSelected ? "bg-[rgba(255,113,118,0.1)]" : "bg-white hover:bg-gray-50"
+                      }`}
+                    >
+                      {/* Name and Warning Icon */}
+                      <div className="flex items-center gap-[8px] mb-[8px]">
+                        <Image src="/assets/icons/warning-circle.svg" alt="Warning" width={16} height={16} />
+                        <span className="font-['Inter',sans-serif] font-medium text-[14px] leading-[20px] text-[#0f172b]">
+                          {report.reporter?.fullName || "Unknown User"}
+                        </span>
                       </div>
-                    </td>
-                  </tr>
-                ) : filteredReports.length === 0 ? (
-                  <tr>
-                    <td colSpan={6} className="py-[40px] text-center font-['Arimo',sans-serif] text-[#555555]">
-                       No reports found.
-                    </td>
-                  </tr>
-                ) : (
-                  filteredReports.map((report: any, index: number) => (
-                    <tr key={report.id} className="border-b border-[#e2e8f0] last:border-none">
-                      <td className="py-[16px] px-[20px] font-['Arimo',sans-serif] font-normal text-[16px] leading-[24px] text-[#0a0a0a]">
-                        #{report.complainId || "12341"}
-                      </td>
-                      <td className="py-[16px] px-[20px]">
-                        <div className="flex items-center gap-[12px]">
-                          <div className="w-[40px] h-[40px] rounded-[10px] overflow-hidden bg-gray-200 shrink-0">
-                            {report.reporter?.image ? (
-                              <Image src={report.reporter.image} alt={report.reporter.fullName} width={40} height={40} className="object-cover" />
-                            ) : (
-                              <div className="w-full h-full flex items-center justify-center bg-gray-300 text-gray-600 font-bold">
-                                {report.reporter?.fullName?.[0] || "?"}
-                              </div>
-                            )}
-                          </div>
-                          <span className="font-['Arimo',sans-serif] font-medium text-[16px] leading-[24px] text-[#0a0a0a]">
-                            {report.reporter?.fullName || "Unknown User"}
+                      
+                      {/* Subject */}
+                      <p className="font-['Inter',sans-serif] font-normal text-[12px] leading-[16px] text-[#45556c] mb-[8px] truncate">
+                        {report.subject || "No Subject"}
+                      </p>
+
+                      {/* Badges */}
+                      <div className="flex items-center gap-[8px] mb-[8px]">
+                        <div className={`border ${statusBorder} ${isSelected && report.status === 'PENDING' ? 'bg-[rgba(255,113,118,0.1)]' : statusBg} rounded-[33554400px] px-[11px] py-[3px] flex items-center justify-center`}>
+                          <span className={`${statusText} font-['Inter',sans-serif] font-medium text-[12px] leading-[16px]`}>
+                            {report.status === 'PENDING' ? 'In Review' : report.status || "Open"}
                           </span>
                         </div>
-                      </td>
-                      <td className="py-[16px] px-[20px] font-['Arimo',sans-serif] font-normal text-[16px] leading-[24px] text-[#0a0a0a]">
-                        {report.subject || "No Subject"}
-                      </td>
-                      <td className="py-[16px] px-[20px] font-['Arimo',sans-serif] font-normal text-[16px] leading-[24px] text-[#555555]">
-                        {report.createdAt ? format(new Date(report.createdAt), "MMM dd, yyyy") : "N/A"}
-                      </td>
-                      <td className="py-[16px] px-[20px]">
-                        <span className={`px-[12px] py-[4px] rounded-[24px] font-['Nunito',sans-serif] font-bold text-[14px] leading-[19.1px] ${
-                          report.status === "PENDING" ? "bg-[#fff5f5] text-[#ff7176]" :
-                          report.status === "RESOLVED" ? "bg-[#f0fbf5] text-[#22c55e]" :
-                          "bg-[#f1f5f9] text-[#64748b]"
-                        }`}>
-                          {report.status || "UNKNOWN"}
-                        </span>
-                      </td>
-                      <td className="py-[16px] px-[20px]">
-                        <button 
-                          onClick={() => handleViewDetails(report)}
-                          className="flex items-center justify-center w-[36px] h-[36px] bg-transparent border border-[#e2e8f0] rounded-[8px] hover:bg-gray-50 transition-colors"
-                        >
-                          <Eye className="w-[18px] h-[18px] text-[#555555]" />
-                        </button>
-                      </td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
+                        <div className={`${severityBg} rounded-[33554400px] px-[8px] py-[2px] flex items-center justify-center`}>
+                          <span className={`${severityText} font-['Inter',sans-serif] font-normal text-[12px] leading-[16px]`}>
+                            {severityLabel}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Date */}
+                      <p className="font-['Inter',sans-serif] font-normal text-[12px] leading-[16px] text-[#62748e] m-0">
+                        {report.createdAt ? format(new Date(report.createdAt), "yyyy-MM-dd") : "N/A"}
+                      </p>
+                    </div>
+                  );
+                })
+              )}
+            </div>
           </div>
 
-          {/* Pagination Placeholder */}
-          {!isLoading && filteredReports.length > 0 && (
-            <div className="mt-[24px] flex justify-between items-center border-t border-[#e2e8f0] pt-[24px]">
-              <span className="font-['Arimo',sans-serif] font-normal text-[14px] leading-[20px] text-[#555555]">
-                Showing 1 to {Math.min(10, filteredReports.length)} of {filteredReports.length} entries
-              </span>
-              <div className="flex gap-[8px]">
-                <button className="w-[36px] h-[36px] rounded-[8px] flex flex-col justify-center items-center bg-transparent border border-[#e2e8f0] hover:bg-gray-50 text-[#555555]">
-                  &lt;
-                </button>
-                <button className="w-[36px] h-[36px] rounded-[8px] flex flex-col justify-center items-center bg-[#ff7176] text-white font-['Nunito',sans-serif] font-bold">
-                  1
-                </button>
-                <button className="w-[36px] h-[36px] rounded-[8px] flex flex-col justify-center items-center bg-transparent border border-[#e2e8f0] hover:bg-gray-50 text-[#555555]">
-                  &gt;
-                </button>
+          {/* Right Column: Report Details */}
+          <div className="flex-1 bg-white border border-[#e2e8f0] rounded-[21px] p-[24px]">
+            {!selectedReport ? (
+              <div className="flex flex-col items-center justify-center h-full min-h-[400px] text-[#45556c]">
+                <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" fill="none" className="mb-4">
+                  <path d="M40.0013 5.33398H16.0013C14.5868 5.33398 13.2303 5.89589 12.2301 6.89608C11.2299 7.89628 10.668 9.25283 10.668 10.6673V53.334C10.668 54.7485 11.2299 56.105 12.2301 57.1052C13.2303 58.1054 14.5868 58.6673 16.0013 58.6673H48.0013C49.4158 58.6673 50.7723 58.1054 51.7725 57.1052C52.7727 56.105 53.3346 54.7485 53.3346 53.334V18.6673L40.0013 5.33398Z" stroke="#CAD5E2" strokeWidth="5.33333" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M37.332 5.33398V16.0007C37.332 17.4151 37.8939 18.7717 38.8941 19.7719C39.8943 20.7721 41.2509 21.334 42.6654 21.334H53.332" stroke="#CAD5E2" strokeWidth="5.33333" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M26.6654 24H21.332" stroke="#CAD5E2" strokeWidth="5.33333" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M42.6654 34.666H21.332" stroke="#CAD5E2" strokeWidth="5.33333" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M42.6654 45.334H21.332" stroke="#CAD5E2" strokeWidth="5.33333" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+                <p className="font-['Inter',sans-serif] text-[16px]">Select a report to view details</p>
               </div>
-          )}
+            ) : (
+              <div className="flex flex-col gap-[16px]">
+                {/* Details Header */}
+                <div className="bg-[#ff7176] rounded-[12px] border-b border-[#e2e8f0] px-[24px] py-[24px] flex justify-between items-start">
+                  <div className="flex flex-col gap-[8px]">
+                    <div className="flex items-center gap-[8px]">
+                      <Image src="/assets/icons/document-white.svg" alt="Report" width={24} height={24} />
+                      <h2 className="font-['Inter',sans-serif] font-bold text-[24px] leading-[32px] text-white m-0">
+                        Report #{selectedReport.complainId || selectedReport.id.slice(0, 6).toUpperCase()}
+                      </h2>
+                    </div>
+                    <p className="font-['Inter',sans-serif] font-normal text-[16px] leading-[24px] text-[#ffe2e2] m-0">
+                      {selectedReport.subject || "No Subject"}
+                    </p>
+                  </div>
+                  <div className="bg-white rounded-[33554400px] border border-[rgba(255,113,118,0.2)] px-[11px] py-[3px] flex items-center justify-center">
+                    <span className="font-['Inter',sans-serif] font-medium text-[12px] leading-[16px] text-[#ff7176]">
+                      {selectedReport.status === 'PENDING' ? 'In Review' : selectedReport.status || 'Open'}
+                    </span>
+                  </div>
+                </div>
 
+                {/* Users Info Grid */}
+                <div className="grid grid-cols-2 gap-[24px] mt-[8px]">
+                  {/* Reported User (Placeholder for now as API might not provide target user clearly) */}
+                  <div className="flex flex-col gap-[12px]">
+                    <h3 className="font-['Inter',sans-serif] font-semibold text-[14px] leading-[20px] text-[#314158] m-0">
+                      Reported User
+                    </h3>
+                    <div className="bg-[#f8fafc] border border-[#e2e8f0] rounded-[10px] pt-[17px] px-[17px] pb-px flex flex-col gap-[4px] min-h-[82px] justify-center">
+                      <p className="font-['Inter',sans-serif] font-medium text-[16px] leading-[24px] text-[#0f172b] m-0">
+                        Target Entity
+                      </p>
+                      <p className="font-['Inter',sans-serif] font-normal text-[14px] leading-[20px] text-[#45556c] m-0">
+                        System User
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Reported By */}
+                  <div className="flex flex-col gap-[12px]">
+                    <h3 className="font-['Inter',sans-serif] font-semibold text-[14px] leading-[20px] text-[#314158] m-0">
+                      Reported By
+                    </h3>
+                    <div className="bg-[#f8fafc] border border-[#e2e8f0] rounded-[10px] pt-[17px] px-[17px] pb-px flex flex-col gap-[4px] min-h-[82px] justify-center">
+                      <p className="font-['Inter',sans-serif] font-medium text-[16px] leading-[24px] text-[#0f172b] m-0 truncate">
+                        {selectedReport.reporter?.fullName || "Unknown User"}
+                      </p>
+                      <p className="font-['Inter',sans-serif] font-normal text-[14px] leading-[20px] text-[#45556c] m-0">
+                        {selectedReport.reporter?.role || "Pet Owner"}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Report Info Grid */}
+                <div className="flex flex-col gap-[12px] mt-[8px]">
+                  <h3 className="font-['Inter',sans-serif] font-semibold text-[14px] leading-[20px] text-[#314158] m-0">
+                    Report Information
+                  </h3>
+                  <div className="grid grid-cols-3 gap-[8px]">
+                    <div className="bg-[#f8fafc] border border-[#e2e8f0] rounded-[10px] pt-[17px] px-[17px] pb-px flex flex-col gap-[4px] min-h-[82px] justify-center">
+                      <p className="font-['Inter',sans-serif] font-normal text-[14px] leading-[20px] text-[#45556c] m-0">
+                        Booking Reference
+                      </p>
+                      <p className="font-['Inter',sans-serif] font-medium text-[16px] leading-[24px] text-[#0f172b] m-0 truncate">
+                        {selectedReport.bookingId || "N/A"}
+                      </p>
+                    </div>
+                    <div className="bg-[#f8fafc] border border-[#e2e8f0] rounded-[10px] pt-[17px] px-[17px] pb-px flex flex-col gap-[4px] min-h-[82px] justify-center">
+                      <p className="font-['Inter',sans-serif] font-normal text-[14px] leading-[20px] text-[#45556c] m-0">
+                        Report Date
+                      </p>
+                      <p className="font-['Inter',sans-serif] font-medium text-[16px] leading-[24px] text-[#0f172b] m-0">
+                        {selectedReport.createdAt ? format(new Date(selectedReport.createdAt), "yyyy-MM-dd") : "N/A"}
+                      </p>
+                    </div>
+                    <div className="bg-[#f8fafc] border border-[#e2e8f0] rounded-[10px] pt-[17px] px-[17px] pb-px flex flex-col gap-[4px] min-h-[82px] justify-center">
+                      <p className="font-['Inter',sans-serif] font-normal text-[14px] leading-[20px] text-[#45556c] m-0 mb-1 mt-[-6px]">
+                        Severity
+                      </p>
+                      <div className="bg-[#fef9c2] rounded-[33554400px] px-[8px] py-[4px] w-fit flex items-center justify-center">
+                        <span className="font-['Inter',sans-serif] font-normal text-[12px] leading-[16px] text-[#d08700]">
+                          Low
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Reason for Report */}
+                <div className="flex flex-col gap-[12px] mt-[8px]">
+                  <h3 className="font-['Inter',sans-serif] font-semibold text-[14px] leading-[20px] text-[#314158] m-0">
+                    Reason for Report
+                  </h3>
+                  <div className="bg-[#f8fafc] border border-[#e2e8f0] rounded-[10px] py-[17px] px-[17px]">
+                    <p className="font-['Inter',sans-serif] font-normal text-[16px] leading-[24px] text-[#0f172b] m-0">
+                      {selectedReport.details || selectedReport.subject || "No additional details provided."}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="h-px bg-[#f8fafc] w-full my-[8px]"></div>
+
+                {/* Actions */}
+                <div className="grid grid-cols-2 gap-[12px]">
+                  <button 
+                    className="bg-[#ff7176] rounded-[7px] p-[10px] flex items-center justify-center gap-[10px] hover:bg-[#ff5c62] transition-colors"
+                    onClick={() => console.log("View Logs")}
+                  >
+                    <Image src="/assets/icons/document-normal.svg" alt="Logs" width={20} height={20} />
+                    <span className="font-['Inter',sans-serif] font-medium text-[16px] leading-[24px] text-white">View Logs</span>
+                  </button>
+                  <button 
+                    className="bg-[#e17100] rounded-[7px] p-[10px] flex items-center justify-center gap-[10px] hover:bg-[#cc6600] transition-colors"
+                    onClick={() => handleTakeAction("WARN", "Warning issued by admin")}
+                  >
+                    <Image src="/assets/icons/warning-triangle.svg" alt="Warn" width={20} height={20} />
+                    <span className="font-['Inter',sans-serif] font-medium text-[16px] leading-[24px] text-white">Warn User</span>
+                  </button>
+                  <button 
+                    className="bg-[#e7000b] rounded-[7px] p-[10px] flex items-center justify-center gap-[10px] hover:bg-[#cc000a] transition-colors"
+                    onClick={() => handleTakeAction("SUSPEND", "Account suspended by admin")}
+                  >
+                    <Image src="/assets/icons/user-minus.svg" alt="Suspend" width={20} height={20} />
+                    <span className="font-['Inter',sans-serif] font-medium text-[16px] leading-[24px] text-white">Suspend Account</span>
+                  </button>
+                  <button 
+                    className="bg-[#00a63e] rounded-[7px] p-[10px] flex items-center justify-center gap-[10px] hover:bg-[#008c34] transition-colors"
+                    onClick={() => handleTakeAction("RESOLVE", "Issue marked resolved")}
+                  >
+                    <Image src="/assets/icons/tick-circle-white.svg" alt="Resolve" width={20} height={20} />
+                    <span className="font-['Inter',sans-serif] font-medium text-[16px] leading-[24px] text-white">Resolve Issue</span>
+                  </button>
+                </div>
+
+              </div>
+            )}
+          </div>
         </div>
       </div>
 

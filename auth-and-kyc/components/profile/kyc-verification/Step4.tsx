@@ -24,11 +24,13 @@ export default function Step4({ formData, updateFormData }: StepProps) {
             <p className="text-[#6a7282] text-[14px]">Upload photos of your pet hotel interior, rooms, play areas, hygiene facilities. (Max 10 photos)</p>
           </div>
           <FileUpload
+            label="Facility Photos"
             acceptedTypes="image/png, image/jpeg"
             maxSizeMB={10}
             onFileSelect={(file) => {
               updateFormData({ facilityPhotos: [file] });
             }}
+            initialFile={formData.facilityPhotos?.[0]}
             className="rounded-[14px] bg-white border-2 border-[#d1d5dc] border-dashed hover:border-[#ff6900] transition-all min-h-[176px]"
             preview={true}
             uploadIconColor="#ff6900"
@@ -42,11 +44,13 @@ export default function Step4({ formData, updateFormData }: StepProps) {
             <p className="text-[#6a7282] text-[14px]">If you have hygiene management or safety certification documents, please upload them.</p>
           </div>
           <FileUpload
+            label=""
             acceptedTypes="image/png, image/jpeg, application/pdf"
             maxSizeMB={10}
             onFileSelect={(file) =>
               updateFormData({ hygieneCertificate: file })
             }
+            initialFile={formData.hygieneCertificate}
             className="rounded-[14px] bg-white border-2 border-[#d1d5dc] border-dashed hover:border-[#ff6900] transition-all min-h-[176px]"
             preview={true}
             uploadIconColor="#ff6900"

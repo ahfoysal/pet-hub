@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import AuthSync from "@/components/auth/AuthSync";
 import AppProviders from "@/providers/AppProviders";
-import { Arimo, Montserrat, Plus_Jakarta_Sans } from "next/font/google";
+import { Arimo, Montserrat, Plus_Jakarta_Sans, Nunito } from "next/font/google";
 
 export const arimo = Arimo({
   subsets: ["latin"],

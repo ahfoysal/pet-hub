@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useCreateAdminMutation } from "@/redux/features/api/dashboard/admin/manageAdmins/manageAdminsApi";
 import { toast } from "react-toastify";
 import AdminCreatedModal from "./AdminCreatedModal";
+import { Button } from "@/components/ui/Button";
 
 interface AddAdminModalProps {
   isOpen: boolean;

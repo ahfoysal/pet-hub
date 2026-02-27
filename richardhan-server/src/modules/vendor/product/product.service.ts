@@ -32,6 +32,13 @@ export class ProductService {
         productCategory: dto.category,
         vendorId,
         images: imageUrls,
+        brandName: dto.brandName,
+        countryOfOrigin: dto.countryOfOrigin ?? [],
+        manufacturingDate: dto.manufacturingDate
+          ? new Date(dto.manufacturingDate)
+          : undefined,
+        expiryDate: dto.expiryDate ? new Date(dto.expiryDate) : undefined,
+        lowStockThreshold: dto.lowStockThreshold,
         seoTitle: dto.seoTitle,
         seoDescription: dto.seoDescription,
       },
@@ -206,6 +213,13 @@ export class ProductService {
       if (images.length) updateData.images = images;
       if (dto.seoTitle) updateData.seoTitle = dto.seoTitle;
       if (dto.seoDescription) updateData.seoDescription = dto.seoDescription;
+      
+      // New fields
+      if (dto.brandName) updateData.brandName = dto.brandName;
+      if (dto.countryOfOrigin) updateData.countryOfOrigin = dto.countryOfOrigin;
+      if (dto.manufacturingDate) updateData.manufacturingDate = new Date(dto.manufacturingDate);
+      if (dto.expiryDate) updateData.expiryDate = new Date(dto.expiryDate);
+      if (dto.lowStockThreshold !== undefined) updateData.lowStockThreshold = dto.lowStockThreshold;
 
       const updatedProduct = await tx.product.update({
         where: { id: productId },

@@ -63,7 +63,7 @@ export default function TopServices() {
 
   return (
     <section id="services" className="py-[120px] bg-transparent overflow-hidden">
-      <div className="container mx-auto px-4 max-w-[1400px]">
+      <div className="container mx-auto px-0 max-w-[1400px]">
         {/* Header */}
         <div className="text-center mb-[80px]">
           <h2 className="text-[40px] font-bold font-nunito leading-tight tracking-[-0.8px] text-[#282828] mb-4">
@@ -97,7 +97,11 @@ export default function TopServices() {
           <div
             ref={scrollRef}
             className="flex gap-6 overflow-x-auto snap-x snap-mandatory pb-12 hide-scrollbar mask-fade"
-            style={{ scrollbarWidth: "none" }}
+            style={{ 
+              scrollbarWidth: "none",
+              paddingLeft: "calc((100% - 1400px) / 2)", 
+              paddingRight: "calc((100% - 1400px) / 2)" 
+            }}
           >
             {services.map((service, index) => (
               <div

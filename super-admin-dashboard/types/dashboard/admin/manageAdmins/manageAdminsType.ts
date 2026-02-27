@@ -13,15 +13,20 @@ export interface AdminUser {
   id: string;
   fullName: string;
   email: string;
+  role?: string;
   phone: string | null;
   status: 'ACTIVE' | 'BLOCKED' | 'SUSPENDED' | 'PENDING';
   createdAt: string;
 }
 
 export interface GetAllAdminsResponse {
+  success?: boolean;
   message: string;
-  data: AdminUser[];
-  nextCursor: string | null;
+  data: {
+    data: AdminUser[];
+    nextCursor: string | null;
+    total?: number;
+  };
 }
 
 export interface AdminAnalyticsData {

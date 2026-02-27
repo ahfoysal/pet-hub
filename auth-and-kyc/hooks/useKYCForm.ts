@@ -115,7 +115,10 @@ export function useKYCForm() {
         formDataToSend.append("identificationType", formData.identificationType);
         formDataToSend.append("phoneNumber", formData.phoneNumber);
 
-        if (formData.dateOfBirth) formDataToSend.append("dateOfBirth", formData.dateOfBirth);
+        if (formData.dateOfBirth) {
+          const isoDate = new Date(formData.dateOfBirth).toISOString();
+          formDataToSend.append("dateOfBirth", isoDate);
+        }
         if (formData.gender) formDataToSend.append("gender", formData.gender);
         if (formData.nationality) formDataToSend.append("nationality", formData.nationality);
         if (formData.identificationNumber) formDataToSend.append("identificationNumber", formData.identificationNumber);
@@ -138,11 +141,21 @@ export function useKYCForm() {
         if (formData.businessRegistrationCertificate) formDataToSend.append("businessRegistrationCertificate", formData.businessRegistrationCertificate);
         if (formData.hotelLicenseImage) formDataToSend.append("hotelLicenseImage", formData.hotelLicenseImage);
         if (formData.licenseNumber) formDataToSend.append("licenseNumber", formData.licenseNumber);
-        if (formData.licenseIssueDate) formDataToSend.append("licenseIssueDate", formData.licenseIssueDate);
-        if (formData.licenseExpiryDate) formDataToSend.append("licenseExpiryDate", formData.licenseExpiryDate);
+        
+        if (formData.licenseIssueDate) {
+          const isoDate = new Date(formData.licenseIssueDate).toISOString();
+          formDataToSend.append("licenseIssueDate", isoDate);
+        }
+        if (formData.licenseExpiryDate) {
+          const isoDate = new Date(formData.licenseExpiryDate).toISOString();
+          formDataToSend.append("licenseExpiryDate", isoDate);
+        }
+        
         if (formData.hygieneCertificate) formDataToSend.append("hygieneCertificate", formData.hygieneCertificate);
         if (formData.facilityPhotos?.length > 0) {
-          formData.facilityPhotos.forEach((file: any) => formDataToSend.append("facilityPhotos", file));
+          formData.facilityPhotos.forEach((file: any) => {
+            if (file) formDataToSend.append("facilityPhotos", file);
+          });
         }
 
         const result = await kycSubmitApi(formDataToSend);

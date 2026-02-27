@@ -25,7 +25,7 @@ export function HeroSection() {
           <h1 className="text-[54px] font-bold font-nunito leading-[1.1] tracking-[-1.08px] text-[#282828] font-nunito">
             Your All-in-One <span className="text-primary">PetCare</span> Companion
           </h1>
-          <p className="text-[20px] font-medium font-montserrat text-[#282828] leading-[1.2] tracking-[-0.2px] w-full mx-auto opacity-70 whitespace-nowrap">
+          <p className="text-[20px] font-medium font-montserrat text-[#282828] leading-[1.2] tracking-[-0.2px] w-full mx-auto opacity-60 whitespace-nowrap">
             Book trusted caregivers, find quality pet foods & manage your pet&apos;s needs from one app.
           </p>
         </div>

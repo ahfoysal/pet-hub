@@ -24,7 +24,7 @@ export default function AdminFinanceClient() {
     failedTransactionsCount: 0,
   };
 
-  const recentTransactions = txData?.data?.data || [];
+  const recentTransactions = txData?.data?.items || [];
 
   const filteredTransactions = recentTransactions.filter((tx: any) =>
     statusFilter === "ALL" ? true : tx.status === statusFilter,
@@ -51,7 +51,7 @@ export default function AdminFinanceClient() {
             {isStatsLoading ? (
               <span className="inline-block w-32 h-8 bg-gray-200 rounded animate-pulse" />
             ) : (
-              `$${stats.totalRevenue30Days.toFixed(2)}`
+              `$${(stats.totalRevenue30Days ?? 0).toFixed(2)}`
             )}
           </h2>
           <p className="font-['Arial',sans-serif] text-[12px] text-[#00c950] font-medium">
@@ -66,11 +66,11 @@ export default function AdminFinanceClient() {
             {isStatsLoading ? (
               <span className="inline-block w-32 h-8 bg-gray-200 rounded animate-pulse" />
             ) : (
-              `$${stats.pendingPayoutsAmount.toFixed(2)}`
+              `$${(stats.pendingPayoutsAmount ?? 0).toFixed(2)}`
             )}
           </h2>
           <p className="font-['Arial',sans-serif] text-[12px] text-[#fe9a00] font-medium">
-            {stats.pendingPayoutsCount} vendors awaiting payment
+            {stats.pendingPayoutsCount ?? 0} vendors awaiting payment
           </p>
         </div>
         <div className="bg-white border border-[#e5e7eb] rounded-xl p-6 flex flex-col gap-2 shadow-sm">
@@ -203,7 +203,7 @@ export default function AdminFinanceClient() {
                         {tx.method || "System"}
                       </td>
                       <td className="py-4 px-4 font-['Arial',sans-serif] text-[14px] font-bold text-[#00c950]">
-                        ${tx.amount.toFixed(2)}
+                        ${(tx.amount ?? 0).toFixed(2)}
                       </td>
                       <td className="py-4 px-4">
                         <span

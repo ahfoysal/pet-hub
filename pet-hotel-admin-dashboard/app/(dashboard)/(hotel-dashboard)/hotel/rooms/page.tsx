@@ -2,10 +2,10 @@
 
 import React, { useState, useMemo } from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useGetMyRoomsQuery } from "@/redux/features/api/dashboard/hotel/room/hotelRoomApi";
 import { RoomType } from "@/types/dashboard/hotel/hotelRoomTypes";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
-import CreateRoomModal from "@/components/dashboard/hotel/rooms/CreateRoomModal";
 import EditRoomModal from "@/components/dashboard/hotel/rooms/EditRoomModal";
 import RoomDetailsModal from "@/components/dashboard/hotel/rooms/RoomDetailsModal";
 import DeleteRoomModal from "@/components/dashboard/hotel/rooms/DeleteRoomModal";
@@ -16,15 +16,16 @@ import {
   TableContainer, 
   ActionButton 
 } from "@/components/dashboard/shared/DashboardUI";
+import { Eye, Edit2, Trash2 } from "lucide-react";
 
 export default function RoomsManagementPage() {
+  const router = useRouter();
   const { status: sessionStatus } = useSession();
   const { data, isLoading, isError, refetch } = useGetMyRoomsQuery(undefined, {
     skip: sessionStatus === "loading",
   });
 
   const [searchQuery, setSearchQuery] = useState("");
-  const [showCreate, setShowCreate] = useState(false);
   const [editRoom, setEditRoom] = useState<RoomType | null>(null);
   const [detailsRoomId, setDetailsRoomId] = useState<string | null>(null);
   const [deleteRoom, setDeleteRoom] = useState<{ id: string; name: string } | null>(null);
@@ -57,7 +58,7 @@ export default function RoomsManagementPage() {
         title="Room Management" 
         subtitle="Manage your Room catalog" 
         action={
-          <ActionButton onClick={() => setShowCreate(true)} icon="/assets/add-plus.svg">
+          <ActionButton onClick={() => router.push("/hotel/rooms/add-room")} icon="/assets/add-plus.svg">
             Add Rooms
           </ActionButton>
         }
@@ -122,9 +123,9 @@ export default function RoomsManagementPage() {
                 </td>
                 <td className="px-6 py-4">
                   <div className="flex items-center gap-1">
-                    <button onClick={() => setDetailsRoomId(room.id)} className="p-2 hover:bg-gray-100 rounded-lg transition-colors"><Image src="/assets/view-eye.svg" alt="View" width={20} height={20} /></button>
-                    <button onClick={() => setEditRoom(room)} className="p-2 hover:bg-gray-100 rounded-lg transition-colors"><Image src="/assets/edit-pencil.svg" alt="Edit" width={20} height={20} /></button>
-                    <button onClick={() => setDeleteRoom({ id: room.id, name: room.roomName || `Room ${room.roomNumber}` })} className="p-2 hover:bg-gray-100 rounded-lg transition-colors"><Image src="/assets/delete-trash.svg" alt="Delete" width={20} height={20} /></button>
+                    <button onClick={() => setDetailsRoomId(room.id)} className="p-2 hover:bg-gray-100 rounded-lg transition-colors text-[#667085] hover:text-[#ff7176]"><Eye size={20} /></button>
+                    <button onClick={() => setEditRoom(room)} className="p-2 hover:bg-gray-100 rounded-lg transition-colors text-[#667085] hover:text-[#ff7176]"><Edit2 size={20} /></button>
+                    <button onClick={() => setDeleteRoom({ id: room.id, name: room.roomName || `Room ${room.roomNumber}` })} className="p-2 hover:bg-gray-100 rounded-lg transition-colors text-[#667085] hover:text-red-500"><Trash2 size={20} /></button>
                   </div>
                 </td>
               </tr>
@@ -133,8 +134,7 @@ export default function RoomsManagementPage() {
         </table>
       </TableContainer>
 
-      {/* Modals remain the same */}
-      <CreateRoomModal isOpen={showCreate} onClose={() => setShowCreate(false)} />
+      {/* Modals */}
       {editRoom && <EditRoomModal isOpen={!!editRoom} onClose={() => setEditRoom(null)} room={editRoom} />}
       {detailsRoomId && <RoomDetailsModal isOpen={!!detailsRoomId} onClose={() => setDetailsRoomId(null)} roomId={detailsRoomId} />}
       {deleteRoom && <DeleteRoomModal isOpen={!!deleteRoom} onClose={() => setDeleteRoom(null)} room={deleteRoom} />}

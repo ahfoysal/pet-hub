@@ -11,7 +11,7 @@ import { useToast } from "@/contexts/ToastContext";
 import { useSession } from "next-auth/react";
 
 export default function AdminKycPage() {
-  const [statusFilter, setStatusFilter] = useState<"PENDING" | "APPROVED" | "REJECTED">("PENDING");
+  const [statusFilter, setStatusFilter] = useState<"PENDING" | "APPROVED" | "REJECTED" | "NOT_SUBMITTED">("PENDING");
   const [selectedKycId, setSelectedKycId] = useState<string | null>(null);
   const { status } = useSession();
 
@@ -86,6 +86,7 @@ export default function AdminKycPage() {
   const pendingCount = data?.data?.filter((k) => k.status === "PENDING").length || 0;
   const approvedCount = data?.data?.filter((k) => k.status === "APPROVED").length || 0;
   const rejectedCount = data?.data?.filter((k) => k.status === "REJECTED").length || 0;
+  const notSubmittedCount = data?.data?.filter((k) => k.status === "NOT_SUBMITTED").length || 0;
 
   return (
     <div className="size-full bg-[#f2f4f8] -m-6 p-6 min-h-[calc(100vh-80px)]" data-name="KYC Verification">
@@ -106,7 +107,7 @@ export default function AdminKycPage() {
 
         {/* Analytics Cards */}
         <div className="flex gap-[12px] items-center w-[1090px] h-[119px]">
-           <div className="bg-white border border-[rgba(197,197,197,0.2)] flex flex-col justify-between p-[20px] rounded-[7.7px] flex-1 h-full">
+           <div className="bg-white border border-[rgba(197,197,197,0.2)] flex flex-col justify-between p-[20px] rounded-[7.7px] flex-[1.2] h-full">
                <span className="font-['Arimo',sans-serif] font-bold text-[#0f172b] text-[16px]">Pending Requests</span>
                <span className="font-['Nunito',sans-serif] font-semibold text-[#f59e0b] text-[24px]">{pendingCount}</span>
            </div>
@@ -118,6 +119,10 @@ export default function AdminKycPage() {
                <span className="font-['Arimo',sans-serif] font-bold text-[#0f172b] text-[16px]">Rejected</span>
                <span className="font-['Nunito',sans-serif] font-semibold text-[#e11d48] text-[24px]">{rejectedCount}</span>
            </div>
+           <div className="bg-white border border-[rgba(197,197,197,0.2)] flex flex-col justify-between p-[20px] rounded-[7.7px] flex-[1.2] h-full">
+               <span className="font-['Arimo',sans-serif] font-bold text-[#0f172b] text-[16px]">Not Submitted</span>
+               <span className="font-['Nunito',sans-serif] font-semibold text-[#6b7280] text-[24px]">{notSubmittedCount}</span>
+           </div>
         </div>
 
         {/* Status Tabs */}
@@ -126,10 +131,11 @@ export default function AdminKycPage() {
              { id: "PENDING", label: "Pending Requests" },
              { id: "APPROVED", label: "Approved" },
              { id: "REJECTED", label: "Rejected" },
+             { id: "NOT_SUBMITTED", label: "Not Submitted" },
            ].map((tab) => (
              <button
                key={tab.id}
-               onClick={() => setStatusFilter(tab.id as "PENDING" | "APPROVED" | "REJECTED")}
+               onClick={() => setStatusFilter(tab.id as any)}
                className={`px-[16px] py-[8px] rounded-[10px] text-[14px] font-['Inter',sans-serif] font-medium leading-[20px] transition-colors ${
                  statusFilter === tab.id
                    ? tab.id === "REJECTED" ? "bg-[#ff6f75] text-white" : "bg-[#f1f5f9] text-[#475569]"
@@ -149,13 +155,13 @@ export default function AdminKycPage() {
           <div className="bg-white border border-[#e2e8f0] rounded-[14px] w-[350px] h-full flex flex-col overflow-hidden shrink-0">
              <div className="px-[20px] py-[16px] border-b border-[#e2e8f0]">
                 <h3 className="font-['Arimo',sans-serif] font-bold text-[16px] text-[#0f172b]">
-                   {statusFilter === "PENDING" ? "Pending KYC Requests" : statusFilter === "APPROVED" ? "Approved KYC Requests" : "Rejected KYC Requests"}
+                   {statusFilter === "PENDING" ? "Pending KYC Requests" : statusFilter === "APPROVED" ? "Approved KYC Requests" : statusFilter === "NOT_SUBMITTED" ? "Not Submitted" : "Rejected KYC Requests"}
                 </h3>
              </div>
              <div className="flex-1 overflow-y-auto custom-scrollbar p-[12px] flex flex-col gap-[8px]">
                 {filteredData.length === 0 ? (
                   <div className="p-8 text-center text-gray-500 font-['Arimo',sans-serif]">
-                     No {statusFilter.toLowerCase()} requests
+                     No {statusFilter.toLowerCase().replace('_', ' ')} requests
                   </div>
                 ) : (
                   filteredData.map(request => (
@@ -169,9 +175,10 @@ export default function AdminKycPage() {
                           <span className={`px-[8px] py-[2px] rounded-[20px] text-[10px] font-['Nunito',sans-serif] font-bold ${
                              statusFilter === "PENDING" ? "bg-[#fef3c7] text-[#d97706]" : 
                              statusFilter === "APPROVED" ? "bg-[#dcfce7] text-[#008236]" : 
+                             statusFilter === "NOT_SUBMITTED" ? "bg-[#f3f4f6] text-[#6b7280]" : 
                              "bg-[#fee2e2] text-[#ef4444]"
                           }`}>
-                            {statusFilter === "PENDING" ? "Pending" : statusFilter === "APPROVED" ? "Approved" : "Rejected"}
+                            {statusFilter === "PENDING" ? "Pending" : statusFilter === "APPROVED" ? "Approved" : statusFilter === "NOT_SUBMITTED" ? "Not Submitted" : "Rejected"}
                           </span>
                        </div>
                        <div className="flex items-center mb-[8px]">
@@ -191,8 +198,8 @@ export default function AdminKycPage() {
           {/* Right Side: KYC Details */}
           {selectedKyc ? (
             <div className="bg-white border border-[#e2e8f0] rounded-[14px] w-[720px] h-full flex flex-col overflow-hidden relative">
-               {/* Red Header (for Pending/Rejected) or Green (for Approved) */}
-               <div className={`px-[30px] py-[24px] ${statusFilter === 'APPROVED' ? 'bg-[#00c950]' : 'bg-[#ff6f75]'} shrink-0`}>
+               {/* Header */}
+               <div className={`px-[30px] py-[24px] ${statusFilter === 'APPROVED' ? 'bg-[#00c950]' : statusFilter === 'NOT_SUBMITTED' ? 'bg-[#9ca3af]' : 'bg-[#ff6f75]'} shrink-0`}>
                   <div className="flex justify-between items-start">
                      <div className="flex flex-col">
                         <h2 className="text-[24px] font-bold text-white font-['Nunito',sans-serif] leading-tight">
@@ -205,9 +212,10 @@ export default function AdminKycPage() {
                      <span className={`px-[12px] py-[4px] rounded-[20px] text-[12px] font-['Nunito',sans-serif] font-bold ${
                         statusFilter === "PENDING" ? "bg-[#fef3c7] text-[#d97706]" : 
                         statusFilter === "APPROVED" ? "bg-white text-[#008236]" : 
+                        statusFilter === "NOT_SUBMITTED" ? "bg-white text-[#4b5563]" : 
                         "bg-[#fee2e2] text-[#ef4444]"
                      }`}>
-                       {statusFilter === "PENDING" ? "Pending" : statusFilter === "APPROVED" ? "Approved" : "Rejected"}
+                       {statusFilter === "PENDING" ? "Pending" : statusFilter === "APPROVED" ? "Approved" : statusFilter === "NOT_SUBMITTED" ? "Not Submitted" : "Rejected"}
                      </span>
                   </div>
                </div>

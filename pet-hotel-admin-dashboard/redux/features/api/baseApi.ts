@@ -84,6 +84,8 @@ export const baseApi = createApi({
     "HotelNotifications",
     "HotelBanking",
     "HotelDocuments",
+    "Finance",
+    "Review",
   ],
   endpoints: () => ({}),
 });

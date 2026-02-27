@@ -15,12 +15,14 @@ import { Menu, X } from "lucide-react";
 
 export function DashboardNavbar() {
   const [showProfileMenu, setShowProfileMenu] = useState(false);
-  const [showNotifications, setShowNotifications] = useState(false);
+  const [showMailDropdown, setShowMailDropdown] = useState(false);
+  const [showNotifDropdown, setShowNotifDropdown] = useState(false);
   const { data: session, status } = useSession();
   const { isMobileMenuOpen, setIsMobileMenuOpen } = useMobileMenu();
   const dispatch = useAppDispatch();
   const profileDropdownRef = useRef<HTMLDivElement>(null);
-  const notificationRef = useRef<HTMLDivElement>(null);
+  const mailDropdownRef = useRef<HTMLDivElement>(null);
+  const notifDropdownRef = useRef<HTMLDivElement>(null);
   const totalUnreadCount = useSelector(selectTotalUnreadCount);
 
   const userRole = status === "authenticated" ? session?.user?.role : null;
@@ -50,10 +52,16 @@ export function DashboardNavbar() {
         setShowProfileMenu(false);
       }
       if (
-        notificationRef.current &&
-        !notificationRef.current.contains(event.target as Node)
+        mailDropdownRef.current &&
+        !mailDropdownRef.current.contains(event.target as Node)
       ) {
-        setShowNotifications(false);
+        setShowMailDropdown(false);
+      }
+      if (
+        notifDropdownRef.current &&
+        !notifDropdownRef.current.contains(event.target as Node)
+      ) {
+        setShowNotifDropdown(false);
       }
     };
 
@@ -90,41 +98,59 @@ export function DashboardNavbar() {
 
         {/* Right - Icons */}
         <div className="flex items-center gap-6">
-          {/* Messages (Mail) Icon - Matching Figma fidelity */}
-          <button className="relative flex items-center justify-center size-8 hover:bg-gray-50 rounded-full transition-colors cursor-pointer">
-            <div className="relative">
-              <Mail size={22.5} className="text-[#101828]" strokeWidth={1.5} />
-              <span className="absolute -top-1.25 -right-3.75 min-w-[15.3px] h-[15.3px] px-[4.5px] bg-primary text-white text-[9.9px] font-bold font-plus-jakarta rounded-full flex items-center justify-center">
-                2
-              </span>
-            </div>
-          </button>
+          {/* Messages (Mail) */}
+          <div className="relative" ref={mailDropdownRef}>
+            <button
+              onClick={() => { setShowMailDropdown(!showMailDropdown); setShowNotifDropdown(false); setShowProfileMenu(false); }}
+              className="relative flex items-center justify-center size-8 hover:bg-gray-50 rounded-full transition-colors cursor-pointer"
+            >
+              <div className="relative">
+                <Mail size={22.5} className="text-[#101828]" strokeWidth={1.5} />
+                <span className="absolute -top-1.25 -right-3.75 min-w-[15.3px] h-[15.3px] px-[4.5px] bg-primary text-white text-[9.9px] font-bold font-plus-jakarta rounded-full flex items-center justify-center border-2 border-white leading-none">
+                  0
+                </span>
+              </div>
+            </button>
+
+            {showMailDropdown && (
+              <div className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg border border-gray-200 z-50 overflow-hidden">
+                <div className="p-4 border-b border-gray-100">
+                  <p className="font-nunito font-bold text-[16px] text-[#282828]">Messages</p>
+                </div>
+                <div className="p-8 flex flex-col items-center justify-center text-center">
+                  <Mail size={32} className="text-gray-300 mb-3" />
+                  <p className="font-nunito text-[14px] text-[#62748e] font-medium">No messages yet</p>
+                  <p className="text-[12px] text-gray-400 mt-1">Messages will appear here</p>
+                </div>
+              </div>
+            )}
+          </div>
 
           {/* Notifications */}
-          <div className="relative" ref={notificationRef}>
+          <div className="relative" ref={notifDropdownRef}>
             <button
-              onClick={() => setShowNotifications(!showNotifications)}
+              onClick={() => { setShowNotifDropdown(!showNotifDropdown); setShowMailDropdown(false); setShowProfileMenu(false); }}
               className="relative flex items-center justify-center size-8 hover:bg-gray-50 rounded-full transition-colors cursor-pointer"
             >
               <Bell size={22.5} className="text-[#101828]" strokeWidth={1.5} />
               {totalUnreadCount > 0 && (
-                <span className="absolute -top-1 -right-1 min-w-3.75 h-3.75 px-[4.5px] bg-primary text-white text-[9.9px] font-bold font-plus-jakarta rounded-full flex items-center justify-center">
-                  {totalUnreadCount > 9 ? "9+" : totalUnreadCount}
+                <span className="absolute -top-1 -right-1 min-w-[15px] h-[15px] px-[4.5px] bg-primary text-white text-[9.9px] font-bold font-plus-jakarta rounded-full flex items-center justify-center border-2 border-white leading-none">
+                  {totalUnreadCount > 99 ? "99+" : totalUnreadCount}
                 </span>
               )}
             </button>
 
             {/* Notification Dropdown */}
-            {showNotifications && (
+            {showNotifDropdown && (
               <div className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg border border-gray-200 z-50 overflow-hidden font-inter">
                 <div className="p-4 border-b border-gray-100 flex justify-between items-center">
-                  <h3 className="font-bold text-gray-900">Notifications</h3>
-                  <span className="text-xs text-[#FF7176] font-medium cursor-pointer">Mark all as read</span>
+                  <p className="font-nunito font-bold text-[16px] text-[#282828]">Notifications</p>
+                  <span className="text-xs text-[#FF7176] font-medium cursor-pointer hover:underline">Mark all as read</span>
                 </div>
-                <div className="max-h-96 overflow-y-auto">
-                  <div className="px-4 py-8 text-center text-gray-400 text-sm">
-                    No new notifications
-                  </div>
+                <div className="p-8 flex flex-col items-center justify-center text-center">
+                  <Bell size={32} className="text-gray-300 mb-3" />
+                  <p className="font-nunito text-[14px] text-[#62748e] font-medium">No notifications yet</p>
+                  <p className="text-[12px] text-gray-400 mt-1">Notifications will appear here</p>
                 </div>
               </div>
             )}

@@ -1,56 +1,68 @@
+// Figma Node: Admin Dashboard Overview Page
+// Architectural Intent: Main dashboard page displaying dynamic overview stats, charts, and recent KYC
+
 "use client";
 
-import React from "react";
-import DashboardHeading from "@/components/dashboard/common/DashboardHeading";
+import React, { useState } from "react";
 import { StatsCard } from "@/components/dashboard/admin/home/StatsCard";
 import { BookingTrendsChart } from "@/components/dashboard/admin/home/BookingTrendsChart";
 import { RevenueFlowChart } from "@/components/dashboard/admin/home/RevenueFlowChart";
 import { RecentKycTable } from "@/components/dashboard/admin/home/RecentKycTable";
-import { useGetRolesCountQuery, useGetRecentKycQuery } from "@/redux/features/api/dashboard/admin/dashboard/adminDashboardApi";
+import { KycDetailModal } from "@/components/dashboard/admin/home/KycDetailModal";
+import {
+  useGetOverviewStatsQuery,
+  useGetRecentKycQuery,
+} from "@/redux/features/api/dashboard/admin/dashboard/adminDashboardApi";
+import type { RecentKycItem } from "@/types/dashboard/admin/dashboard/adminDashboardType";
 
 export default function AdminDashboardPage() {
-  const { data: rolesCount, isLoading: isRolesLoading } = useGetRolesCountQuery();
+  const { data: overviewStats, isLoading: isStatsLoading } = useGetOverviewStatsQuery();
   const { data: recentKyc, isLoading: isKycLoading } = useGetRecentKycQuery();
+  const [selectedKyc, setSelectedKyc] = useState<RecentKycItem | null>(null);
 
-  const providersCount = (rolesCount?.data?.PET_SITTER || 0) + 
-                       (rolesCount?.data?.VENDOR || 0) + 
-                       (rolesCount?.data?.PET_HOTEL || 0) + 
-                       (rolesCount?.data?.PET_SCHOOL || 0);
+  const formatNumber = (num: number): string => {
+    if (num >= 1000) {
+      return num.toLocaleString();
+    }
+    return String(num);
+  };
+
+  const statsData = overviewStats?.data;
 
   const stats = [
     {
       title: "Active Providers",
-      value: "6,371",
-      trend: "12.5%",
-      trendType: "up" as const,
+      value: isStatsLoading ? "..." : formatNumber(statsData?.activeProviders?.count ?? 0),
+      trend: `${Math.abs(statsData?.activeProviders?.trend ?? 0)}%`,
+      trendType: (statsData?.activeProviders?.trend ?? 0) >= 0 ? "up" as const : "down" as const,
       valueColor: "text-[#282828]",
     },
     {
       title: "Pet Owners",
-      value: "6,371",
-      trend: "12.5%",
-      trendType: "up" as const,
+      value: isStatsLoading ? "..." : formatNumber(statsData?.petOwners?.count ?? 0),
+      trend: `${Math.abs(statsData?.petOwners?.trend ?? 0)}%`,
+      trendType: (statsData?.petOwners?.trend ?? 0) >= 0 ? "up" as const : "down" as const,
       valueColor: "text-[#282828]",
     },
     {
       title: "KYC Pending",
-      value: "71",
-      trend: "12.5%",
-      trendType: "up" as const,
+      value: isStatsLoading ? "..." : formatNumber(statsData?.kycPending?.count ?? 0),
+      trend: `${Math.abs(statsData?.kycPending?.trend ?? 0)}%`,
+      trendType: (statsData?.kycPending?.trend ?? 0) >= 0 ? "up" as const : "down" as const,
       valueColor: "text-[#282828]",
     },
     {
       title: "Payout Pending",
-      value: "6,371",
-      trend: "12.5%",
-      trendType: "up" as const,
+      value: isStatsLoading ? "..." : formatNumber(statsData?.payoutPending?.count ?? 0),
+      trend: `${Math.abs(statsData?.payoutPending?.trend ?? 0)}%`,
+      trendType: (statsData?.payoutPending?.trend ?? 0) >= 0 ? "up" as const : "down" as const,
       valueColor: "text-[#282828]",
     },
     {
       title: "Open Reports",
-      value: "6,371",
-      trend: "12.5%",
-      trendType: "up" as const,
+      value: isStatsLoading ? "..." : formatNumber(statsData?.openReports?.count ?? 0),
+      trend: `${Math.abs(statsData?.openReports?.trend ?? 0)}%`,
+      trendType: (statsData?.openReports?.trend ?? 0) >= 0 ? "up" as const : "down" as const,
       valueColor: "text-[#282828]",
     },
   ];
@@ -77,7 +89,14 @@ export default function AdminDashboardPage() {
         <RevenueFlowChart />
       </div>
 
-      <RecentKycTable />
+      <RecentKycTable onViewKyc={(kyc) => setSelectedKyc(kyc)} />
+
+      {selectedKyc && (
+        <KycDetailModal
+          kyc={selectedKyc}
+          onClose={() => setSelectedKyc(null)}
+        />
+      )}
     </div>
   );
 }

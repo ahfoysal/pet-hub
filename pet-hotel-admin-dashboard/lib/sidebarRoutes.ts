@@ -9,6 +9,7 @@ import {
   Users,
   Car,
   DollarSign,
+  Star,
 } from "lucide-react";
 
 export interface MenuItemConfig {
@@ -40,27 +41,15 @@ export const menuItemsConfig: MenuItemConfig[] = [
     roles: ["PET_HOTEL"],
   },
   {
-    label: "Food",
+    label: "Food Menu",
     href: "/hotel/food",
     icon: UtensilsCrossed,
-    roles: ["PET_HOTEL"],
-  },
-  {
-    label: "Bookings",
-    href: "/hotel/bookings",
-    icon: Calendar,
     roles: ["PET_HOTEL"],
   },
   {
     label: "Guests",
     href: "/hotel/guests",
     icon: Users,
-    roles: ["PET_HOTEL"],
-  },
-  {
-    label: "Services",
-    href: "/hotel/services",
-    icon: Car,
     roles: ["PET_HOTEL"],
   },
   {
@@ -73,6 +62,12 @@ export const menuItemsConfig: MenuItemConfig[] = [
     label: "Community",
     href: "/hotel/community",
     imageSrc: "/assets/community.svg",
+    roles: ["PET_HOTEL"],
+  },
+  {
+    label: "Review",
+    href: "/hotel/reviews",
+    icon: Star,
     roles: ["PET_HOTEL"],
   },
 ];

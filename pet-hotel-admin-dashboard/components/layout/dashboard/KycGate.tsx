@@ -74,7 +74,7 @@ export default function KycGate({ children }: KycGateProps) {
         title="Verification Required"
         description="To access your dashboard, you need to complete your identity verification (KYC). This helps us maintain a safe and trusted platform for all users."
         actionLabel="Complete Verification"
-        actionHref="https://auth-pethub-rnc.vercel.app/kyc-verification"
+        actionHref={`${process.env.NEXT_PUBLIC_AUTH_URL || 'https://auth-pethub-rnc.vercel.app'}/kyc-verification`}
         statusTag="Action Required"
         statusTagColor="bg-amber-50 text-amber-600"
       />

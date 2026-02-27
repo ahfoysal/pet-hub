@@ -11,6 +11,8 @@ import {
   TransactionsResponse,
   GrowthAnalyticsResponse,
   CategoryAnalyticsResponse,
+  OverviewStatsResponse,
+  MonthlyRevenueResponse,
 } from "@/types/dashboard/admin/dashboard/adminDashboardType";
 
 export const adminDashboardApi = baseApi.injectEndpoints({
@@ -29,7 +31,7 @@ export const adminDashboardApi = baseApi.injectEndpoints({
     }),
     getPetOwners: builder.query<
       PetOwnersResponse,
-      { search?: string; cursor?: string; limit?: number }
+      { search?: string; cursor?: string; limit?: number; page?: number }
     >({
       query: (params) => ({
         url: "/admin-dashboard-overview/pet-owners",
@@ -39,7 +41,7 @@ export const adminDashboardApi = baseApi.injectEndpoints({
     }),
     getPetSitters: builder.query<
       PetSittersResponse,
-      { search?: string; cursor?: string; limit?: number }
+      { search?: string; cursor?: string; limit?: number; page?: number }
     >({
       query: (params) => ({
         url: "/admin-dashboard-overview/pet-sitter",
@@ -49,30 +51,30 @@ export const adminDashboardApi = baseApi.injectEndpoints({
     }),
     getPetSchools: builder.query<
       PetSchoolsResponse,
-      { search?: string; cursor?: string; limit?: number }
+      { search?: string; cursor?: string; limit?: number; page?: number }
     >({
       query: (params) => ({
-        url: "/admin-dashboard-overview/pet-school",
+        url: "/admin-dashboard-overview/schools",
         method: "GET",
         params,
       }),
     }),
     getPetHotels: builder.query<
       PetHotelsResponse,
-      { search?: string; cursor?: string; limit?: number }
+      { search?: string; cursor?: string; limit?: number; page?: number }
     >({
       query: (params) => ({
-        url: "/admin-dashboard-overview/pet-hotel",
+        url: "/admin-dashboard-overview/hotels",
         method: "GET",
         params,
       }),
     }),
     getPetVendors: builder.query<
       PetVendorsResponse,
-      { search?: string; cursor?: string; limit?: number }
+      { search?: string; cursor?: string; limit?: number; page?: number }
     >({
       query: (params) => ({
-        url: "/admin-dashboard-overview/pet-vendor",
+        url: "/admin-dashboard-overview/vendors",
         method: "GET",
         params,
       }),
@@ -93,15 +95,29 @@ export const adminDashboardApi = baseApi.injectEndpoints({
         params,
       }),
     }),
-    getGrowthAnalytics: builder.query<GrowthAnalyticsResponse, void>({
-      query: () => ({
+    getGrowthAnalytics: builder.query<GrowthAnalyticsResponse, { timeframe?: string }>({
+      query: (params) => ({
         url: "/admin-dashboard-overview/analytics/growth",
+        method: "GET",
+        params,
+      }),
+    }),
+    getCategoryAnalytics: builder.query<CategoryAnalyticsResponse, { category?: string }>({
+      query: (params) => ({
+        url: "/admin-dashboard-overview/analytics/categories",
+        method: "GET",
+        params,
+      }),
+    }),
+    getOverviewStats: builder.query<OverviewStatsResponse, void>({
+      query: () => ({
+        url: "/admin-dashboard-overview/overview-stats",
         method: "GET",
       }),
     }),
-    getCategoryAnalytics: builder.query<CategoryAnalyticsResponse, void>({
+    getMonthlyRevenue: builder.query<MonthlyRevenueResponse, void>({
       query: () => ({
-        url: "/admin-dashboard-overview/analytics/categories",
+        url: "/admin-dashboard-overview/monthly-revenue",
         method: "GET",
       }),
     }),
@@ -120,4 +136,6 @@ export const {
   useGetRecentTransactionsQuery,
   useGetGrowthAnalyticsQuery,
   useGetCategoryAnalyticsQuery,
+  useGetOverviewStatsQuery,
+  useGetMonthlyRevenueQuery,
 } = adminDashboardApi;

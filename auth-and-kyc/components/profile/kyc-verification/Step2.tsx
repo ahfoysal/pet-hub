@@ -47,11 +47,13 @@ export default function Step2({ formData, updateFormData }: StepProps) {
             <p className="text-[#6a7282] text-[14px]">Upload your Business Registration Certificate. This is used to verify your eligibility to operate a pet hotel.</p>
           </div>
           <FileUpload
+            label="Business Registration Certificate"
             acceptedTypes="image/png, image/jpeg, application/pdf"
             maxSizeMB={10}
             onFileSelect={(file) =>
               updateFormData({ businessRegistrationCertificate: file })
             }
+            initialFile={formData.businessRegistrationCertificate}
             className="rounded-[14px] bg-white border-2 border-[#d1d5dc] border-dashed hover:border-[#ff6900] transition-all min-h-[176px]"
             preview={true}
             uploadIconColor="#ff6900"

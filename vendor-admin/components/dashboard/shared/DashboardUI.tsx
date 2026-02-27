@@ -97,16 +97,21 @@ export const ChartCard = ({
   title, 
   children, 
   legend,
+  icon,
   minHeight = "min-h-[350px]"
 }: { 
   title: string; 
   children: React.ReactNode; 
   legend?: React.ReactNode;
+  icon?: React.ReactNode;
   minHeight?: string;
 }) => (
   <div className={`bg-white border-[#e5e7eb] border-[0.775px] border-solid rounded-[10.8px] p-6 shadow-[0px_0.775px_2.325px_0px_rgba(0,0,0,0.1)] font-arimo flex flex-col ${minHeight} transition-all hover:shadow-md`}>
     <div className="mb-6">
-      <h2 className="text-[#0a0a0a] text-[16px] font-normal font-arimo">{title}</h2>
+      <h2 className="text-[#0a0a0a] text-[16px] font-normal font-arimo flex items-center gap-[6px]">
+        {icon && <span>{icon}</span>}
+        {title}
+      </h2>
     </div>
     <div className="flex-1 w-full min-h-[240px]">
       {children}
@@ -114,6 +119,7 @@ export const ChartCard = ({
     {legend && <div className="mt-4">{legend}</div>}
   </div>
 );
+
 
 /**
  * Shared Table Section Component

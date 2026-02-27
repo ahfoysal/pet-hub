@@ -78,26 +78,31 @@ export class AdminDashboardOverviewService {
         }
       : baseWhere;
 
-    const users = await this.prisma.user.findMany({
-      where: whereQuery,
-      take: safeLimit + 1,
-      ...(cursor && { skip: 1, cursor: { id: cursor } }),
-      orderBy: { createdAt: 'desc' },
-      select: {
-        id: true,
-        fullName: true,
-        email: true,
-        phone: true,
-        status: true,
-        createdAt: true,
-      },
-    });
+    const [users, total] = await Promise.all([
+      this.prisma.user.findMany({
+        where: whereQuery,
+        take: safeLimit + 1,
+        ...(cursor && { skip: 1, cursor: { id: cursor } }),
+        orderBy: { createdAt: 'desc' },
+        select: {
+          id: true,
+          fullName: true,
+          email: true,
+          phone: true,
+          status: true,
+          role: true,
+          createdAt: true,
+        },
+      }),
+      this.prisma.user.count({ where: whereQuery }),
+    ]);
 
     const hasNextPage = users.length > safeLimit;
     if (hasNextPage) users.pop();
 
     return ApiResponse.success('Admins fetched successfully', {
       data: users,
+      total,
       nextCursor: hasNextPage ? users[users.length - 1].id : null,
     });
   }
@@ -120,7 +125,7 @@ export class AdminDashboardOverviewService {
   }
 
   // Get active pet sitters with counts of available services and packages
-  async getAllPetSitters(search?: string, cursor?: string, limit = 20) {
+  async getAllPetSitters(search?: string, cursor?: string, limit = 20, page?: number) {
     const safeLimit = Math.min(limit, 50);
 
     const baseWhere: Prisma.UserWhereInput = {
@@ -140,10 +145,15 @@ export class AdminDashboardOverviewService {
         }
       : baseWhere;
 
+    const totalCount = await this.prisma.user.count({ where: whereQuery });
+
+    const paginationArgs = page
+      ? { skip: (page - 1) * safeLimit, take: safeLimit }
+      : { take: safeLimit + 1, ...(cursor && { skip: 1, cursor: { id: cursor } }) };
+
     const users = await this.prisma.user.findMany({
       where: whereQuery,
-      take: safeLimit + 1,
-      ...(cursor && { skip: 1, cursor: { id: cursor } }),
+      ...paginationArgs,
       orderBy: { createdAt: 'desc' },
       select: {
         id: true,
@@ -170,10 +180,17 @@ export class AdminDashboardOverviewService {
       },
     });
 
-    const hasNextPage = users.length > safeLimit;
-    if (hasNextPage) users.pop();
+    let hasNextPage: boolean;
+    let items: typeof users;
+    if (page) {
+      hasNextPage = page * safeLimit < totalCount;
+      items = users;
+    } else {
+      hasNextPage = users.length > safeLimit;
+      items = hasNextPage ? users.slice(0, safeLimit) : users;
+    }
 
-    const result = users.map((user) => ({
+    const result = items.map((user) => ({
       id: user.id,
       fullName: user.fullName,
       email: user.email,
@@ -194,13 +211,14 @@ export class AdminDashboardOverviewService {
     }));
 
     return ApiResponse.success('Pet sitters fetched successfully', {
-      data: result,
-      nextCursor: hasNextPage ? users[users.length - 1].id : null,
+      items: result,
+      nextCursor: !page && hasNextPage && items.length > 0 ? items[items.length - 1].id : null,
+      totalCount,
     });
   }
 
   // Get active vendors with counts of published products
-  async getAllVendors(search?: string, cursor?: string, limit = 20) {
+  async getAllVendors(search?: string, cursor?: string, limit = 20, page?: number) {
     const safeLimit = Math.min(limit, 50);
 
     const baseWhere: Prisma.UserWhereInput = {
@@ -228,10 +246,15 @@ export class AdminDashboardOverviewService {
         }
       : baseWhere;
 
+    const totalCount = await this.prisma.user.count({ where: whereQuery });
+
+    const paginationArgs = page
+      ? { skip: (page - 1) * safeLimit, take: safeLimit }
+      : { take: safeLimit + 1, ...(cursor && { skip: 1, cursor: { id: cursor } }) };
+
     const users = await this.prisma.user.findMany({
       where: whereQuery,
-      take: safeLimit + 1,
-      ...(cursor && { skip: 1, cursor: { id: cursor } }),
+      ...paginationArgs,
       orderBy: { createdAt: 'desc' },
       select: {
         id: true,
@@ -261,10 +284,17 @@ export class AdminDashboardOverviewService {
       },
     });
 
-    const hasNextPage = users.length > safeLimit;
-    if (hasNextPage) users.pop();
+    let hasNextPage: boolean;
+    let items: typeof users;
+    if (page) {
+      hasNextPage = page * safeLimit < totalCount;
+      items = users;
+    } else {
+      hasNextPage = users.length > safeLimit;
+      items = hasNextPage ? users.slice(0, safeLimit) : users;
+    }
 
-    const data = users.map((user: any) => {
+    const data = items.map((user: any) => {
       const profile = user.vendorProfile;
       const productsCount = profile?._count?.products ?? 0;
 
@@ -285,36 +315,44 @@ export class AdminDashboardOverviewService {
     });
 
     return ApiResponse.success('Vendors fetched successfully', {
-      data,
-      nextCursor: hasNextPage ? data[data.length - 1].id : null,
+      items: data,
+      nextCursor: !page && hasNextPage && data.length > 0 ? data[data.length - 1].id : null,
+      totalCount,
     });
   }
 
   // Get active pet hotels with counts of rooms
-  async getAllPetHotels(search?: string, cursor?: string, limit = 20) {
+  async getAllPetHotels(search?: string, cursor?: string, limit = 20, page?: number) {
     const safeLimit = Math.min(limit, 50);
 
-    const users = await this.prisma.user.findMany({
-      where: {
-        role: 'PET_HOTEL',
-        status: 'ACTIVE',
-        ...(search && {
-          OR: [
-            { fullName: { contains: search, mode: 'insensitive' } },
-            { email: { contains: search, mode: 'insensitive' } },
-            {
-              hotelProfile: {
-                OR: [
-                  { name: { contains: search, mode: 'insensitive' } },
-                  { email: { contains: search, mode: 'insensitive' } },
-                ],
-              },
+    const whereQuery: Prisma.UserWhereInput = {
+      role: 'PET_HOTEL',
+      status: 'ACTIVE',
+      ...(search && {
+        OR: [
+          { fullName: { contains: search, mode: 'insensitive' } },
+          { email: { contains: search, mode: 'insensitive' } },
+          {
+            hotelProfile: {
+              OR: [
+                { name: { contains: search, mode: 'insensitive' } },
+                { email: { contains: search, mode: 'insensitive' } },
+              ],
             },
-          ],
-        }),
-      },
-      take: safeLimit + 1,
-      ...(cursor && { skip: 1, cursor: { id: cursor } }),
+          },
+        ],
+      }),
+    };
+
+    const totalCount = await this.prisma.user.count({ where: whereQuery });
+
+    const paginationArgs = page
+      ? { skip: (page - 1) * safeLimit, take: safeLimit }
+      : { take: safeLimit + 1, ...(cursor && { skip: 1, cursor: { id: cursor } }) };
+
+    const users = await this.prisma.user.findMany({
+      where: whereQuery,
+      ...paginationArgs,
       orderBy: { id: 'desc' },
       select: {
         id: true,
@@ -336,10 +374,17 @@ export class AdminDashboardOverviewService {
       },
     });
 
-    const hasNextPage = users.length > safeLimit;
-    if (hasNextPage) users.pop();
+    let hasNextPage: boolean;
+    let items: typeof users;
+    if (page) {
+      hasNextPage = page * safeLimit < totalCount;
+      items = users;
+    } else {
+      hasNextPage = users.length > safeLimit;
+      items = hasNextPage ? users.slice(0, safeLimit) : users;
+    }
 
-    const data = users.map((user) => {
+    const data = items.map((user) => {
       const profile = user.hotelProfile;
       return {
         id: user.id,
@@ -357,38 +402,46 @@ export class AdminDashboardOverviewService {
     });
 
     return ApiResponse.success('Pet hotels fetched successfully', {
-      data,
-      nextCursor: hasNextPage ? data[data.length - 1].id : null,
+      items: data,
+      nextCursor: !page && hasNextPage && data.length > 0 ? data[data.length - 1].id : null,
+      totalCount,
     });
   }
 
   // Get active pet schools with counts of courses
-  async getAllSchool(search?: string, cursor?: string, limit = 20) {
+  async getAllSchool(search?: string, cursor?: string, limit = 20, page?: number) {
     const safeLimit = Math.min(limit, 50);
 
-    const users = await this.prisma.user.findMany({
-      where: {
-        role: 'PET_SCHOOL',
-        status: 'ACTIVE',
-        ...(search && {
-          OR: [
-            { fullName: { contains: search, mode: 'insensitive' } },
-            { email: { contains: search, mode: 'insensitive' } },
-            {
-              petSchoolProfiles: {
-                some: {
-                  OR: [
-                    { name: { contains: search, mode: 'insensitive' } },
-                    { email: { contains: search, mode: 'insensitive' } },
-                  ],
-                },
+    const whereQuery: Prisma.UserWhereInput = {
+      role: 'PET_SCHOOL',
+      status: 'ACTIVE',
+      ...(search && {
+        OR: [
+          { fullName: { contains: search, mode: 'insensitive' } },
+          { email: { contains: search, mode: 'insensitive' } },
+          {
+            petSchoolProfiles: {
+              some: {
+                OR: [
+                  { name: { contains: search, mode: 'insensitive' } },
+                  { email: { contains: search, mode: 'insensitive' } },
+                ],
               },
             },
-          ],
-        }),
-      },
-      take: safeLimit + 1,
-      ...(cursor && { skip: 1, cursor: { id: cursor } }),
+          },
+        ],
+      }),
+    };
+
+    const totalCount = await this.prisma.user.count({ where: whereQuery });
+
+    const paginationArgs = page
+      ? { skip: (page - 1) * safeLimit, take: safeLimit }
+      : { take: safeLimit + 1, ...(cursor && { skip: 1, cursor: { id: cursor } }) };
+
+    const users = await this.prisma.user.findMany({
+      where: whereQuery,
+      ...paginationArgs,
       orderBy: { id: 'desc' },
       select: {
         id: true,
@@ -410,10 +463,17 @@ export class AdminDashboardOverviewService {
       },
     });
 
-    const hasNextPage = users.length > safeLimit;
-    if (hasNextPage) users.pop();
+    let hasNextPage: boolean;
+    let items: typeof users;
+    if (page) {
+      hasNextPage = page * safeLimit < totalCount;
+      items = users;
+    } else {
+      hasNextPage = users.length > safeLimit;
+      items = hasNextPage ? users.slice(0, safeLimit) : users;
+    }
 
-    const data = users.map((user) => {
+    const data = items.map((user) => {
       const profile = user.petSchoolProfiles[0];
       return {
         id: user.id,
@@ -434,13 +494,14 @@ export class AdminDashboardOverviewService {
     });
 
     return ApiResponse.success('Pet schools fetched successfully', {
-      data,
-      nextCursor: hasNextPage ? data[data.length - 1].id : null,
+      items: data,
+      nextCursor: !page && hasNextPage && data.length > 0 ? data[data.length - 1].id : null,
+      totalCount,
     });
   }
 
   // Get active pet owners with counts of confirmed bookings, approved courses, delivered products, and confirmed pet sitter bookings
-  async getPetOwners(search?: string, cursor?: string, limit = 20) {
+  async getPetOwners(search?: string, cursor?: string, limit = 20, page?: number) {
     const safeLimit = Math.min(limit, 50);
 
     const where: Prisma.UserWhereInput = {
@@ -455,13 +516,15 @@ export class AdminDashboardOverviewService {
       ];
     }
 
+    const totalCount = await this.prisma.user.count({ where });
+
+    const paginationArgs = page
+      ? { skip: (page - 1) * safeLimit, take: safeLimit }
+      : { take: safeLimit + 1, ...(cursor && { skip: 1, cursor: { id: cursor } }) };
+
     const users = await this.prisma.user.findMany({
       where,
-      take: safeLimit + 1,
-      ...(cursor && {
-        skip: 1,
-        cursor: { id: cursor },
-      }),
+      ...paginationArgs,
       orderBy: { id: 'desc' },
       select: {
         id: true,
@@ -494,18 +557,21 @@ export class AdminDashboardOverviewService {
       },
     });
 
-    const hasNextPage = users.length > safeLimit;
-    const data = hasNextPage ? users.slice(0, safeLimit) : users;
+    let hasNextPage: boolean;
+    let items: typeof users;
+    if (page) {
+      hasNextPage = page * safeLimit < totalCount;
+      items = users;
+    } else {
+      hasNextPage = users.length > safeLimit;
+      items = hasNextPage ? users.slice(0, safeLimit) : users;
+    }
 
-    const nextCursor = hasNextPage ? data[data.length - 1].id : null;
-
-    return {
-      data,
-      meta: {
-        nextCursor,
-        hasNextPage,
-      },
-    };
+    return ApiResponse.success('Pet owners fetched successfully', {
+      items,
+      nextCursor: !page && hasNextPage && items.length > 0 ? items[items.length - 1].id : null,
+      totalCount,
+    });
   }
 
   // Get platform finance statistics
@@ -631,15 +697,149 @@ export class AdminDashboardOverviewService {
       where: { status: "SUCCESS" },
     });
 
-    const data = results.map((r) => ({
-      category: r.receiverProfileType,
-      revenue: r._sum.amount ?? 0,
-      bookings: r._count.id,
-    }));
+    const requiredCategories = [
+      'PET_SITTER',
+      'PET_SCHOOL',
+      'PET_HOTEL',
+      'VENDOR',
+    ];
+
+    const resultMap = new Map(
+      results.map((r) => [r.receiverProfileType, r])
+    );
+
+    const data = requiredCategories.map((type) => {
+      const r = resultMap.get(type as any);
+      return {
+        category: type,
+        revenue: r?._sum.amount ?? 0,
+        bookings: r?._count.id ?? 0,
+      };
+    });
 
     return ApiResponse.success(
       "Category analytics fetched successfully",
       data
     );
+  }
+
+  // Get dashboard overview stats: active providers, pet owners, kyc pending, payout pending, open reports
+  async getDashboardOverviewStats() {
+    const now = new Date();
+    const startOfThisMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+
+    // Active Providers (PET_SITTER + VENDOR + PET_HOTEL + PET_SCHOOL)
+    const providerRoles = ['PET_SITTER', 'VENDOR', 'PET_HOTEL', 'PET_SCHOOL'];
+    const activeProvidersNow = await this.prisma.user.count({
+      where: { role: { in: providerRoles as any }, status: 'ACTIVE' },
+    });
+    const activeProvidersLastMonth = await this.prisma.user.count({
+      where: {
+        role: { in: providerRoles as any },
+        status: 'ACTIVE',
+        createdAt: { lt: startOfThisMonth },
+      },
+    });
+
+    // Pet Owners
+    const petOwnersNow = await this.prisma.user.count({
+      where: { role: 'PET_OWNER', status: 'ACTIVE' },
+    });
+    const petOwnersLastMonth = await this.prisma.user.count({
+      where: {
+        role: 'PET_OWNER',
+        status: 'ACTIVE',
+        createdAt: { lt: startOfThisMonth },
+      },
+    });
+
+    // KYC Pending
+    const kycPending = await this.prisma.kYC.count({
+      where: { status: 'PENDING' },
+    });
+    const kycPendingLastMonth = await this.prisma.kYC.count({
+      where: {
+        status: 'PENDING',
+        createdAt: { lt: startOfThisMonth },
+      },
+    });
+
+    // Payout Pending (payments with PENDING status)
+    const payoutPending = await this.prisma.payment.count({
+      where: { status: 'PENDING' },
+    });
+    const payoutPendingLastMonth = await this.prisma.payment.count({
+      where: {
+        status: 'PENDING',
+        createdAt: { lt: startOfThisMonth },
+      },
+    });
+
+    // Open Reports
+    const openReports = await this.prisma.report.count({
+      where: { status: { in: ['PENDING', 'UNDER_REVIEW'] } },
+    });
+    const openReportsLastMonth = await this.prisma.report.count({
+      where: {
+        status: { in: ['PENDING', 'UNDER_REVIEW'] },
+        createdAt: { lt: startOfThisMonth },
+      },
+    });
+
+    const calcTrend = (current: number, previous: number) => {
+      if (previous === 0) return current > 0 ? 100 : 0;
+      return Number((((current - previous) / previous) * 100).toFixed(1));
+    };
+
+    return ApiResponse.success('Dashboard overview stats', {
+      activeProviders: {
+        count: activeProvidersNow,
+        trend: calcTrend(activeProvidersNow, activeProvidersLastMonth),
+      },
+      petOwners: {
+        count: petOwnersNow,
+        trend: calcTrend(petOwnersNow, petOwnersLastMonth),
+      },
+      kycPending: {
+        count: kycPending,
+        trend: calcTrend(kycPending, kycPendingLastMonth),
+      },
+      payoutPending: {
+        count: payoutPending,
+        trend: calcTrend(payoutPending, payoutPendingLastMonth),
+      },
+      openReports: {
+        count: openReports,
+        trend: calcTrend(openReports, openReportsLastMonth),
+      },
+    });
+  }
+
+  // Get monthly revenue for the past 7 months (for Revenue Flow chart)
+  async getMonthlyRevenue() {
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const result: { month: string; revenue: number }[] = [];
+
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date();
+      d.setMonth(d.getMonth() - i);
+      const start = new Date(d.getFullYear(), d.getMonth(), 1);
+      const end = new Date(d.getFullYear(), d.getMonth() + 1, 1);
+
+      const agg = await this.prisma.payment.aggregate({
+        where: {
+          status: 'SUCCESS',
+          createdAt: { gte: start, lt: end },
+        },
+        _sum: { amount: true },
+      });
+
+      result.push({
+        month: months[d.getMonth()],
+        revenue: agg._sum.amount ?? 0,
+      });
+    }
+
+    return ApiResponse.success('Monthly revenue fetched successfully', result);
   }
 }

@@ -15,7 +15,10 @@ type FileUploadProps = {
   className?: string;
   preview?: boolean;
   initialPreview?: string | null;
+  initialFile?: File | null;
   imageSize?: string;
+  uploadIconColor?: string;
+  uploadIconBg?: string;
 };
 
 const FileUpload: React.FC<FileUploadProps> = ({
@@ -27,10 +30,21 @@ const FileUpload: React.FC<FileUploadProps> = ({
   onFileSelect,
   className,
   preview = false,
-  initialPreview = null, // default
+  initialPreview = null,
+  initialFile = null,
+  uploadIconColor = "#FF6900",
+  uploadIconBg = "#FFEDD4"
 }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(initialPreview);
+
+  // Initialize preview if initialFile is provided
+  useEffect(() => {
+    if (initialFile && !previewUrl) {
+      const url = URL.createObjectURL(initialFile);
+      setPreviewUrl(url);
+    }
+  }, [initialFile, previewUrl]);
   const [toast, setToast] = useState({
     isVisible: false,
     message: "",
@@ -92,8 +106,8 @@ const FileUpload: React.FC<FileUploadProps> = ({
         onClick={handleClick}
         className={`cursor-pointer border border-[#e9e9e9] rounded-xl p-6 flex flex-col items-center justify-center hover:border-[#ff868a] transition bg-[#F9FAFB] focus:outline-none ${className || ""}`}
       >
-        <div className="flex flex-col items-center p-3 rounded-full bg-[#FFEDD4]">
-          <Upload size={24} className="text-[#FF6900]" />
+        <div className="flex flex-col items-center p-3 rounded-full" style={{ backgroundColor: uploadIconBg }}>
+          <Upload size={24} style={{ color: uploadIconColor }} />
         </div>
         <p className="md:text-lg text-gray-500 text-center py-1">
           <span className="text-accent">Click to upload</span> or drag and drop

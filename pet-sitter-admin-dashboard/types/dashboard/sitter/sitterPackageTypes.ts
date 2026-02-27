@@ -26,6 +26,7 @@ export interface SitterPackage {
 export interface SitterPackageListItem {
   id: string;
   name: string;
+  description?: string;
   image: string;
   offeredPrice: string;
   calculatedPrice: string;
@@ -34,6 +35,7 @@ export interface SitterPackageListItem {
   isDeleted?: boolean;
   deletedAt?: string | null;
   createdAt: string;
+  services?: PackageService[];
 }
 
 export interface SitterPackageApiResponse {

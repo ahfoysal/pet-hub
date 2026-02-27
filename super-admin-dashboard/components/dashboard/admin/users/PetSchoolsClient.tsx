@@ -10,15 +10,19 @@ import {
 } from "lucide-react";
 import { useGetPetSchoolsQuery } from "@/redux/features/api/dashboard/admin/dashboard/adminDashboardApi";
 import { PetSchoolItem } from "@/types/dashboard/admin/dashboard/adminDashboardType";
+import TablePagination from "./TablePagination";
 // import UserDetailsModal from "./UserDetailsModal"; // We'll assume UserDetailsModal works for schools or needs adaptation.
 
 export default function PetSchoolsClient() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedUser, setSelectedUser] = useState<PetSchoolItem | null>(null);
+  const [page, setPage] = useState(1);
+  const itemsPerPage = 20;
 
   const { data, isLoading, isError } = useGetPetSchoolsQuery({
     search: searchTerm,
-    limit: 20,
+    limit: itemsPerPage,
+    page,
   });
 
   const schools = data?.data?.items || [];
@@ -189,26 +193,15 @@ export default function PetSchoolsClient() {
             </table>
           </div>
 
+          {/* Pagination */}
           {!isLoading && !isError && schools.length > 0 && (
-            <div className="px-[26px] py-4 bg-[#f8fafc] border-t border-[#e2e8f0] flex items-center justify-between">
-              <p className="text-[14px] text-[#62748e] font-['Inter',sans-serif]">
-                Showing {schools.length} schools
-              </p>
-              <div className="flex items-center gap-2">
-                <button
-                  disabled
-                  className="px-4 py-2 text-[14px] font-['Inter',sans-serif] border border-[#e2e8f0] rounded-[6px] bg-[white] text-[#94a3b8] cursor-not-allowed transition-all shadow-sm"
-                >
-                  Previous
-                </button>
-                <button
-                  disabled
-                  className="px-4 py-2 text-[14px] font-['Inter',sans-serif] border border-[#e2e8f0] rounded-[6px] bg-[white] text-[#94a3b8] cursor-not-allowed transition-all shadow-sm"
-                >
-                  Next
-                </button>
-              </div>
-            </div>
+            <TablePagination
+              currentPage={page}
+              totalPages={Math.ceil((data?.data?.totalCount || 0) / itemsPerPage)}
+              onPageChange={(p) => setPage(p)}
+              totalItems={data?.data?.totalCount || 0}
+              itemsPerPage={itemsPerPage}
+            />
           )}
         </div>
       </div>

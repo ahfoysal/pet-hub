@@ -47,7 +47,13 @@ const renderIcon = (item: { icon?: React.ElementType; imageSrc?: string; label: 
   // Fallback for imageSrc in hotel
   if (item.imageSrc) {
      // Map known hotel assets to Lucide for consistency if possible, or use Image
-     const IconFromMap = iconMap[item.href.split("/").pop()?.charAt(0).toUpperCase() + item.href.split("/").pop()?.slice(1) || ""];
+     const hrefSegments = item.href.split("/");
+     const lastSegment = hrefSegments[hrefSegments.length - 1] || "";
+     const iconKey = lastSegment 
+       ? lastSegment.charAt(0).toUpperCase() + lastSegment.slice(1) 
+       : "";
+       
+     const IconFromMap = iconMap[iconKey];
      if (IconFromMap) return <IconFromMap size={20} />;
 
      return (
@@ -121,7 +127,7 @@ export default function DashboardSidebar() {
     lg:translate-x-0 ${isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"}
     lg:relative font-montserrat`}
       >
-        <div className="flex flex-col h-full pt-10 px-9.5">
+        <div className="flex flex-col h-full pt-25 px-9.5">
           <nav className="flex-1 flex flex-col gap-3.5 overflow-y-auto min-h-0">
             {visibleItems.length > 0 ? (
               visibleItems.map((item) => (

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { X } from "lucide-react";
 import { useUpdateAdminMutation } from "@/redux/features/api/dashboard/admin/manageAdmins/manageAdminsApi";
 import { toast } from "react-toastify";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 import { AdminUser } from "@/types/dashboard/admin/manageAdmins/manageAdminsType";
 
 interface EditAdminModalProps {

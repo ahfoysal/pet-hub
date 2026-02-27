@@ -135,7 +135,7 @@ body {
 }
 
 * {
-  border-color: hsl(var(--border));
+ 
 }
 
 @keyframes fadeIn {
@@ -177,3 +177,38 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   outline: none !important;
   box-shadow: none !important;
 }
+
+
+/* ── Hardcoded border-color overrides ── */
+.border-\[\#e5e7eb\] {
+  border-color: #e5e7eb !important;
+}
+.border-\[\#D0D0D0\] {
+  border-color: #d0d0d0 !important;
+}
+
+
+.border-\[\#f1f5f9\] {
+  border-color: #f1f5f9 !important;
+}
+
+
+.border-\[rgba\(197\,197\,197\,0\.2\)\] {
+  border-color: #c5c5c533 !important;
+}
+
+
+.border-gray-100 {
+  border-color: var(--color-gray-100) !important;
+}
+
+
+.border-\[\#e2e8f0\] {
+  border-color: #e2e8f0 !important;
+}
+
+
+.bg-\[\#f8fafc\] {
+  background-color: #f8fafc !important;
+}
+

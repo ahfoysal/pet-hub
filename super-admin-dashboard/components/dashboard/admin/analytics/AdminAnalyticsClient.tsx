@@ -13,6 +13,7 @@ import {
   Line,
 } from "recharts";
 import { DollarSign, Activity, Users, ArrowUpRight, Download } from "lucide-react";
+import DropdownButton from "@/components/ui/DropdownButton";
 import {
   useGetFinanceStatsQuery,
   useGetGrowthAnalyticsQuery,
@@ -23,10 +24,9 @@ import {
 
 export default function AdminAnalyticsClient() {
   const { data: financeStats, isLoading: isFinanceLoading } = useGetFinanceStatsQuery();
-  const { data: growthDataResponse } = useGetGrowthAnalyticsQuery();
-  const { data: categoryDataResponse } = useGetCategoryAnalyticsQuery();
-
   const [growthFilter, setGrowthFilter] = useState("12 Months");
+  const { data: growthDataResponse } = useGetGrowthAnalyticsQuery({ timeframe: growthFilter });
+  const { data: categoryDataResponse } = useGetCategoryAnalyticsQuery({});
 
   const displayUsers = isFinanceLoading ? "..." : (financeStats?.data?.activeUsers || 0).toLocaleString();
   const displayRevenue = isFinanceLoading ? "..." : (financeStats?.data?.totalRevenue ? `$${(financeStats.data.totalRevenue / 1000).toFixed(1)}K` : "$0");
@@ -109,20 +109,31 @@ export default function AdminAnalyticsClient() {
       {/* Bar Charts Row */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Bookings by Category */}
-        <div className="bg-white rounded-[14px] p-6 border border-[#e5e7eb]">
-          <h3 className="font-['Arial'] font-medium text-[16px] text-[#282828] mb-6">
-            Total Bookings by Category
-          </h3>
-          <div className="h-64 w-full">
+        <div className="bg-white rounded-[12.5px] p-[22px] border border-[#e2e8f0] border-solid shadow-sm">
+          <div className="flex justify-between items-center mb-[15px]">
+            <h3 className="font-['Nunito'] font-semibold text-[16px] text-[#0f172b]">
+              Total Bookings by Category
+            </h3>
+          </div>
+          <div className="h-[270px] w-full">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart
                 data={
-                  categoryDataResponse?.data?.map((item) => ({
-                    name: item.category.replace("_", " "),
-                    value: item.bookings,
-                  })) || []
+                  categoryDataResponse?.data?.map((item) => {
+                    let label = item.category;
+                    if (item.category === "PET_SITTER") label = "Pet Sitters";
+                    if (item.category === "PET_SCHOOL") label = "Pet Schools";
+                    if (item.category === "PET_HOTEL") label = "Pet Hotels";
+                    if (item.category === "VENDOR") label = "Vendors";
+                    
+                    return {
+                      name: label,
+                      value: item.bookings,
+                    };
+                  }) || []
                 }
-                barSize={60}
+                barSize={40}
+                margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
               >
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
                 <XAxis
@@ -136,18 +147,31 @@ export default function AdminAnalyticsClient() {
                   axisLine={false}
                   tickLine={false}
                   tick={{ fill: "#64748b", fontSize: 12, fontFamily: "Inter, sans-serif" }}
-                  dx={-10}
+                  dx={0}
                 />
                 <Tooltip
-                  cursor={{ fill: "transparent" }}
-                  contentStyle={{ 
-                    borderRadius: "12px", 
-                    border: "1px solid #eee", 
-                    boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.05)",
-                    fontFamily: "Nunito, sans-serif"
+                  cursor={{ fill: "#f1f5f9", opacity: 0.4 }}
+                  content={({ active, payload }) => {
+                    if (active && payload && payload.length) {
+                      return (
+                        <div className="bg-white border border-[#eee] px-3 py-4 rounded-[12px] shadow-sm flex flex-col items-center min-w-[120px]">
+                          <p className="font-['Nunito'] font-semibold text-[14px] text-[#282828] mb-1">
+                            {payload[0].payload.name}
+                          </p>
+                          <p className="font-['Nunito'] font-normal text-[12px] text-[#ff7176]">
+                            Booking : {payload[0].value}
+                          </p>
+                        </div>
+                      );
+                    }
+                    return null;
                   }}
                 />
-                <Bar dataKey="value" fill="#ff7176" radius={[4, 4, 0, 0]} />
+                <Bar 
+                  dataKey="value" 
+                  fill="#ff7176" 
+                  radius={[4, 4, 0, 0]} 
+                />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -210,22 +234,20 @@ export default function AdminAnalyticsClient() {
             Growth Report
           </h3>
           <div className="flex items-center gap-4">
-            <div className="flex items-center gap-4">
-              {["12 Months", "6 Months", "30 Days", "7 Days"].map((filter) => (
-                <button
-                  key={filter}
-                  onClick={() => setGrowthFilter(filter)}
-                  className={`font-['Arial'] text-[14px] transition-colors ${
-                    growthFilter === filter
-                      ? "text-[#282828] font-medium border border-[#282828] rounded-md px-3 py-1.5"
-                      : "text-[#62748e] hover:text-[#282828]"
-                  }`}
-                >
-                  {filter}
-                </button>
-              ))}
+            <div className="flex items-center gap-4 w-[160px]">
+              <DropdownButton
+                options={[
+                  { value: "12 Months", label: "12 Months" },
+                  { value: "6 Months", label: "6 Months" },
+                  { value: "30 Days", label: "30 Days" },
+                  { value: "7 Days", label: "7 Days" },
+                ]}
+                value={growthFilter}
+                onChange={setGrowthFilter}
+                className="w-full"
+              />
             </div>
-            <button className="flex items-center gap-2 px-4 py-2 border border-[#d0d0d0] rounded-md text-[#282828] hover:bg-gray-50 transition-colors">
+            <button className="flex items-center gap-2 px-4 py-2 border border-[#d0d0d0] rounded-md text-[#282828] hover:bg-gray-50 transition-colors h-[46px]">
               <Download size={16} />
               <span className="font-['Arial'] font-bold text-[14px]">
                 Export PDF

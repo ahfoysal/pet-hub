@@ -11,14 +11,18 @@ import {
 import { useGetPetHotelsQuery } from "@/redux/features/api/dashboard/admin/dashboard/adminDashboardApi";
 import { PetHotelItem } from "@/types/dashboard/admin/dashboard/adminDashboardType";
 // import UserDetailsModal from "./UserDetailsModal"; // We'll assume UserDetailsModal works for hotels or needs adaptation.
+import TablePagination from "./TablePagination";
 
 export default function PetHotelsClient() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedUser, setSelectedUser] = useState<PetHotelItem | null>(null);
+  const [page, setPage] = useState(1);
+  const itemsPerPage = 20;
 
   const { data, isLoading, isError } = useGetPetHotelsQuery({
     search: searchTerm,
-    limit: 20,
+    limit: itemsPerPage,
+    page,
   });
 
   const hotels = data?.data?.items || [];
@@ -202,23 +206,16 @@ export default function PetHotelsClient() {
           </table>
         </div>
 
-        {/* Pagination placeholder matching the design */}
-        <div className="border-t border-[#e2e8f0] px-6 py-4 flex items-center justify-between bg-white h-[68px]">
-          <p className="font-['Inter',sans-serif] text-sm text-[#475569]">
-             Showing 1 to {hotels.length} of {hotels.length} entries
-          </p>
-          <div className="flex items-center gap-1">
-            <button className="px-3 py-1 rounded w-[32px] h-[32px] flex items-center justify-center border border-[#e2e8f0] text-gray-400 cursor-not-allowed">
-              {"<"}
-            </button>
-            <button className="px-3 py-1 bg-red-500 text-white rounded w-[32px] h-[32px] flex items-center justify-center">
-              1
-            </button>
-             <button className="px-3 py-1 rounded w-[32px] h-[32px] flex items-center justify-center border border-[#e2e8f0] text-gray-400 cursor-not-allowed" disabled>
-              {">"}
-            </button>
-          </div>
-        </div>
+        {/* Pagination */}
+        {!isLoading && !isError && hotels.length > 0 && (
+          <TablePagination
+            currentPage={page}
+            totalPages={Math.ceil((data?.data?.totalCount || 0) / itemsPerPage)}
+            onPageChange={(p) => setPage(p)}
+            totalItems={data?.data?.totalCount || 0}
+            itemsPerPage={itemsPerPage}
+          />
+        )}
       </div>
 
        {/* Need to add UserDetailsModal here eventually */}
